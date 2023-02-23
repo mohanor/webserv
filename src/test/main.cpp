@@ -1,6 +1,8 @@
 #include <iostream>
 #include "../main/webserv.hpp"
 
+#define PORT 80
+
 int main(int ac, char **av)
 {
 
@@ -16,6 +18,6 @@ int main(int ac, char **av)
 
     std::cout << "Config file: --> " << config_file << " <--" << std::endl;
 
-    
+
     return 0;
 }
