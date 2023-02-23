@@ -57,4 +57,4 @@ It extracts the first connection request on the queue of pending connections for
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 ```
 
-
+![Alt text](https://media.geeksforgeeks.org/wp-content/uploads/20220330131350/StatediagramforserverandclientmodelofSocketdrawio2-448x660.png)
