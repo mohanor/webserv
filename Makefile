@@ -3,10 +3,11 @@ NAME = webserv
 MAIN = ./src/main/
 HTTP = ./src/http/
 PARSER = ./src/parser/
-UTILS = ./src/utils/
+UTILS = ./src/utility/
 TEST = ./src/test/
 
-src = $(MAIN)webserv.cpp \
+src = 	$(UTILS)utility.cpp \
+		$(MAIN)webserv.cpp \
 		$(TEST)main.cpp
 
 CC = c++
@@ -20,7 +21,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC)  $(FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.c webserv.hpp
+%.o: %.c $(MAIN)webserv.hpp $(UTILS)utility.hpp
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
