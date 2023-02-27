@@ -2,6 +2,10 @@
 
 # Stages for server
 
+there are two common types for a socket:
+* streaming socket (SOCK_STREAM) TCP
+* datagram socket (SOCK_DGRAM) UDP
+
 ## 1. Socket creation:
 
 ```c++
