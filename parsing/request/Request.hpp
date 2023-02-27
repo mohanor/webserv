@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/02/27 04:33:15 by matef            ###   ########.fr       */
+/*   Updated: 2023/02/28 00:18:01 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,23 @@ using namespace std;
 
 class Request
 {
+    public:
+        typedef map<string, Header> Headers;
 
     public:
-        Request(string method, string resource, string version);
+        Request(string method, string resource, string version, Headers headers = Headers());
         Request(const Request &copy);
         Request &operator=(const Request &copy);
         ~Request();
         
         string serialize();
-        static Request deserialize(const std::string& request);
+        static Request deserialize(const string& request);
         static vector<string> getVector(string line, char delimiter = ' ');
     private:
         string _method;
         string _resource;
         string _version;
-        // map<string, Header> headers;
+        map<string, Header> _headers;
 };
 
 

@@ -6,15 +6,18 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/02/27 04:48:35 by matef            ###   ########.fr       */
+/*   Updated: 2023/02/28 00:18:50 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Request.hpp"
 
-Request::Request(string method, string resource, string version) : _method(method), _resource(resource), _version(version)
-{}
+Request::Request(string method, string resource, string version, map<string, Header> headers)
+{
+	this->_method = method, this->_resource = resource;
+	this->_version = version, this->_headers = headers;
+}
 
 Request &Request::operator=(const Request &copy)
 {
@@ -45,22 +48,37 @@ vector<string> Request::getVector(string line, char delimiter)
 
 Request Request::deserialize(const string& request)
 {
-    vector<string> tokens;
-    vector<string> first_line;
+	map<string, Header> headers;
+	map<string, Header>::iterator it;
+	
+	vector<string> 		tokens;
+	vector<string> 		headerFirstLine;
 
-    string line;
-    stringstream request_as_file(request);
+	string line;
+	stringstream requestAsFile(request);
 
-    getline(request_as_file, line);
-    first_line = Request::getVector(line);
+	getline(requestAsFile, line);
+	headerFirstLine = Request::getVector(line);
 
-    if (first_line.size() != 3 || not syntaxIsCorrect(first_line) )
-    {
-        cerr << "\033[1;31mbold BAD REQUEST" << '\n';
-    }
-    
+	if (headerFirstLine.size() != 3 || not syntaxIsCorrect(headerFirstLine) )
+		goto error;
 
-    return Request(first_line[0], first_line[1], first_line[2]);
+
+	while (getline(requestAsFile, line))
+	{
+		tokens = getVector(line);
+		
+		string key = tokens[0].substr(0, tokens[0].length() - 1);
+		string value = line.substr(key.length() + 1);
+
+		headers.insert(make_pair(key, Header(key, value)));
+	}
+
+	return Request(headerFirstLine[0], headerFirstLine[1], headerFirstLine[2], headers);
+
+	error:
+		cerr << request << "\n" << request.size() << " " << request.length() << '\n';
+		return Request("", "", "");
 }
 
 string Request::serialize()

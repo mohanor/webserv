@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 01:02:48 by matef             #+#    #+#             */
-/*   Updated: 2023/02/27 04:35:48 by matef            ###   ########.fr       */
+/*   Updated: 2023/02/28 00:06:58 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class Header
 
         string getKey();
         void setValue(const string &value);
-    
+        string getValue();
     private:
         string key;
         string value;

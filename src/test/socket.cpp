@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/02/27 04:49:30 by matef            ###   ########.fr       */
+/*   Updated: 2023/02/28 00:39:31 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void SocketClass::acceptSocket(int sockfd)
             continue;
         }
 
-        int numBytes = recv(clientSocket, request, MAX_REQUEST_SIZE, 0);
+        int numBytes = recv(clientSocket, request, MAX_REQUEST_SIZE, 0);    
         if (numBytes == -1)
         {
             std::cerr << "Failed to read request from client" << '\n';
@@ -116,9 +116,11 @@ void SocketClass::acceptSocket(int sockfd)
 
         
         Request r(Request::deserialize(request));
+
+        // r.
         
 
-        const char* response = "this page successfully requested";
+        const char* response = "this page successfully requested\n";
         
         if (send(clientSocket, response, strlen(response), 0) == -1)
             std::cerr << "Failed to send response to client" << '\n';
