@@ -1,8 +1,7 @@
 #include <iostream>
 #include <fstream>
-
-
-#include "socket.hpp"
+#include "../../parsing/conf/ConfigParser.hpp"
+#include "../utility/utility.hpp"
 
 
 using namespace std;
@@ -10,9 +9,7 @@ using namespace std;
 int main(int ac, char **av)
 {
 
-    SocketClass s;
-
-    s.run();
+    ConfigParser config(getFileContent("./conf/default.conf"));
 
     // cout << r.serialize();
 

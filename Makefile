@@ -7,6 +7,7 @@ UTILS = ./src/utility/
 TEST = ./src/test/
 
 src = 	$(PARSER)request/Request.cpp \
+		$(PARSER)conf/ConfigParser.cpp \
 		$(PARSER)request/Header.cpp \
 		$(UTILS)utility.cpp \
 		$(TEST)socket.cpp \
@@ -16,7 +17,7 @@ CC = c++
 
 OBJ = $(src:.cpp=.o)
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g
 
 all: $(NAME)
 

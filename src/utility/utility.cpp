@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 21:42:58 by matef             #+#    #+#             */
-/*   Updated: 2023/02/27 04:37:18 by matef            ###   ########.fr       */
+/*   Updated: 2023/02/28 01:33:27 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ std::string getFileContent(std::string file_name)
     int i = 0;
     while (getline (MyReadFile, line))
     {
-        std::cout << i++ << " " << line << std::endl;
+        // std::cout << i++ << " " << line << std::endl;
         content += line + '\n';
     }
 
