@@ -8,6 +8,8 @@ TEST = ./src/test/
 
 src = 	$(PARSER)request/Request.cpp \
 		$(PARSER)conf/ConfigParser.cpp \
+		$(PARSER)conf/Server.cpp \
+		$(PARSER)conf/Http.cpp \
 		$(PARSER)request/Header.cpp \
 		$(UTILS)utility.cpp \
 		$(TEST)socket.cpp \
@@ -24,7 +26,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC)  $(FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.c $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(PARSER)request/Header.hpp
+%.o: %.c $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:

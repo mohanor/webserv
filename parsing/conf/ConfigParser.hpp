@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/01 17:38:56 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/02 23:09:42 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,21 @@
 #include <map>
 #include <string>
 #include "../request/Request.hpp"
+#include "Server.hpp"
+#include "Http.hpp"
 using namespace std;
+
+enum e_token
+{
+    OPEN_CURLY,
+    CLOSE_CURLY,
+    SEMI_COLON,
+    WORD,
+    DIRECTIVE,
+    CONTEXT,
+    WSPACE,
+    END
+};
 
 
 class ConfigParser
@@ -28,7 +42,8 @@ private:
     string _lines;
     size_t _index;
     vector<string> _data;
-    vector< pair<string, string> > _tokens;
+    vector< pair<string, int> > _tokens;
+    vector<Server> _server;
     
 public:
     ConfigParser();
@@ -73,6 +88,12 @@ public:
     void checkSyntaxContext();
     void checkSyntaxDirective();
     bool checkSyntaxDirectiveCondition(size_t index);
-    
-   
+    void checkSyntaxCemiColom();
+    size_t lengthDirective(size_t index);
+    void checkMaxTwo(size_t index);
+    // ??Check and  push to Server
+    void   insertServer();
+    void checkAndInitail(size_t index, int indexServer,vector<Server> _server);
+    void addToServer(size_t index, int indexServer,vector<Server> _server);
+    size_t numberServer() const;
 };
