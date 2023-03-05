@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/02 14:26:00 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/05 21:38:29 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,44 @@
 
 #include <iostream>
 using namespace std;
+struct directives
+{
+    size_t cli_max_size ;
+    short int listen ;
+    string server_name ;
+    string host ;
+    string root ;
+    string index ;
+    string error_page;
+    bool autoindex;
+    string allow;
 
+    directives()
+    {
+        cli_max_size = 1000;
+        listen = 8080;
+        server_name = "localhost";
+        host = "127.0.0.1";
+        root = "/var/www/html/";
+        index = "index.html";
+        error_page = "404.html";
+        autoindex = false;
+        allow = "GET POST DELETE";
+    }
+};
+
+
+enum e_token
+{
+    OPEN_CURLY,
+    CLOSE_CURLY,
+    SEMI_COLON,
+    WORD,
+    DIRECTIVE,
+    CONTEXT,
+    WSPACE,
+    NEWLINE,
+};
 class Http
 {
 protected:
@@ -26,7 +63,7 @@ protected:
     bool _autoindex;
 
 public:
-    Http(size_t _cli_max_size = 1024, string _root = "/www/html", string _index = "index.html", string _error_page = "404.html", string _allowed_methods = "GET", bool _autoindex = true);
+    Http(directives dir = directives());
     Http(const Http &copy);
     Http &operator=(const Http &copy);
     ~Http();
@@ -38,10 +75,4 @@ public:
     string getAllowedMethods(int index) const;
     bool getAutoIndex() const;
 
-    void setMaxSize(size_t size);
-    void addAllowedMethods(string method);
-    void setRoot(string root);
-    void setIndex(string index);
-    void setErrorPage(string path);
-    void setAutoIndex(bool value);
 };
