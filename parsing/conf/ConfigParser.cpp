@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/03 00:40:22 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/05 21:59:13 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ string searchCommentInLine(string line)
 
 //    <--------- fin function trim espace --------->
 
-//    <--------- constructor and destructor --------->
+/*****************************************
+ **** start Constructor& destroctur*******
+ *****************************************/
 ConfigParser::ConfigParser()
 {
     cout << "ConfigParser constructor" << endl;
@@ -45,7 +47,12 @@ ConfigParser::ConfigParser()
 
 ConfigParser::ConfigParser(string content)
 {
+    initalConfig(content);
+}
 
+void ConfigParser::initalConfig(string content)
+{
+    this->_lenght_server = 0;
     if (content.empty())
         errorLogs("Error: file is empty");
     _index = 0;
@@ -53,23 +60,22 @@ ConfigParser::ConfigParser(string content)
     conf = Request::getVector(content, '\n');
 
     for (size_t index = 0; index < conf.size(); index++)
-        _lines.append(searchCommentInLine(ft_trim(conf[index])));
+        if (conf[index] != "\n" && ft_trim(conf[index]).length() != 0)
+            _lines.append(searchCommentInLine(ft_trim(conf[index]))).append("\n");
 
-    // !! parse line by line and remove espace
     parseLine(_lines);
-    // !! tokenez data and save it in vector
     tokenez();
     synaxError();
-    insertServer();
-
-    cout << "successfuly parse\n";
+    Configuration initail(this->_tokens, _lenght_server);
 }
 
 ConfigParser::~ConfigParser()
 {
 }
 
-//    <--------- end constructor and destructor --------->
+/*****************************************
+ ****** end Constructor& destroctur ******
+ *****************************************/
 
 void ConfigParser::errorLogs(string titleError)
 {
@@ -99,7 +105,6 @@ void ConfigParser::pushTokinez(int currentIndex, string context)
         vector<string> ctx = Request::getVector(context);
         for (size_t i = 0; i < ctx.size(); i++)
         {
-            //* check if context or word
             i == 0 ? word = CONTEXT : word = WORD;
             _tokens.push_back(make_pair(ctx[i], word));
         }
@@ -109,21 +114,21 @@ void ConfigParser::pushTokinez(int currentIndex, string context)
 void ConfigParser::pushSemiCurly(string type)
 {
     int word;
-    type == "}" ? word = CLOSE_CURLY : word = SEMI_COLON;
+    type == "}" ? word = CLOSE_CURLY : word = NEWLINE;
     _tokens.push_back(make_pair(type, word));
 }
 
-// !! check context and push it to vector _tokens
 void ConfigParser::checkContext()
 {
     string context;
     string tmp;
     size_t currentIndex = this->_index;
 
-    while (_data[_index] != "{" && _index < _data.size())
+    while ((_data[_index] != "{") && _index < _data.size())
     {
+
         tmp.append(_data[_index]).append(" ");
-        if (_data[_index] == ";" || _data[_index] == "}")
+        if (_data[_index] == "\n" || _data[_index] == "}")
         {
             checkDirectives(tmp);
             pushSemiCurly(_data[_index]);
@@ -143,18 +148,16 @@ void ConfigParser::pushDirective(string directive)
     vector<string> direct = Request::getVector(directive);
     for (size_t i = 0; i < direct.size(); i++)
     {
-        // * check first word is directev and second is word;
-        i == 0 ? word = DIRECTIVE : word = WORD;
+        i == 0 ? word = DIRECTIVE : direct[i] != ";" ? word = WORD: word = SEMI_COLON;
         _tokens.push_back(make_pair(direct[i], word));
     }
 }
 
-// !! check  Directive and push it to vector _tokens
 void ConfigParser::checkDirectives(string data)
 {
     string directive;
-
-    for (size_t i = 0; i < data.size() && data[i] != ';'; i++)
+    size_t i = 0;
+    for (; i < data.size() && data[i] != '\n'; i++)
     {
         if (data[i] == '}')
         {
@@ -168,7 +171,6 @@ void ConfigParser::checkDirectives(string data)
         pushDirective(directive);
 }
 
-// !! tokenez the data and push it to vector _tokens
 void ConfigParser::tokenez()
 {
 
@@ -178,14 +180,8 @@ void ConfigParser::tokenez()
         if (_data[_index] == "{")
             _tokens.push_back(make_pair("{", OPEN_CURLY));
     }
-
-    // for (size_t i = 0; i < _tokens.size(); i++)
-    // {
-    //    cout << _tokens[i].first << "  " << _tokens[i].second<< endl;
-    // }
 }
 
-// !! check  Punctuation ;
 void ConfigParser::checkPunctuation(string line)
 {
     if (line[_index] == ';')
@@ -195,7 +191,6 @@ void ConfigParser::checkPunctuation(string line)
     }
 }
 
-// !! check  open curly breacts  {
 void ConfigParser::checkOpenCurly(string line)
 {
     if (line[_index] == '{')
@@ -205,7 +200,6 @@ void ConfigParser::checkOpenCurly(string line)
     }
 }
 
-// !! check  close curly breacts }
 void ConfigParser::checkCloseCurly(string line)
 {
 
@@ -216,20 +210,18 @@ void ConfigParser::checkCloseCurly(string line)
     }
 }
 
-// !! check espace and remove duplicated espace
 void ConfigParser::skipSpaces(string line)
 {
     while (line[_index] && (line[_index] == ' ' || line[_index] == '\t'))
         _index++;
 }
 
-// !! check  word
 void ConfigParser::checkWord(string line)
 {
     int currentIndex = _index;
     string word;
 
-    while (line[_index] && !strchr(" \t{};", line[_index]))
+    while (line[_index] && !strchr(" \t{};\n", line[_index]))
     {
         word.append(1, line[_index]);
         _index++;
@@ -238,7 +230,14 @@ void ConfigParser::checkWord(string line)
     if (currentIndex != _index)
         this->_data.push_back(word);
 }
-
+void ConfigParser::checkNewLine(string line)
+{
+    if (line[_index] == '\n')
+    {
+        _data.push_back("\n");
+        _index++;
+    }
+}
 void ConfigParser::parseLine(string line)
 {
 
@@ -249,23 +248,33 @@ void ConfigParser::parseLine(string line)
         checkOpenCurly(line);
         checkCloseCurly(line);
         checkPunctuation(line);
+        checkNewLine(line);
     }
 }
-
-// ******** start syntax Error ********
+/*****************************************
+ ******** start syntax Error *************
+ *****************************************/
 void ConfigParser::checkSynatxCurly()
 {
     size_t countCurly = 0;
 
     for (size_t i = 0; i < _tokens.size(); i++)
     {
+        if (_tokens[i].second == OPEN_CURLY && _tokens[i - 1].second != WORD)
+        {
+            if (_tokens[i - 1].second != CONTEXT || _tokens[i].second == WORD)
+                errorLogs("ERROR File");
+        }
         if (_tokens[i].second == OPEN_CURLY || _tokens[i].second == CLOSE_CURLY)
             countCurly++;
     }
-    if (_tokens[_tokens.size() - 1].second != CLOSE_CURLY)
-        errorLogs("Error find closed curly");
+    // if (_tokens[_tokens.size() - 2].second != CLOSE_CURLY)
+    // {
+    //     errorLogs("Error find closed curly");
+        
+    // }
     if (countCurly % 2 != 0)
-        errorLogs("Error find closed curly");
+        errorLogs("Error find closed curlys");
 }
 
 void ConfigParser::checkSyntaxMain()
@@ -274,17 +283,57 @@ void ConfigParser::checkSyntaxMain()
     if (_tokens[0].first != "server" || _tokens[1].second != OPEN_CURLY || _tokens[2].second == OPEN_CURLY)
         errorLogs("error find server");
 }
+void ConfigParser::checkSyntackInServer(int currentIndex, int index)
+{
+    while (currentIndex < index)
+    {
+        if (_tokens[currentIndex].second == CONTEXT && _tokens[currentIndex].first == "server")
+            errorLogs("error find server");
+        currentIndex++;
+    }
+}
+void ConfigParser::lenghtServer(int index)
+{
+    int breackts = 0;
+    int currentIndex = index;
+
+    while (++index < _tokens.size())
+    {
+        if (_tokens[index].second == OPEN_CURLY)
+            breackts++;
+        if (_tokens[index].second == CLOSE_CURLY)
+            breackts--;
+        if (breackts == 0)
+        {
+            this->_lenght_server++;
+            break;
+        }
+        checkSyntackInServer(currentIndex + 1, index);
+    }
+    while (index < _tokens.size() && _tokens[index].second != OPEN_CURLY)
+    {
+       if (_tokens[index].second == CONTEXT && _tokens[index].first != "server")
+            errorLogs("error file");
+        index++;
+    }
+}
+
 void ConfigParser::checkSyntaxContext()
 {
-    for (size_t i = 1; i < _tokens.size(); i++)
+    for (size_t i = 0; i < _tokens.size(); i++)
     {
+        if (_tokens[i].second == NEWLINE)
+            continue;
+
         if (_tokens[i].second == CONTEXT && _tokens[i + 1].second == OPEN_CURLY)
+        {
+            lenghtServer(i);
             if (_tokens[i].first != "server")
                 errorLogs("error server synatx");
-
+        }
         if (_tokens[i].second == CONTEXT && _tokens[i + 1].second != OPEN_CURLY)
-        {
-            if (_tokens[i].first != "location" || (_tokens[i + 1].second != WORD && _tokens[i + 2].second != OPEN_CURLY))
+        {   
+            if (_tokens[i].first != "location" || (_tokens[i + 1].second != WORD || _tokens[i + 2].second != OPEN_CURLY))
                 errorLogs("error Location synatx");
         }
     }
@@ -297,7 +346,6 @@ bool ConfigParser::checkSyntaxDirectiveCondition(size_t index)
     for (; (_tokens[index].second != SEMI_COLON) && index < _tokens.size(); index++, i++)
     {
     }
-
     if (_tokens[index].second != SEMI_COLON)
         errorLogs("error word");
     return true;
@@ -311,30 +359,63 @@ size_t ConfigParser::lengthDirective(size_t index)
     return i;
 }
 
-void ConfigParser::checkMaxTwo(size_t index)
+void ConfigParser::checkSyntaxMethod(size_t index)
 {
-    if (_tokens[index].first != "allow" && _tokens[index].first != "error_page" && _tokens[index].first != "return" && _tokens[index].first != "index")
-        if (lengthDirective(index) != 2)
-            errorLogs("error variable  " + _tokens[index].first);
+    string methods[3] = {"GET", "POST", "DELETE"};
+    
+    while (index < _tokens.size() && _tokens[index].second != SEMI_COLON)
+    {
+        int j  = 0;
+        while (j < 3)
+        {
+            if (_tokens[index].first == methods[j])
+                break;
+            j++;
+        }
+        if (j == 3)
+            errorLogs("error method");
+       index++;
+    }
+    
+}
+
+void ConfigParser::checkSynaxDirective()
+{
+    int i = 0;
+
+    while (i < _tokens.size())
+    {
+        if (_tokens[i].second == DIRECTIVE)
+        {
+            if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2 )
+                errorLogs("error error_page");
+            if (_tokens[i].first == "allow" && lengthDirective(i + 1) > 3)
+                errorLogs("error allow");
+            else if (_tokens[i].first == "allow")
+                checkSyntaxMethod(i + 1);
+            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" \
+                && _tokens[i].first != "return" && _tokens[i].first != "allow")
+            {
+              if (lengthDirective(i + 1) != 1 )
+                errorLogs("error directive length");  
+            }
+        }
+        i++;
+    }
 }
 
 void ConfigParser::checkSyntaxCemiColom()
 {
-
     bool checkCemiColom = true;
+
     for (size_t i = 0; i < _tokens.size(); i++)
     {
         if (_tokens[i].second == DIRECTIVE)
         {
-            if (_tokens[i].first == "allow" && lengthDirective(i) > 4)
-                errorLogs("error allow");
-            else if (_tokens[i].first == "error_page" && lengthDirective(i) != 3)
-                errorLogs("error error page");
-            else if (_tokens[i].first == "index" && lengthDirective(i) > 4)
-                errorLogs("error index page");
-            else if (_tokens[i].first == "return" && lengthDirective(i) != 3)
-                errorLogs("error return");
-            checkMaxTwo(i);
+            while (_tokens[i].second != NEWLINE && i < _tokens.size())
+                i++;
+            if (_tokens[i - 1].second != SEMI_COLON)
+                errorLogs("error cemi colom");
         }
     }
 }
@@ -343,8 +424,7 @@ void ConfigParser::checkSyntaxDirective()
 {
     string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "host", "root", "cli_max_size"};
 
-    size_t i = 0;
-    for (; i < _tokens.size(); i++)
+    for (size_t i = 0; i < _tokens.size(); i++)
     {
         if (_tokens[i].second == DIRECTIVE)
         {
@@ -366,81 +446,12 @@ void ConfigParser::synaxError()
     checkSyntaxContext();
     checkSyntaxDirective();
     checkSyntaxCemiColom();
+    checkSynaxDirective();
 }
 
-// ******** end    syntax Error ********
-
-// ******** start  Insert ********
-
-void ConfigParser::addToServer(size_t index, int indexServer, vector<Server> _server)
-{
-    if (_tokens[index].first == "listen")
-        _server[indexServer] = Server(10000,"sss", "sss", "sss","kjkj", true, 4444, "sss", "s");
-    // _server[indexServer].setListen(100000);
-    // if (_tokens[index].first == "listen")
-    // {
-    //     cout << atoi(_tokens[index + 1].first.c_str())<< " "<< indexServer <<"\n";
-    //     _server[indexServer].setListen(atoi(_tokens[index + 1].first.c_str()));
-    // }
-    // if (_tokens[index].first == "server_name")
-    //     _server[indexServer].setServerName(_tokens[index + 1].first);
-    // if (_tokens[index].first == "host")
-    //     _server[indexServer].setHost(_tokens[index + 1].first);
-    // if (_tokens[index].first == "root")
-    //     _server[indexServer].setRoot(_tokens[index + 1].first);
-    // if (_tokens[index].first == "autoindex")
-    //     _server[indexServer].setAutoIndex(_tokens[index + 1].first == "on" ? true : false);
-    // if (_tokens[index].first == "index")
-    //     _server[indexServer].setIndex(_tokens[index + 1].first);
-    // if (_tokens[index].first == "error_page")
-    //     _server[indexServer].setErrorPage(_tokens[index + 1].first + " " + _tokens[index + 2].first);
-}
-
-size_t ConfigParser::numberServer() const
-{
-    int numberOfServer = 0;
-    for (size_t i = 0; i < _tokens.size(); i++)
-    {
-        _tokens[i].first == "server" && _tokens[i + 1].first == "{" ? numberOfServer++ : numberOfServer;
-    }
-    return (numberOfServer);
-}
-
-void ConfigParser::insertServer()
-{
-    size_t index = 1;
-
-    // vector<Server> _server;
-    for (size_t i = 0; i < numberServer(); i++)
-    {
-       _server.push_back(Server());
-    }
-    
-
-    for (size_t i = 0; i < numberServer(); i++)
-    {
-        bool cxt;
-
-        
-        while (index < _tokens.size())
-        {
-            if (_tokens[index].first == "server")
-            {
-                index++;
-                break;
-            }
-            if (_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD)
-                cxt = true;
-            if (_tokens[index].second == DIRECTIVE && !cxt)
-                addToServer(index, i, _server);
-            if (_tokens[index].second == CLOSE_CURLY)
-                cxt = false;
-            index++;
-        }
-    }
-}
-
-// ******** end  Insert ********
+/*****************************************
+ ******** end syntax Error ***************
+ *****************************************/
 
 void ConfigParser::printData()
 {
@@ -449,11 +460,4 @@ void ConfigParser::printData()
     // {
     //     cout << _tokens[i].first << " =>" << _tokens[i].second << endl;
     // }
-
-    for (size_t i = 0; i < _server.size(); i++)
-    {
-       cout << _server[i].getListen() << endl;
-    }
-    
-    cout << numberServer() << endl;
 }
