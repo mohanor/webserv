@@ -11,7 +11,7 @@ int main(int ac, char **av)
 
     ConfigParser config(getFileContent("./conf/default.conf"));
     // cout << "sddd\n";
-    config.printData();
+    // config.printData();
 
     // cout << r.serialize();
 
