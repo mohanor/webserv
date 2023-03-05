@@ -6,32 +6,28 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/03 00:42:28 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/05 21:29:19 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 
-Server::Server() : Http()
-{
-   cout << "Server Default Constructor" << endl;
-}
-Server::Server(size_t cli_max_size, string root, string index, string error_page, string allowed_methods, bool autoindex, short int listen, string server_name , string host  ) : Http(), _listen(listen), _server_name(server_name), _host(host)
-{
 
-    cout << "Server Constructor "<<  listen<< endl;
-    // this->_server_name = "nameserver";
-    // this->_host = "myhost";
-    this->_listen = listen;
-    // this->_cli_max_size = _cli_max_size;
+Server::Server(directives dir) : Http(dir)
+{
+    this->_server_name = dir.server_name;
+    this->_host = dir.host;
+    this->_listen = dir.listen;
 }
+
 Server::~Server() {}
 
 Server::Server(const Server &copy) :Http(copy)
 {
     *this = copy;
 }
+
 Server &Server::operator=(const Server &copy)
 {
     if (this != &copy)
