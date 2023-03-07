@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/02/28 00:18:50 by matef            ###   ########.fr       */
+/*   Updated: 2023/02/28 22:43:38 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ Request Request::deserialize(const string& request)
 	{
 		tokens = getVector(line);
 		
-		string key = tokens[0].substr(0, tokens[0].length() - 1);
-		string value = line.substr(key.length() + 1);
-
+		string key = tokens[0];
+		string value = line.substr(key.length());
+		
 		headers.insert(make_pair(key, Header(key, value)));
 	}
 
@@ -83,7 +83,19 @@ Request Request::deserialize(const string& request)
 
 string Request::serialize()
 {
-    return this->_method + " " + this->_resource + " " + this->_version + "\r\n";
+	string endLine = "\r\n";
+	string request;
+	
+    request = this->_method + " " + this->_resource + " " + this->_version + endLine;
+	
+	Headers::iterator it = _headers.begin();
+	while (it != _headers.end())
+	{
+		request += it->second.getKey() + it->second.getValue() + endLine;	
+		it++;
+	}
+
+	return request;
 }
 
 

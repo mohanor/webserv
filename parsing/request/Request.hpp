@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/02/28 00:18:01 by matef            ###   ########.fr       */
+/*   Updated: 2023/02/28 16:14:51 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,11 @@ class Request
         Request(const Request &copy);
         Request &operator=(const Request &copy);
         ~Request();
-        
+
         string serialize();
         static Request deserialize(const string& request);
         static vector<string> getVector(string line, char delimiter = ' ');
+
     private:
         string _method;
         string _resource;

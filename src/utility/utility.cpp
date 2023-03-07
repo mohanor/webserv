@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 21:42:58 by matef             #+#    #+#             */
-/*   Updated: 2023/02/27 04:37:18 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/07 15:41:40 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,9 @@ std::string getFileContent(std::string file_name)
 
     if (!MyReadFile.is_open())
         return "";
-    int i = 0;
+
     while (getline (MyReadFile, line))
-    {
-        std::cout << i++ << " " << line << std::endl;
         content += line + '\n';
-    }
 
     MyReadFile.close();
     return content.substr(0, content.size() - 1);
@@ -51,3 +48,5 @@ bool syntaxIsCorrect(vector<string> first_line)
     }
     return true;
 }
+
+size_t getFileSize(std::string filename) { return getFileContent(filename).size(); }

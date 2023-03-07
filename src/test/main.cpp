@@ -14,7 +14,5 @@ int main(int ac, char **av)
 
     s.run();
 
-    // cout << r.serialize();
-
     return 0;
 }
