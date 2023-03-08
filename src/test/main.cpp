@@ -1,8 +1,7 @@
 #include <iostream>
 #include <fstream>
-
-
-#include "socket.hpp"
+#include "../../parsing/conf/ConfigParser.hpp"
+#include "../utility/utility.hpp"
 
 
 using namespace std;
@@ -11,13 +10,10 @@ int main(int ac, char **av)
 {
     // SocketClass s;
 
-    // s.run();
 
-    Request r("GET", string(av[1]), "HTTP/1.1");
-
-    cout << "bfr " << r.getRessource() << endl;
-    r.resource();
-    cout << "atr " << r.getRessource() << endl;
+    ConfigParser config(getFileContent("./conf/default.conf"));
+    // cout << "sddd\n";
+    // config.printData();
 
 
     return 0;
