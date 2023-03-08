@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/07 20:59:11 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 16:38:54 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ Configuration::~Configuration()
 
 Configuration::Configuration(vector<pair<string, int> > _tokens, size_t length)
 {
-    cout << "------ constructor configuration ----- \n";
     this->_tokens = _tokens;
     this->_length_server = length;
     insertServer();
+    cout << "All Done !"<< endl;
 
 }
 
