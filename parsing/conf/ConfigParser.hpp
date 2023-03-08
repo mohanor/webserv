@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 01:17:48 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 16:36:41 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,6 @@
 #include "../../configuration/Configuration.hpp"
 using namespace std;
 
-string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "host", "root", "cli_max_size"};
-string forbidenDirectiveLocation[3] = {"server_name", "listen", "host"};
-
 class ConfigParser
 {
 private:
@@ -38,6 +35,8 @@ private:
 public:
     ConfigParser();
     ConfigParser(string content);
+    ConfigParser(const ConfigParser &src);
+    ConfigParser &operator=(const ConfigParser &src);
     ~ConfigParser();
     void printData();
     void initalConfig(string content);
