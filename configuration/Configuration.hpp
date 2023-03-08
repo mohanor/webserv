@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 21:17:08 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/07 18:44:05 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <vector>
 
 #include "../parsing/conf/Server.hpp"
+#include "../parsing/conf/Location.hpp"
+using namespace std;
 
 enum directive
 {
@@ -29,6 +31,7 @@ enum directive
     ERROR_PAGE,
     ALLOWED_METHODS,
     AUTOINDEX,
+    RETURN,
 };
 
 class Configuration
@@ -48,8 +51,10 @@ public:
     void addToServer();
     void checkDirective(size_t index);
     void checkLocation();
-    void pushLocation(size_t index, size_t indexServer);
-    size_t getDirectiveLocation(size_t i , size_t indexServer);
+    void checkDirectiveLocation(size_t index, size_t indexServer);
+    size_t getDirectiveLocation(size_t i , size_t indexServer, string nameLocation);
+    void pushLocation(size_t index, string nameLocation);
+    string getKey(int index);
 
     void infoServer();
 };
