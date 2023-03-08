@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 20:43:25 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/07 15:51:36 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 #include <iostream>
 #include <string.h>
+#include <map>
 #include <vector>
+
 
 #include "Http.hpp"
 
 using namespace std;
+class Location;
 
 class Server : public Http
 {
@@ -29,7 +32,8 @@ class Server : public Http
         string		                _length_location;
 
     public:
-        vector< pair<string , int> > _location;
+        map<string , Location> _locations;
+        vector<pair<string, int> > _location;
         Server(directives dir);
         
         Server(const Server &copy);

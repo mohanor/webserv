@@ -6,12 +6,12 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 21:29:19 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/07 15:51:25 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
+#include "Location.hpp"
 
 
 Server::Server(directives dir) : Http(dir)
@@ -39,40 +39,6 @@ Server &Server::operator=(const Server &copy)
 
     return *this;
 }
-
-/*
-    void Server::setServerName(string name)
-    {
-        _server_name = name;
-    }
-    void Server::setHost(string host)
-    {
-        _host = host;
-    }
-    void Server::setMaxSize(size_t size)
-    {
-        _cli_max_size = size;
-    }
-    void Server::setListen(size_t port)
-    {
-        _listen = port;
-    }
-    void Server::setRoot(string root)
-    {
-        _root = root;
-    }
-    void Server::setIndex(string index)
-    {
-        _index = index;
-    }
-    void Server::setErrorPage(string path[2])
-    {
-    }
-    void Server::setAutoIndex(bool value)
-{
-    _autoindex = value;
-}
-*/
 
 // ?? getter
 string Server::getServerName() const
