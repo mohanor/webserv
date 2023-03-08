@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 21:59:13 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 01:30:16 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,8 @@ void ConfigParser::pushDirective(string directive)
     vector<string> direct = Request::getVector(directive);
     for (size_t i = 0; i < direct.size(); i++)
     {
-        i == 0 ? word = DIRECTIVE : direct[i] != ";" ? word = WORD: word = SEMI_COLON;
+        i == 0 ? word = DIRECTIVE : direct[i] != ";" ? word = WORD
+                                                     : word = SEMI_COLON;
         _tokens.push_back(make_pair(direct[i], word));
     }
 }
@@ -157,7 +158,7 @@ void ConfigParser::checkDirectives(string data)
 {
     string directive;
     size_t i = 0;
-    for (; i < data.size() && data[i] != '\n'; i++)
+    for (; i < data.size() && (data[i] != '\n'); i++)
     {
         if (data[i] == '}')
         {
@@ -271,7 +272,7 @@ void ConfigParser::checkSynatxCurly()
     // if (_tokens[_tokens.size() - 2].second != CLOSE_CURLY)
     // {
     //     errorLogs("Error find closed curly");
-        
+
     // }
     if (countCurly % 2 != 0)
         errorLogs("Error find closed curlys");
@@ -312,7 +313,7 @@ void ConfigParser::lenghtServer(int index)
     }
     while (index < _tokens.size() && _tokens[index].second != OPEN_CURLY)
     {
-       if (_tokens[index].second == CONTEXT && _tokens[index].first != "server")
+        if (_tokens[index].second == CONTEXT && _tokens[index].first != "server")
             errorLogs("error file");
         index++;
     }
@@ -332,7 +333,7 @@ void ConfigParser::checkSyntaxContext()
                 errorLogs("error server synatx");
         }
         if (_tokens[i].second == CONTEXT && _tokens[i + 1].second != OPEN_CURLY)
-        {   
+        {
             if (_tokens[i].first != "location" || (_tokens[i + 1].second != WORD || _tokens[i + 2].second != OPEN_CURLY))
                 errorLogs("error Location synatx");
         }
@@ -362,21 +363,29 @@ size_t ConfigParser::lengthDirective(size_t index)
 void ConfigParser::checkSyntaxMethod(size_t index)
 {
     string methods[3] = {"GET", "POST", "DELETE"};
-    
+    int length = 0;
+
     while (index < _tokens.size() && _tokens[index].second != SEMI_COLON)
     {
-        int j  = 0;
+        int j = 0;
+
         while (j < 3)
         {
             if (_tokens[index].first == methods[j])
+            {
+                length += methods[j].length();
+                methods[j] == "DELETE" ? length += 1 : length += 0;
                 break;
+            }
             j++;
         }
+
         if (j == 3)
             errorLogs("error method");
-       index++;
+        index++;
     }
-    
+    if (length != 14 && length != 10 && length != 3 && length != 7 && length != 4)
+        errorLogs("error method length");
 }
 
 void ConfigParser::checkSynaxDirective()
@@ -387,17 +396,16 @@ void ConfigParser::checkSynaxDirective()
     {
         if (_tokens[i].second == DIRECTIVE)
         {
-            if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2 )
+            if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2)
                 errorLogs("error error_page");
             if (_tokens[i].first == "allow" && lengthDirective(i + 1) > 3)
                 errorLogs("error allow");
             else if (_tokens[i].first == "allow")
                 checkSyntaxMethod(i + 1);
-            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" \
-                && _tokens[i].first != "return" && _tokens[i].first != "allow")
+            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow")
             {
-              if (lengthDirective(i + 1) != 1 )
-                errorLogs("error directive length");  
+                if (lengthDirective(i + 1) != 1)
+                    errorLogs("error directive length");
             }
         }
         i++;
@@ -416,13 +424,32 @@ void ConfigParser::checkSyntaxCemiColom()
                 i++;
             if (_tokens[i - 1].second != SEMI_COLON)
                 errorLogs("error cemi colom");
+            else
+            {
+                if (_tokens[i - 2].second == SEMI_COLON)
+                    errorLogs("error cemi colom");
+            }
         }
+    }
+}
+
+void ConfigParser::checkSyntaxAfterCemiColom()
+{
+    int i = 0;
+
+    while (i < _tokens.size())
+    {
+        if (_tokens[i].second == SEMI_COLON)
+        {
+            if (_tokens[i + 1].second != NEWLINE)
+                errorLogs("error cemi colom");
+        }
+        i++;
     }
 }
 
 void ConfigParser::checkSyntaxDirective()
 {
-    string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "host", "root", "cli_max_size"};
 
     for (size_t i = 0; i < _tokens.size(); i++)
     {
@@ -439,6 +466,78 @@ void ConfigParser::checkSyntaxDirective()
     }
 }
 
+void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool> &directiveLocation)
+{
+    bool check = false;
+
+    while (index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
+    {
+        if (_tokens[index].second == DIRECTIVE)
+        {
+            if (directiveLocation.find(_tokens[index].first) != directiveLocation.end())
+                errorLogs("error directive location");
+            else
+                directiveLocation.insert(make_pair(_tokens[index].first, check));
+            for (size_t i = 0; i < 3; i++)
+            {
+                if (_tokens[index].first == forbidenDirectiveLocation[i])
+                    errorLogs("error directive location  " + _tokens[index].first);
+            }
+        }
+        index++;
+    }
+    directiveLocation.clear();
+
+    // check = (directive.find(_tokens[index].first) != directive.end());
+    // directive.insert(make_pair(_tokens[index].first, check));
+}
+
+void ConfigParser::checkSyntaxDiplicated()
+{
+    size_t index = 1;
+    map<string, bool> m;
+    map<string, bool> directiveLocation;
+
+    for (size_t i = 0; i < _lenght_server; i++)
+    {
+        bool cxt = false;
+
+        while (index < _tokens.size())
+        {
+            if (_tokens[index].first == "server")
+            {
+                index++;
+                break;
+            }
+            if (_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD)
+            {
+                checkSyntaxDiplicatedLocation(index + 1, directiveLocation);
+                cxt = true;
+            }
+            if (_tokens[index].second == DIRECTIVE && !cxt)
+            {
+                if (m.find(_tokens[index].first) != m.end())
+                {
+                    m[_tokens[index].first] = true;
+                    break;
+                }
+                m.insert(make_pair(_tokens[index].first, false));
+            }
+            if (_tokens[index].second == CLOSE_CURLY)
+                cxt = false;
+            index++;
+        }
+        for (map<string, bool>::iterator it = m.begin(); it != m.end(); it++)
+    {
+        if (it->second)
+            errorLogs("error diplicated " + it->first);
+    }
+    m.clear();
+    }
+
+    
+}
+
 void ConfigParser::synaxError()
 {
     checkSynatxCurly();
@@ -447,6 +546,8 @@ void ConfigParser::synaxError()
     checkSyntaxDirective();
     checkSyntaxCemiColom();
     checkSynaxDirective();
+    checkSyntaxAfterCemiColom();
+    checkSyntaxDiplicated();
 }
 
 /*****************************************
