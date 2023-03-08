@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 21:38:29 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/07 17:22:56 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ enum e_token
     WSPACE,
     NEWLINE,
 };
+
 class Http
 {
 protected:
