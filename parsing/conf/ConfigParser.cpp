@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 01:30:16 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 16:37:48 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,7 @@ string searchCommentInLine(string line)
 /*****************************************
  **** start Constructor& destroctur*******
  *****************************************/
-ConfigParser::ConfigParser()
-{
-    cout << "ConfigParser constructor" << endl;
-}
+ConfigParser::ConfigParser(){}
 
 ConfigParser::ConfigParser(string content)
 {
@@ -71,6 +68,24 @@ void ConfigParser::initalConfig(string content)
 
 ConfigParser::~ConfigParser()
 {
+}
+
+ConfigParser::ConfigParser(const ConfigParser &src)
+{
+    *this = src;
+}
+
+ConfigParser &ConfigParser::operator=(const ConfigParser &src)
+{
+    if (this != &src)
+    {
+        this->_lines = src._lines;
+        this->_index = src._index;
+        this->_lenght_server = src._lenght_server;
+        this->_data = src._data;
+        this->_tokens = src._tokens;
+    }
+    return *this;
 }
 
 /*****************************************
@@ -450,7 +465,7 @@ void ConfigParser::checkSyntaxAfterCemiColom()
 
 void ConfigParser::checkSyntaxDirective()
 {
-
+    string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "host", "root", "cli_max_size"};
     for (size_t i = 0; i < _tokens.size(); i++)
     {
         if (_tokens[i].second == DIRECTIVE)
@@ -469,7 +484,8 @@ void ConfigParser::checkSyntaxDirective()
 void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool> &directiveLocation)
 {
     bool check = false;
-
+    string forbidenDirectiveLocation[3] = {"server_name", "listen", "host"};
+    
     while (index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
     {
         if (_tokens[index].second == DIRECTIVE)
