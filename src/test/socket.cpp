@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/03/07 15:52:24 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/08 01:23:45 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int SocketClass::sendFileInPackets(std::string file, struct pollfd *fds, int i)
         while (responsedFile.read(buffer, 1024))
         {
             send(fds[i].fd, buffer, 1024, 0);
-            std::cout << "buffer: " << buffer << std::endl;
+            cout << "buffer: " << buffer << endl;
             memset(buffer, 0, 1024);
         }
 
@@ -136,16 +136,17 @@ int SocketClass::sendFileInPackets(std::string file, struct pollfd *fds, int i)
 
 int SocketClass::communicate(struct pollfd *fds, int i)
 {
+    
     int size;
-    char buffer[1024] = { 0 };
+    char request[MAX_REQUEST_SIZE];
 
     cout << "Descriptor " << fds[i].fd << " is readable" << endl;
 
-    size = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+    size = recv(fds[i].fd, request, sizeof(request), 0);
     if ( size < 0 )
     {
-        cout << "recv failed" << endl; close(fds[i].fd);
-        return false;
+        cerr << "recv failed" << endl;
+        close(fds[i].fd); return false;
     }
 
     if ( !size )
@@ -155,10 +156,18 @@ int SocketClass::communicate(struct pollfd *fds, int i)
         return false;
     }
 
-    cout << size << " bytes received" << endl;
+    cout << "Request: \n" << request << endl;
+    Request httpRequest(Request::deserialize(request));
+    cout << "serialize : start\n" << httpRequest.serialize() << "end" << endl;
     
-    std::string file = "./www/html/index.html";
-
+    httpRequest.resource();
+    
+    cout << "getRessource " << httpRequest.getRessource();
+    
+    //return true;
+    
+    
+    string file = "./www/html/index.html";
     sendFileInPackets(file, fds, i);
 
     return true;

@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/02/28 16:14:51 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/07 21:58:33 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 #include <map>
 #include <vector>
+#include <deque>
 
 using namespace std;
 
@@ -39,6 +40,11 @@ class Request
         string serialize();
         static Request deserialize(const string& request);
         static vector<string> getVector(string line, char delimiter = ' ');
+        
+        bool validVersion();
+        void resource();
+        bool syntaxError();
+        string getRessource();
 
     private:
         string _method;

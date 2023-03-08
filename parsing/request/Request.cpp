@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/02/28 22:43:38 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/07 23:27:46 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,16 @@ vector<string> Request::getVector(string line, char delimiter)
     
     stringstream file(line);
     while (getline(file, sub, delimiter))
-        v.push_back(sub);
+	{
+		if (sub != "")
+        	v.push_back(sub);
+	}
     return v;
+}
+
+bool Request::validVersion()
+{
+	return this->_version == "HTTP/1.1";
 }
 
 Request Request::deserialize(const string& request)
@@ -60,9 +68,8 @@ Request Request::deserialize(const string& request)
 	getline(requestAsFile, line);
 	headerFirstLine = Request::getVector(line);
 
-	if (headerFirstLine.size() != 3 || not syntaxIsCorrect(headerFirstLine) )
+	if (headerFirstLine.size() != 3)
 		goto error;
-
 
 	while (getline(requestAsFile, line))
 	{
@@ -81,6 +88,54 @@ Request Request::deserialize(const string& request)
 		return Request("", "", "");
 }
 
+bool Request::syntaxError()
+{
+	if (! hasOnlyUppercase(_method) || ! hasOnlyUppercase(_version) || validVersion())
+		return true;
+	return false;
+}
+
+void Request::resource()
+{
+	deque<string> s;
+	vector<string> v = getVector(_resource, '/');
+
+	vector<string>::iterator it = v.begin();
+	
+	while (it != v.end())
+	{
+		if (*it == "..") { v.erase(it); continue; }
+		break;
+	}
+	
+	while (it != v.end())
+	{
+		if (*it == ".." && !s.empty())
+			s.pop_back();
+		else if (*it != ".")
+			s.push_back(*it);
+		it++;
+	}
+	
+	if (s.empty())
+		_resource = "/";
+	else
+	{
+		_resource = "";
+		while (!s.empty())
+		{
+			_resource += "/" + s.front();
+			s.pop_front();
+		}
+	}
+	
+}
+
+string Request::getRessource()
+{
+	return _resource;
+}
+
 string Request::serialize()
 {
 	string endLine = "\r\n";
@@ -97,6 +152,7 @@ string Request::serialize()
 
 	return request;
 }
+
 
 
 
