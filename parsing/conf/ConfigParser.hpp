@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 17:10:39 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 01:17:48 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@
 #include "Http.hpp"
 #include "../../configuration/Configuration.hpp"
 using namespace std;
+
+string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "host", "root", "cli_max_size"};
+string forbidenDirectiveLocation[3] = {"server_name", "listen", "host"};
 
 class ConfigParser
 {
@@ -62,9 +65,13 @@ public:
     void checkSyntaxDirective();
     bool checkSyntaxDirectiveCondition(size_t index);
     void checkSyntaxCemiColom();
+    void checkSyntaxAfterCemiColom();
     void checkSyntackInServer(int currentIndex,int index);
     void checkSynaxDirective();
     void checkSyntaxMethod(size_t index);
+
+    void checkSyntaxDiplicated();
+    void checkSyntaxDiplicatedLocation(size_t index,map<string, bool> &directive);
     size_t lengthDirective(size_t index);
     void  lenghtServer(int index);
   
