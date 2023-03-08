@@ -42,8 +42,16 @@ vector<string> Request::getVector(string line, char delimiter)
     
     stringstream file(line);
     while (getline(file, sub, delimiter))
-        v.push_back(sub);
+	{
+		if (sub != "")
+        	v.push_back(sub);
+	}
     return v;
+}
+
+bool Request::validVersion()
+{
+	return this->_version == "HTTP/1.1";
 }
 
 Request Request::deserialize(const string& request)
@@ -60,17 +68,16 @@ Request Request::deserialize(const string& request)
 	getline(requestAsFile, line);
 	headerFirstLine = Request::getVector(line);
 
-	if (headerFirstLine.size() != 3 || not syntaxIsCorrect(headerFirstLine) )
+	if (headerFirstLine.size() != 3)
 		goto error;
-
 
 	while (getline(requestAsFile, line))
 	{
 		tokens = getVector(line);
 		
-		string key = tokens[0].substr(0, tokens[0].length() - 1);
-		string value = line.substr(key.length() + 1);
-
+		string key = tokens[0];
+		string value = line.substr(key.length());
+		
 		headers.insert(make_pair(key, Header(key, value)));
 	}
 
@@ -81,10 +88,65 @@ Request Request::deserialize(const string& request)
 		return Request("", "", "");
 }
 
+bool Request::syntaxError()
+{
+	if (! hasOnlyUppercase(_method) || ! hasOnlyUppercase(_version) || validVersion())
+		return true;
+	return false;
+}
+
+void Request::resource()
+{
+	deque<string> s;
+
+	vector<string> v = getVector(_resource, '/');
+	vector<string>::iterator it = v.begin();
+
+	while (it != v.end())
+	{
+		if (*it == ".." && !s.empty())
+			s.pop_back();
+		else if (*it != "." && *it != "..")
+			s.push_back(*it);
+		it++;
+	}
+
+	if (s.empty())
+		_resource = "/";
+	else
+	{
+		_resource = "";
+		while (!s.empty())
+		{
+			_resource += "/" + s.front();
+			s.pop_front();
+		}
+	}
+	
+}
+
+string Request::getRessource()
+{
+	return _resource;
+}
+
 string Request::serialize()
 {
-    return this->_method + " " + this->_resource + " " + this->_version + "\r\n";
+	string endLine = "\r\n";
+	string request;
+	
+    request = this->_method + " " + this->_resource + " " + this->_version + endLine;
+	
+	Headers::iterator it = _headers.begin();
+	while (it != _headers.end())
+	{
+		request += it->second.getKey() + it->second.getValue() + endLine;	
+		it++;
+	}
+
+	return request;
 }
+
 
 
 

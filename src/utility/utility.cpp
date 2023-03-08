@@ -19,12 +19,9 @@ std::string getFileContent(std::string file_name)
 
     if (!MyReadFile.is_open())
         return "";
-    int i = 0;
+
     while (getline (MyReadFile, line))
-    {
-        // std::cout << i++ << " " << line << std::endl;
         content += line + '\n';
-    }
 
     MyReadFile.close();
     return content.substr(0, content.size() - 1);
@@ -51,3 +48,5 @@ bool syntaxIsCorrect(vector<string> first_line)
     }
     return true;
 }
+
+size_t getFileSize(std::string filename) { return getFileContent(filename).size(); }
