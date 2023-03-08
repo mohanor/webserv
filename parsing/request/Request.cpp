@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/03/07 23:27:46 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/08 16:46:28 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,25 +98,19 @@ bool Request::syntaxError()
 void Request::resource()
 {
 	deque<string> s;
-	vector<string> v = getVector(_resource, '/');
 
+	vector<string> v = getVector(_resource, '/');
 	vector<string>::iterator it = v.begin();
-	
-	while (it != v.end())
-	{
-		if (*it == "..") { v.erase(it); continue; }
-		break;
-	}
-	
+
 	while (it != v.end())
 	{
 		if (*it == ".." && !s.empty())
 			s.pop_back();
-		else if (*it != ".")
+		else if (*it != "." && *it != "..")
 			s.push_back(*it);
 		it++;
 	}
-	
+
 	if (s.empty())
 		_resource = "/";
 	else

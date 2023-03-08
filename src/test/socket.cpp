@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/03/08 01:23:45 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/08 16:10:44 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void SocketClass::acceptSocket(int sockfd)
 
 int SocketClass::sendFileInPackets(std::string file, struct pollfd *fds, int i)
 {
-    std::stringstream response;
+    stringstream response;
     
     response << "HTTP/1.1 200 Ok\r\n";
     response << "Server: nginx/1.21.5\r\n";
@@ -111,11 +111,9 @@ int SocketClass::sendFileInPackets(std::string file, struct pollfd *fds, int i)
         char buffer[1023] = { 0 };
 
         ifstream responsedFile(file.c_str(), ios::binary);
-
         while (responsedFile.read(buffer, 1024))
         {
             send(fds[i].fd, buffer, 1024, 0);
-            cout << "buffer: " << buffer << endl;
             memset(buffer, 0, 1024);
         }
 

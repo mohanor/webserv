@@ -9,16 +9,15 @@ using namespace std;
 
 int main(int ac, char **av)
 {
+    // SocketClass s;
 
-    SocketClass s;
+    // s.run();
 
-    s.run();
+    Request r("GET", string(av[1]), "HTTP/1.1");
 
-    // Request r("GET", string(av[1]), "HTTP/1.1");
-
-    // cout << "bfr " << r.getRessource() << endl;
-    // r.resource();
-    // cout << "atr " << r.getRessource() << endl;
+    cout << "bfr " << r.getRessource() << endl;
+    r.resource();
+    cout << "atr " << r.getRessource() << endl;
 
 
     return 0;
