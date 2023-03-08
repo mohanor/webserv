@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 16:38:54 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 17:24:41 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,4 +288,9 @@ void Configuration::insertServer()
         _directive_server.clear();
     }
     checkLocation();
+}
+
+vector<Server> Configuration::getServer() const
+{
+    return _server;
 }

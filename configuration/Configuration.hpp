@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/07 18:44:05 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 17:24:47 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ public:
     size_t getDirectiveLocation(size_t i , size_t indexServer, string nameLocation);
     void pushLocation(size_t index, string nameLocation);
     string getKey(int index);
+    vector <Server> getServer() const ;
 
     void infoServer();
 };

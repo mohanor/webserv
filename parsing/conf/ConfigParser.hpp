@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 16:36:41 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 17:22:50 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ private:
     size_t _lenght_server;
     vector<string> _data;
     vector<pair<string, int> > _tokens;
+    
     
 public:
     ConfigParser();
@@ -73,5 +74,7 @@ public:
     void checkSyntaxDiplicatedLocation(size_t index,map<string, bool> &directive);
     size_t lengthDirective(size_t index);
     void  lenghtServer(int index);
+    int getLengthServer() const;
+    vector<pair<string, int> > getTokens() const;
   
 };

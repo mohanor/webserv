@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 16:37:48 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 17:23:15 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,16 @@ void ConfigParser::initalConfig(string content)
     parseLine(_lines);
     tokenez();
     synaxError();
-    Configuration initail(this->_tokens, _lenght_server);
+}
+int  ConfigParser::getLengthServer() const
+{
+    return _lenght_server;
 }
 
+ vector<pair<string, int> > ConfigParser::getTokens() const
+ {
+    return _tokens;
+ }
 ConfigParser::~ConfigParser()
 {
 }
