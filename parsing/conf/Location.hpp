@@ -6,22 +6,32 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 16:14:00 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 16:57:06 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 01:46:16 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <iostream>
 #include <string>
-#include <vector>
+#include <map>
+
+// #include "Server.hpp"
+#include "Http.hpp"
+
 using namespace std;
 
 
-class Location
+
+struct Location 
 {
-private:
-   string _return;
-public:
-    Location();
-    ~Location();
+    
+    string path;
+    string _return;
+    map<string, string> _directives;
+
+// public:
+//     Location();
+//     Location(directives dir);
+//     ~Location();
+//     string getReturn() const;
 };
