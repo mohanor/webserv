@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 17:22:50 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 23:23:49 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include "../request/Request.hpp"
 #include "Server.hpp"
 #include "Http.hpp"
-#include "../../configuration/Configuration.hpp"
 using namespace std;
 
 class ConfigParser
@@ -31,7 +30,6 @@ private:
     size_t _lenght_server;
     vector<string> _data;
     vector<pair<string, int> > _tokens;
-    
     
 public:
     ConfigParser();
@@ -76,5 +74,7 @@ public:
     void  lenghtServer(int index);
     int getLengthServer() const;
     vector<pair<string, int> > getTokens() const;
+    vector<Server>  getServers();
+    map<string , Location> getLocation();
   
 };
