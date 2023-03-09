@@ -13,10 +13,13 @@ int main(int ac, char **av)
     // SocketClass s;
     // s.run();
 
-    ConfigParser config(getFileContent("./conf/default.conf"));
-    Configuration initail(config.getTokens(), config.getLengthServer());
-    initail.getServer();
+    Configuration config("./conf/default.conf");
 
+    vector<Server> _server = config.getServers();
 
+    cout << _server.size() << endl;
+
+    cout << _server[0].getLengthLocation() << endl;
+  
     return 0;
 }
