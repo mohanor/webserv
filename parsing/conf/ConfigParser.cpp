@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 17:23:15 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/08 23:27:21 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,17 @@ ConfigParser::ConfigParser(){}
 
 ConfigParser::ConfigParser(string content)
 {
-    initalConfig(content);
+    initalConfig(getFileContent(content));
 }
 
 void ConfigParser::initalConfig(string content)
 {
-    this->_lenght_server = 0;
-    if (content.empty())
-        errorLogs("Error: file is empty");
-    _index = 0;
     vector<string> conf;
+
+    this->_lenght_server = 0;
+    if (content.empty()) errorLogs("Error: file is empty");
+    _index = 0;
+
     conf = Request::getVector(content, '\n');
 
     for (size_t index = 0; index < conf.size(); index++)
@@ -64,6 +65,7 @@ void ConfigParser::initalConfig(string content)
     tokenez();
     synaxError();
 }
+
 int  ConfigParser::getLengthServer() const
 {
     return _lenght_server;
