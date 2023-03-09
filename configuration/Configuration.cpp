@@ -6,55 +6,58 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 17:24:41 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/09 01:14:05 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Configuration.hpp"
 
-Configuration::Configuration()
+Configuration::Configuration(string fileName)
 {
+    this->_config = ConfigParser(fileName);
+
+    this->_tokens = _config.getTokens();
+    this->_length_server = _config.getLengthServer();
+
+    insertServer();
+    checkLocation();
+
+    cout << "All Done !" << endl;
 }
 
 Configuration::~Configuration()
 {
 }
 
-Configuration::Configuration(vector<pair<string, int> > _tokens, size_t length)
+// TODO copy constructor and assignation operator overload
+Configuration::Configuration(const Configuration &copy)
 {
-    this->_tokens = _tokens;
-    this->_length_server = length;
-    insertServer();
-    cout << "All Done !"<< endl;
-
+    *this = copy;
 }
 
-void Configuration::infoServer()
+Configuration &Configuration::operator=(const Configuration &copy)
 {
-    int i = 0;
-    while (i < _length_server)
+    if (this != &copy)
     {
-        cout << "-------------info server : " << i << " ------------------\n";
-        cout << "server name: " << _server[i].getServerName() << endl;
-        cout << "host: " << _server[i].getHost() << endl;
-        cout << "listen: " << _server[i].getListen() << endl;
-        cout << "root: " << _server[i].getRoot() << endl;
-        cout << "index: " << _server[i].getIndex() << endl;
-        cout << "error_page: " << _server[i].getErrorPage(1) << endl;
-        cout << "allowed_methods: " << _server[i].getAllowedMethods(1) << endl;
-        cout << "autoindex: " << _server[i].getAutoIndex() << endl;
-        cout << "client_max_body_size: " << _server[i].getMaxSize() << endl;
-        cout << "--------------------------------------\n";
-
-        i++;
+        this->_config = copy._config;
+        this->_tokens = copy._tokens;
+        this->_length_server = copy._length_server;
+        this->_server = copy._server;
+        this->_directive_server = copy._directive_server;
     }
 
-     for (size_t i = 0; i < _server.size(); i++)
+    return *this;
+}
+void Configuration::infoServer()
+{
+
+    for (size_t i = 0; i < _server.size(); i++)
     {
+
         map<string, Location>::iterator it = _server[i]._locations.begin();
         while (it != _server[i]._locations.end())
         {
-            cout << "name   : " << it->first <<  endl;
+            cout << "name   : " << it->first << endl;
 
             map<string, string>::iterator it2 = it->second._directives.begin();
             while (it2 != it->second._directives.end())
@@ -62,13 +65,14 @@ void Configuration::infoServer()
                 cout << "key: " << it2->first << " value: " << it2->second << endl;
                 it2++;
             }
-            cout << "-------------\n";
             it++;
+            cout << "-------------\n";
         }
 
         cout << "-------------\n";
     }
 }
+
 void Configuration::checkDirective(size_t index)
 {
 
@@ -208,12 +212,13 @@ void Configuration::pushLocation(size_t index, string nameLocation)
     {
         int indexOfKey = _server[index]._location[i].second;
         string value = _server[index]._location[i].first;
-        directive._directives.insert(make_pair(getKey(indexOfKey), value));
+        directive._directives[getKey(indexOfKey)] = value;
         i++;
     }
 
     directive.path = nameLocation;
-    _server[index]._locations.insert(make_pair(directive.path, directive));
+    _server[index].setLocation(directive.path , directive);
+    
 }
 
 size_t Configuration::getDirectiveLocation(size_t index, size_t indexServer, string nameLocation)
@@ -221,10 +226,7 @@ size_t Configuration::getDirectiveLocation(size_t index, size_t indexServer, str
     while (index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
     {
         if (_tokens[index].second == DIRECTIVE)
-        {
             checkDirectiveLocation(index, indexServer);
-        }
-
         index++;
     }
 
@@ -287,10 +289,9 @@ void Configuration::insertServer()
         addToServer();
         _directive_server.clear();
     }
-    checkLocation();
 }
 
-vector<Server> Configuration::getServer() const
+vector<Server> Configuration::getServers() const
 {
     return _server;
 }
