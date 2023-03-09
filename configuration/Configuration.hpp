@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 17:24:47 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/09 01:13:34 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 #include <vector>
 
 #include "../parsing/conf/Server.hpp"
+#include "../parsing/conf/ConfigParser.hpp"
 #include "../parsing/conf/Location.hpp"
+
 using namespace std;
 
 enum directive
@@ -41,11 +43,14 @@ private:
     vector<pair<string, int> > _tokens;
     vector<pair<string, int> > _directive_server;
     size_t _length_server;
+    vector<Location> _locations;
+    ConfigParser _config;
 
 public:
-    Configuration();
-    Configuration(vector<pair<string, int> > _tokens, size_t length);
+    Configuration(string fileName = "../conf/default.conf");
     ~Configuration();
+    Configuration(const Configuration &copy);
+    Configuration &operator=(const Configuration &copy);
     // ??Check and  push to Server
     void insertServer();
     void addToServer();
@@ -55,7 +60,8 @@ public:
     size_t getDirectiveLocation(size_t i , size_t indexServer, string nameLocation);
     void pushLocation(size_t index, string nameLocation);
     string getKey(int index);
-    vector <Server> getServer() const ;
+    vector <Server> getServers() const ;
+    map<string , Location> getLocationServer();
 
     void infoServer();
 };
