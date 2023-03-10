@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/09 01:13:34 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/10 17:58:15 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ private:
     vector<pair<string, int> > _tokens;
     vector<pair<string, int> > _directive_server;
     size_t _length_server;
-    vector<Location> _locations;
+    vector< Location> _locations;
     ConfigParser _config;
+   
 
 public:
     Configuration(string fileName = "../conf/default.conf");
@@ -61,7 +62,6 @@ public:
     void pushLocation(size_t index, string nameLocation);
     string getKey(int index);
     vector <Server> getServers() const ;
-    map<string , Location> getLocationServer();
-
+    map<string , Location > getLocationServer();
     void infoServer();
 };

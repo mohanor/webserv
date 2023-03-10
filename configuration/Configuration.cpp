@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/09 01:14:05 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/10 19:52:26 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,16 @@ Configuration::Configuration(string fileName)
     insertServer();
     checkLocation();
 
+    map<short int, bool> checkPorts;
+    for (size_t i = 0; i < _server.size(); i++)
+    {
+        if (checkPorts.find(_server[i].getPort()) != checkPorts.end())
+        {
+           cerr <<  "Error: port already in use" << endl;
+              exit(1);
+        }
+        checkPorts[_server[i].getPort()] = false;
+    }
     cout << "All Done !" << endl;
 }
 
@@ -29,7 +39,6 @@ Configuration::~Configuration()
 {
 }
 
-// TODO copy constructor and assignation operator overload
 Configuration::Configuration(const Configuration &copy)
 {
     *this = copy;
@@ -45,39 +54,43 @@ Configuration &Configuration::operator=(const Configuration &copy)
         this->_server = copy._server;
         this->_directive_server = copy._directive_server;
     }
-
     return *this;
 }
 void Configuration::infoServer()
 {
 
-    for (size_t i = 0; i < _server.size(); i++)
-    {
+    // for (size_t i = 0; i < _server.size(); i++)
+    // {
 
-        map<string, Location>::iterator it = _server[i]._locations.begin();
-        while (it != _server[i]._locations.end())
-        {
-            cout << "name   : " << it->first << endl;
+    //     map<string, Location>::iterator it = _server[i]._locations.begin();
+    //     while (it != _server[i]._locations.end())
+    //     {
+    //         cout << "name   : " << it->first << endl;
 
-            map<string, string>::iterator it2 = it->second._directives.begin();
-            while (it2 != it->second._directives.end())
-            {
-                cout << "key: " << it2->first << " value: " << it2->second << endl;
-                it2++;
-            }
-            it++;
-            cout << "-------------\n";
-        }
+    //         map<string, string>::iterator it2 = it->second._directives.begin();
+    //         while (it2 != it->second._directives.end())
+    //         {
+    //             cout << "key: " << it2->first << " value: " << it2->second << endl;
+    //             it2++;
+    //         }
+    //         it++;
+    //         cout << "-------------\n";
+    //     }
 
-        cout << "-------------\n";
-    }
+    //     cout << "-------------\n";
+    // }
 }
 
 void Configuration::checkDirective(size_t index)
 {
+    
 
     if (_tokens[index].first == "listen")
+    {
         _directive_server.push_back(make_pair(_tokens[index + 1].first, LISTEN));
+        _directive_server.push_back(make_pair(_tokens[index + 2].first, HOST));
+        
+    }
     if (_tokens[index].first == "root")
         _directive_server.push_back(make_pair(_tokens[index + 1].first, ROOT));
     if (_tokens[index].first == "index")
@@ -97,8 +110,6 @@ void Configuration::checkDirective(size_t index)
         _directive_server.push_back(make_pair(_tokens[index + 1].first, AUTOINDEX));
     if (_tokens[index].first == "server_name")
         _directive_server.push_back(make_pair(_tokens[index + 1].first, SERVER_NAME));
-    if (_tokens[index].first == "host")
-        _directive_server.push_back(make_pair(_tokens[index + 1].first, HOST));
     if (_tokens[index].first == "allow")
     {
         string allow;
@@ -108,6 +119,10 @@ void Configuration::checkDirective(size_t index)
         }
         _directive_server.push_back(make_pair(allow, ALLOWED_METHODS));
     }
+    // map<string, bool>::iterator it = checkPorts.begin();
+
+   
+    
 }
 
 void Configuration::addToServer()
