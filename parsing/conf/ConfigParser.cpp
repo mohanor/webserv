@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/08 23:27:21 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/10 19:41:39 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ ConfigParser &ConfigParser::operator=(const ConfigParser &src)
 
 void ConfigParser::errorLogs(string titleError)
 {
-    cout << titleError << endl;
+    cerr << titleError << endl;
     exit(1);
 }
 
@@ -360,6 +360,8 @@ void ConfigParser::checkSyntaxContext()
         {
             if (_tokens[i].first != "location" || (_tokens[i + 1].second != WORD || _tokens[i + 2].second != OPEN_CURLY))
                 errorLogs("error Location synatx");
+            if ((_tokens[i + 1].first.find("/")) != 0 || _tokens[i + 1].first[1] == '/')
+                errorLogs("error Location synatx camnnot find /");
         }
     }
 }
@@ -387,29 +389,78 @@ size_t ConfigParser::lengthDirective(size_t index)
 void ConfigParser::checkSyntaxMethod(size_t index)
 {
     string methods[3] = {"GET", "POST", "DELETE"};
-    int length = 0;
+    
+    map<string, int> methodsMap;
 
     while (index < _tokens.size() && _tokens[index].second != SEMI_COLON)
     {
         int j = 0;
-
         while (j < 3)
         {
             if (_tokens[index].first == methods[j])
             {
-                length += methods[j].length();
-                methods[j] == "DELETE" ? length += 1 : length += 0;
+                if (methodsMap.find(methods[j]) != methodsMap.end())
+                    errorLogs("error methods id duplicate !");
+                methodsMap[methods[j]] = 1;
                 break;
             }
             j++;
         }
-
         if (j == 3)
             errorLogs("error method");
         index++;
     }
-    if (length != 14 && length != 10 && length != 3 && length != 7 && length != 4)
-        errorLogs("error method length");
+}
+
+// check if the directive is correct
+
+void ConfigParser::checkCorrectSyntaxDirective(size_t index)
+{
+    if (_tokens[index].first == "error_page" || _tokens[index].first == "return")
+    {
+        try
+        {
+        if (_tokens[index].first == "error_page" || _tokens[index].first == "root" )
+        {
+            ifstream file;
+            string fileName = "./"+ _tokens[index + 2].first;
+            
+            file.open(fileName);
+            if(!file.is_open())
+                throw  out_of_range("error file");
+            
+        }
+        for (size_t i = 0; i < _tokens[index + 1].first.size(); i++)
+            if (!isdigit(_tokens[index + 1].first[i]))
+               throw out_of_range("error status code !" + _tokens[index + 1].first);
+            
+           stod(_tokens[index + 1].first);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            exit(1);
+        }
+        
+    }
+
+    if (_tokens[index].first == "root" )
+    {
+        ifstream file;
+        
+        string fileName =  _tokens[index + 1].first;
+            
+            file.open(fileName);
+            if(!file.is_open())
+                errorLogs("error find location root !"); 
+    }
+    
+    if (_tokens[index].first == "autoindex")
+    {
+        if (_tokens[index + 1].first != "on" && _tokens[index + 1].first != "off")
+            errorLogs("error autoindex " + _tokens[index + 1].first);
+    }
+    
 }
 
 void ConfigParser::checkSynaxDirective()
@@ -420,17 +471,37 @@ void ConfigParser::checkSynaxDirective()
     {
         if (_tokens[i].second == DIRECTIVE)
         {
+            
             if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2)
                 errorLogs("error error_page");
+            if (_tokens[i].first == "listen" && lengthDirective(i + 1) != 2)
+                errorLogs("error listen");
+            else  if (_tokens[i].first == "listen")
+            {
+                try
+                {
+                    for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
+                        if (!isdigit(_tokens[i + 1].first[in]))
+                            throw out_of_range("");
+                       (stod(_tokens[i + 1].first) > 65535 || stod(_tokens[i + 1].first) < 1) ? throw out_of_range("") : 0;
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << "error port" << '\n';
+                    exit(1);
+                }   
+            }
+           
             if (_tokens[i].first == "allow" && lengthDirective(i + 1) > 3)
                 errorLogs("error allow");
             else if (_tokens[i].first == "allow")
                 checkSyntaxMethod(i + 1);
-            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow")
+            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow" && _tokens[i].first != "listen")
             {
                 if (lengthDirective(i + 1) != 1)
                     errorLogs("error directive length");
             }
+            checkCorrectSyntaxDirective(i);
         }
         i++;
     }
@@ -474,7 +545,7 @@ void ConfigParser::checkSyntaxAfterCemiColom()
 
 void ConfigParser::checkSyntaxDirective()
 {
-    string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "host", "root", "cli_max_size"};
+    string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "root", "cli_max_size"};
     for (size_t i = 0; i < _tokens.size(); i++)
     {
         if (_tokens[i].second == DIRECTIVE)
