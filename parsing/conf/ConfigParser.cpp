@@ -6,11 +6,26 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/10 19:41:39 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/10 22:32:46 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ConfigParser.hpp"
+
+
+/* ************************errror file************************
+
+context
+{
+
+context  word
+{
+
+directive  value; directive value;
+
+directive  value; context
+
+ ************************************************************/
 
 //    <--------- function trim espace --------->
 string ft_trim(string str)
@@ -491,6 +506,23 @@ void ConfigParser::checkSynaxDirective()
                     exit(1);
                 }   
             }
+            else if (_tokens[i].first == "cli_max_size")
+            {
+                try
+                {
+                    for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
+                        if (!isdigit(_tokens[i + 1].first[in]))
+                            throw out_of_range("");
+                       stod(_tokens[i + 1].first);
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << "error cli_max_size" << '\n';
+                    exit(1);
+                }  
+                
+            }
+            else
            
             if (_tokens[i].first == "allow" && lengthDirective(i + 1) > 3)
                 errorLogs("error allow");
@@ -583,9 +615,6 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
         index++;
     }
     directiveLocation.clear();
-
-    // check = (directive.find(_tokens[index].first) != directive.end());
-    // directive.insert(make_pair(_tokens[index].first, check));
 }
 
 void ConfigParser::checkSyntaxDiplicated()
