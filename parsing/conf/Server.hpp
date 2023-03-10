@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/09 01:03:23 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/09 23:13:42 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "Http.hpp"
 
 using namespace std;
+
 class Location;
 
 class Server : public Http
@@ -32,19 +33,17 @@ class Server : public Http
         string		                _length_location;
 
     public:
-        map<string , Location>      _locations;
-        
-        // vector<Location> _locations;
+        map<string , Location >      _locations;
         vector<pair<string, int> > _location;
         Server(directives dir);
         
         Server(const Server &copy);
         Server &operator=(const Server &copy);
         ~Server();
-        void setLocation(string path,Location locations);
+        void setLocation(string path, Location locations);
 
         string	getServerName() const;
 		string	getHost() const;
-		size_t	getListen() const;
+		size_t	getPort() const;
         size_t getLengthLocation() const;
 };
