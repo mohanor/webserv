@@ -17,9 +17,9 @@ int main(int ac, char **av)
 
     vector<Server> _server = config.getServers();
 
-    cout << _server[0].getHost() << endl;
+    cout << _server[1].getHost() << endl;
 
-    cout << _server[0].getLengthLocation() << endl;
+    cout << _server[1].getLengthLocation() << endl;
   
     return 0;
 }

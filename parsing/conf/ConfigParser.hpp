@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/09 20:54:29 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/11 17:22:24 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,6 @@ public:
     int getLengthServer() const;
     vector<pair<string, int> > getTokens() const;
      void checkCorrectSyntaxDirective(size_t index);
+     void checkSynatxCgi(size_t index, map<string, bool> &directiveLocation);
   
 };

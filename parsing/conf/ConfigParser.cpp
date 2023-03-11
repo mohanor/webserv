@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/10 22:32:46 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/11 18:30:36 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -484,6 +484,14 @@ void ConfigParser::checkSynaxDirective()
 
     while (i < _tokens.size())
     {
+        if (_tokens[i].second == CONTEXT && _tokens[i].first == "location")
+        {
+            if (_tokens[i + 1].first == "/php")
+            {
+                while (_tokens[i].second != CLOSE_CURLY)
+                    i++;
+            }
+        }
         if (_tokens[i].second == DIRECTIVE)
         {
             
@@ -531,7 +539,7 @@ void ConfigParser::checkSynaxDirective()
             if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow" && _tokens[i].first != "listen")
             {
                 if (lengthDirective(i + 1) != 1)
-                    errorLogs("error directive length");
+                    errorLogs("error directive length " + _tokens[i].first);
             }
             checkCorrectSyntaxDirective(i);
         }
@@ -577,17 +585,22 @@ void ConfigParser::checkSyntaxAfterCemiColom()
 
 void ConfigParser::checkSyntaxDirective()
 {
-    string myDirective[10] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "return", "root", "cli_max_size"};
+    string myDirective[9] = {"server_name", "listen", "allow", "autoindex", "index", "error_page", "root", "cli_max_size"};
     for (size_t i = 0; i < _tokens.size(); i++)
     {
+        if (_tokens[i].second == CONTEXT && _tokens[i].first == "location")
+        {
+            while (_tokens[i].second != CLOSE_CURLY && i < _tokens.size()){i++;}
+            
+        }
         if (_tokens[i].second == DIRECTIVE)
         {
             checkSyntaxDirectiveCondition(i);
             size_t j = 0;
-            for (; j < 10; j++)
+            for (; j < 9; j++)
                 if (myDirective[j] == _tokens[i].first)
                     break;
-            if (j == 10)
+            if (j == 9)
                 errorLogs("error variable  " + _tokens[i].first);
         }
     }
@@ -609,7 +622,7 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
             for (size_t i = 0; i < 3; i++)
             {
                 if (_tokens[index].first == forbidenDirectiveLocation[i])
-                    errorLogs("error directive location  " + _tokens[index].first);
+                    errorLogs("error directive location s " + _tokens[index].first);
             }
         }
         index++;
@@ -634,9 +647,12 @@ void ConfigParser::checkSyntaxDiplicated()
                 index++;
                 break;
             }
-            if (_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD)
+            if ((_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD))
             {
-                checkSyntaxDiplicatedLocation(index + 1, directiveLocation);
+                if ( _tokens[index + 1].first != "/php" )
+                    checkSyntaxDiplicatedLocation(index + 1, directiveLocation);
+                else
+                    checkSynatxCgi(index + 1, directiveLocation);
                 cxt = true;
             }
             if (_tokens[index].second == DIRECTIVE && !cxt)
@@ -660,6 +676,38 @@ void ConfigParser::checkSyntaxDiplicated()
     m.clear();
     }
 
+    
+}
+void ConfigParser::checkSynatxCgi(size_t index, map<string, bool> &directiveLocation)
+{
+    string cgi[6] = {"fastcgi_pass", "fastcgi_index", "include","fastcgi_param", "fastcgi_split_path_info", "fastcgi_intercept_errors"};
+    while(index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
+    {
+        if (_tokens[index].second == DIRECTIVE)
+        {
+            int len =0 ;
+            for (size_t i = index; i < _tokens.size() && _tokens[i].second != SEMI_COLON; i++, len++)
+            {
+                if (len > 1)
+                    errorLogs("error cgi " + _tokens[index].first);
+               
+            }
+            
+            size_t j = 0;
+            while (j < 6)
+            {
+                if (cgi[j] == _tokens[index].first)
+                    break;
+                j++;
+            }
+            if (j == 6)
+                errorLogs("error cgi " + _tokens[index].first);
+            
+        }
+        index++;
+    }
+    
+    
     
 }
 
