@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/11 18:30:36 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/11 18:46:37 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -486,7 +486,7 @@ void ConfigParser::checkSynaxDirective()
     {
         if (_tokens[i].second == CONTEXT && _tokens[i].first == "location")
         {
-            if (_tokens[i + 1].first == "/php")
+            if (_tokens[i + 1].first == "/php" || _tokens[i + 1].first == "/python")
             {
                 while (_tokens[i].second != CLOSE_CURLY)
                     i++;
@@ -649,7 +649,7 @@ void ConfigParser::checkSyntaxDiplicated()
             }
             if ((_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD))
             {
-                if ( _tokens[index + 1].first != "/php" )
+                if (_tokens[index + 1].first != "/php" &&  _tokens[index + 1].first != "/python" )
                     checkSyntaxDiplicatedLocation(index + 1, directiveLocation);
                 else
                     checkSynatxCgi(index + 1, directiveLocation);
