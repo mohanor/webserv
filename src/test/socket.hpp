@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/03/07 15:40:22 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/18 04:32:51 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@
 #define PORT 8080
 const int MAX_REQUEST_SIZE = 1024;
 
-
 class SocketClass
 {
     public:
@@ -46,7 +45,7 @@ class SocketClass
         void bindSocket(int sockfd);
         void listenSocket(int sockfd);
         void acceptSocket(int sockfd);
-        int sendFileInPackets(std::string file, struct pollfd *fds, int i);
+        int sendFileInPackets(std::string file, struct pollfd *fds, int i, string mimeType);
         int communicate(struct pollfd *fds, int i);
         void run();
 

@@ -9,6 +9,7 @@ CONFIG = ./configuration/
 
 src = 	$(PARSER)request/Request.cpp \
 		$(PARSER)conf/ConfigParser.cpp \
+		$(PARSER)mime/MimeTypes.cpp \
 		$(PARSER)conf/Server.cpp \
 		$(PARSER)conf/Http.cpp \
 		$(PARSER)conf/Location.cpp \
@@ -29,7 +30,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC)  $(FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.c $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp  $(CONFIG)Configuration.hpp $(PARSER)conf/Location.hpp 
+%.o: %.c $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp  $(CONFIG)Configuration.hpp $(PARSER)conf/Location.hpp $(PARSER)mime/MimeTypes.hpp
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:

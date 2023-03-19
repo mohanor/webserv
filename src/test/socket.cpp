@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/03/05 19:15:51 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/18 22:43:59 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void SocketClass::bindSocket(int listener)
         exit(EXIT_FAILURE);
     }
     
-    int bind_result = bind(listener, (struct sockaddr*) &address, sizeof(address));
+    int bind_result = ::bind(listener, (struct sockaddr*) &address, sizeof(address));
     if (bind_result < 0)
     {
         std::cerr << "Error binding socket" << std::endl;
@@ -93,16 +93,18 @@ void SocketClass::acceptSocket(int sockfd)
     
 }
 
-int SocketClass::sendFileInPackets(std::string file, struct pollfd *fds, int i)
+int SocketClass::sendFileInPackets(std::string file, struct pollfd *fds, int i, string mimeType)
 {
     stringstream response;
+    string ENDL = "\r\n";
     
-    response << "HTTP/1.1 200 Ok\r\n";
-    response << "Server: nginx/1.21.5\r\n";
-    response << "Content-Type: text/html\r\n";
-    response << "charset=utf-8\r\n";
-    response << "Content-Length: " + std::to_string(getFileSize(file)) + "\r\n\r\n";
+    response << "HTTP/1.1 200 Ok" + ENDL;
+    response << "Server: nginx/1.21.5" + ENDL;
+    response << "Content-Type: " + mimeType + ENDL;
+    // response << "charset=utf-8" + ENDL;
+    response << "Content-Length: " + std::to_string(getFileSize(file)) + ENDL + ENDL;
 
+    cout << "File size: " << getFileSize(file) << endl;
     if (getFileContent(file).size() > 1024)
     {
         send(fds[i].fd, response.str().c_str(), response.str().size(), 0);
@@ -153,19 +155,27 @@ int SocketClass::communicate(struct pollfd *fds, int i)
         return false;
     }
 
-    cout << "Request: \n" << request << endl;
+
     Request httpRequest(Request::deserialize(request));
-    cout << "serialize : start\n" << httpRequest.serialize() << "end" << endl;
     
     httpRequest.resource();
+
+    map<string, string> types;
+
+    types["html"] = "text/html";
+    types["jpg"] = "image/jpeg";
+
+    string type = types[httpRequest.getRessource().substr(httpRequest.getRessource().find_last_of(".") + 1)];
+
+    cout << "Ressource " << httpRequest.getRessource();
     
-    cout << "getRessource " << httpRequest.getRessource();
-    
-    //return true;
-    
-    
-    string file = "./www/html/index.html";
-    sendFileInPackets(file, fds, i);
+    string file;
+    if (httpRequest.getRessource() == "/")
+        file = "./www/html/index.html";
+    else
+        file = "./www/html" + httpRequest.getRessource();
+
+    sendFileInPackets(file, fds, i, types[type]);
 
     return true;
 }
