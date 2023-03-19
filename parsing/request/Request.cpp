@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/02/28 01:04:52 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/09 23:46:42 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,6 @@ vector<string> Request::getVector(string line, char delimiter)
     return v;
 }
 
-bool Request::validVersion()
-{
-	return this->_version == "HTTP/1.1";
-}
-
 Request Request::deserialize(const string& request)
 {
 	map<string, Header> headers;
@@ -90,8 +85,6 @@ Request Request::deserialize(const string& request)
 
 bool Request::syntaxError()
 {
-	if (! hasOnlyUppercase(_method) || ! hasOnlyUppercase(_version) || validVersion())
-		return true;
 	return false;
 }
 
@@ -147,6 +140,53 @@ string Request::serialize()
 	return request;
 }
 
+
+bool Request::allowedChars()
+{
+	string allowd_Chars = ALLOWED_CHARACTERS;
+
+	for (size_t i = 0; i < _resource.length(); i++)
+	{
+		if (allowd_Chars.find(_resource[i]) == std::string::npos)
+			return false;
+	}
+	
+	return true;
+}
+
+bool Request::isMethodAllowed()
+{
+	return (_method != "GET" && _method != "DELETE" && _method != "POST");
+}
+
+// bool Request::transferEncoding()
+// {
+// 	return (_headers.find("Transfer-Encoding") != _headers.end()\
+// 			&& _headers["Transfer-Encoding"].getValue() != "chunked");
+// }
+
+bool Request::acceptUriLength()
+{
+	return (_resource.length() > URI_MAX_SIZE);
+}
+
+bool Request::isVersionSupported()
+{
+	return (_version != "HTTP/1.1");
+}
+
+int Request::isReqWellFormed()
+{
+	// if (isMethodAllowed()) return METHOD_NOT_ALLOWED;
+	
+	// if ( transferEncoding() ) 	return NOT_IMPLEMENTED;
+	if ( !allowedChars() ) 		return BAD_REQUEST;
+	if ( acceptUriLength() ) 	return REQUEST_URI_TOO_LONG;
+	if ( isVersionSupported() ) return VERSION_NOT_SUPPORTED;
+
+	// MAX_BODY_SIZE
+	return OK;
+}
 
 
 

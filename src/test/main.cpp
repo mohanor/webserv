@@ -3,6 +3,9 @@
 #include "../../parsing/conf/ConfigParser.hpp"
 #include "../../configuration/Configuration.hpp"
 #include "../utility/utility.hpp"
+
+#include "../../parsing/mime/MimeTypes.hpp"
+
 #include "socket.hpp"
 
 
@@ -13,13 +16,14 @@ int main(int ac, char **av)
     // SocketClass s;
     // s.run();
 
-    Configuration config("./conf/default.conf");
+    string file = "./conf/mime.types";
 
-    vector<Server> _server = config.getServers();
+    MimeTypes m;
+    m.parseMimeTypes(file);
 
-    cout << _server.size() << endl;
+    cout << m.getMimeType("htm") << endl;
 
-    cout << _server[0].getLengthLocation() << endl;
-  
+    
+
     return 0;
 }
