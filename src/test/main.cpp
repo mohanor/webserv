@@ -23,7 +23,6 @@ int main(int ac, char **av)
 
     cout << m.getMimeType("htm") << endl;
 
-    
 
     return 0;
 }
