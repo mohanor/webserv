@@ -16,12 +16,7 @@ int main(int ac, char **av)
     // SocketClass s;
     // s.run();
 
-    string file = "./conf/mime.types";
-
-    MimeTypes m;
-    m.parseMimeTypes(file);
-
-    cout << m.getMimeType("htm") << endl;
+   Configuration conf("./conf/default.conf");
 
 
     return 0;
