@@ -4,6 +4,8 @@
 #include "../../configuration/Configuration.hpp"
 #include "../utility/utility.hpp"
 
+#include "../../parsing/request/Request.hpp"
+
 #include "../../parsing/mime/MimeTypes.hpp"
 
 #include "socket.hpp"
@@ -13,15 +15,29 @@ using namespace std;
 
 int main(int ac, char **av)
 {
+    // int a;
     // SocketClass s;
     // s.run();
 
-    string file = "./conf/mime.types";
+    Configuration conf("./conf/default.conf");
 
-    MimeTypes m;
-    m.parseMimeTypes(file);
+    vector<Server> s = conf.getServers();
 
-    cout << m.getMimeType("htm") << endl;
+    vector<string> v = Request::getVector("vf kvbdk fvbdfk vbdk", 'f');
+
+    for(int i = 0; i < s.size(); i++)
+    {
+        cout << s[i].getHost() << endl;
+        cout << s[i].getPort() << endl;
+    }
+
+
+    // string file = "./conf/mime.types";
+
+    // MimeTypes m;
+    // m.parseMimeTypes(file);
+
+    // cout << m.getMimeType("htm") << endl;
 
 
     return 0;

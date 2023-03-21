@@ -2,7 +2,7 @@
 
 <server> = "server" "{" {<server-directives> | <location>} "}"
 
-<location> = "location" <WORD> "{" {<loaction-directives> | <location>} "}"
+<location> = "location" <WORD> "{" {<loaction-directives>} "}"
 
 <http-directives> = {<http-directive> ";"}
 
