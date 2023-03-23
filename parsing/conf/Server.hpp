@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/09 23:13:42 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/23 01:13:35 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Server : public Http
         string		                _server_name;
         string		                _host;
         string		                _length_location;
+        string		                _matched_location;
 
     public:
         map<string , Location >      _locations;
@@ -41,9 +42,12 @@ class Server : public Http
         Server &operator=(const Server &copy);
         ~Server();
         void setLocation(string path, Location locations);
+        void setMatchedLocation(string location);
 
         string	getServerName() const;
 		string	getHost() const;
 		size_t	getPort() const;
         size_t getLengthLocation() const;
+        string getMatchedLocation() const;
+        
 };
