@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/03/09 23:46:42 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/22 21:18:13 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Request.hpp"
+
 
 Request::Request(string method, string resource, string version, map<string, Header> headers)
 {
@@ -28,6 +29,11 @@ Request &Request::operator=(const Request &copy)
         this->_version = copy._version;
     }
     return *this;
+}
+
+Request::Request()
+{
+	return ;
 }
 
 Request::Request(const Request &copy)

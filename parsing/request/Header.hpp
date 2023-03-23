@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 01:02:48 by matef             #+#    #+#             */
-/*   Updated: 2023/03/08 21:18:33 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/22 14:29:24 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Header
         string getKey();
         void setValue(const string &value);
         string getValue();
+
     private:
         string key;
         string value;
