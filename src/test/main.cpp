@@ -43,12 +43,7 @@ int main(int ac, char **av)
     // }
 
 
-    // string file = "./conf/mime.types";
 
-    // MimeTypes m;
-    // m.parseMimeTypes(file);
-
-    // cout << m.getMimeType("htm") << endl;
 
 
     return 0;
