@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/03/09 01:35:42 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/22 21:17:25 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Request
         typedef map<string, Header> Headers;
 
     public:
+        Request();
         Request(string method, string resource, string version, Headers headers = Headers());
         Request(const Request &copy);
         Request &operator=(const Request &copy);
