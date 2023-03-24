@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/23 22:11:08 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/24 01:33:28 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,11 @@ class Method
     protected:
         Request _request;
         Server  _server;
-        string _path;
+        string  _path;
         int     _status;
-        string _comment;
+        string  _comment;
+        string  _url;
+
         map<string, Header> headers;
     public:
         Method(Request request, Server server);

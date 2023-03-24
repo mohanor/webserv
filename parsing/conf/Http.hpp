@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/22 23:45:49 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/24 04:55:16 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ struct directives
         server_name = "localhost";
         host = "127.0.0.1";
         root = "/var/www/html/";
-        index = "index.html";
+        index = "index.html"; //index should not bet setted as "index.html"
         error_page = "404.html";
         autoindex = false;
         allow = "GET POST DELETE";

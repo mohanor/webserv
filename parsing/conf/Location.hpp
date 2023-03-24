@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 16:14:00 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/23 18:03:27 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/24 06:19:35 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ using namespace std;
 
 struct Location 
 {
-    string path;
+    string path; //SHOULD HAVE SLASH ONLY IN THE END
     map<string, string> _directives;
 };
 

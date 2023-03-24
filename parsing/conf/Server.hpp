@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/23 01:13:35 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/24 06:18:27 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Server : public Http
         string		                _server_name;
         string		                _host;
         string		                _length_location;
-        string		                _matched_location;
+        string		                _matched_location; // SHOULD BE LOCATION._PATH
 
     public:
         map<string , Location >      _locations;
