@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 22:22:26 by matef             #+#    #+#             */
-/*   Updated: 2023/03/18 15:52:36 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/23 22:10:37 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,6 @@
 
 using namespace std;
 
-enum Method
-{
-    GET = 1 << 0,
-    HEAD,
-    POST,
-    PUT,
-    DELETE,
-    TRACE,
-    OPTIONS,
-    CONNECT
-};
 
 std::string getFileContent(std::string file_name);
 bool hasOnlyUppercase(const string &str);

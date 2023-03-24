@@ -7,6 +7,7 @@ UTILS = ./src/utility/
 TEST = ./src/test/
 SERVER = ./src/Server/
 CONFIG = ./configuration/
+METHOD = ./src/methods/
 
 src = 	$(PARSER)request/Request.cpp \
 		$(PARSER)conf/ConfigParser.cpp \
@@ -19,6 +20,9 @@ src = 	$(PARSER)request/Request.cpp \
 		$(CONFIG)Configuration.cpp \
 		$(UTILS)utility.cpp \
 		$(TEST)socket.cpp \
+		$(METHOD)method.cpp \
+		$(METHOD)get.cpp \
+		$(METHOD)delete.cpp \
 		$(TEST)main.cpp
 
 CC = c++
@@ -32,7 +36,8 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC)  $(FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.c $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp  $(CONFIG)Configuration.hpp $(PARSER)conf/Location.hpp $(PARSER)mime/MimeTypes.hpp $(SERVER)Worker.hpp
+%.o: %.c $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp  $(CONFIG)Configuration.hpp $(PARSER)conf/Location.hpp $(PARSER)mime/MimeTypes.hpp $(SERVER)Worker.hpp \
+$(METHOD)method.cpp $(METHOD)get.cpp $(METHOD)delete.cpp 
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
