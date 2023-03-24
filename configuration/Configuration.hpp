@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/10 17:58:15 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/19 15:54:33 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ private:
    
 
 public:
-    Configuration(string fileName = "../conf/default.conf");
+    Configuration(string fileName = "./conf/default.conf");
     ~Configuration();
     Configuration(const Configuration &copy);
     Configuration &operator=(const Configuration &copy);

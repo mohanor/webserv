@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/10 19:52:26 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/19 16:10:03 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Configuration::Configuration(string fileName)
         }
         checkPorts[_server[i].getPort()] = false;
     }
-    cout << "All Done !" << endl;
+    //cout << "All Done !" << endl;
 }
 
 Configuration::~Configuration()

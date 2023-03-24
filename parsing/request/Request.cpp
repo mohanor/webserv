@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/03/09 23:46:42 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/24 20:10:06 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,16 @@ Request &Request::operator=(const Request &copy)
 Request::Request(const Request &copy)
 {
     *this = copy;
+}
+
+string Request::getMethod()
+{
+	return _method;
+}
+
+string Request::getVersion()
+{
+	return _version;
 }
 
 vector<string> Request::getVector(string line, char delimiter)

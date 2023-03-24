@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/03/09 01:35:42 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/24 20:09:10 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Request
         typedef map<string, Header> Headers;
 
     public:
-        Request(string method, string resource, string version, Headers headers = Headers());
+        Request(string method = "", string resource = "", string version = "", Headers headers = Headers());
         Request(const Request &copy);
         Request &operator=(const Request &copy);
         ~Request();
@@ -66,6 +66,10 @@ class Request
         // bool transferEncoding();
         bool acceptUriLength();
         bool isVersionSupported();
+
+        string getMethod();
+        string getVersion();
+        
 
     private:
         string _method;

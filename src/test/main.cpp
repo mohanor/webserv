@@ -7,22 +7,38 @@
 #include "../../parsing/mime/MimeTypes.hpp"
 
 #include "socket.hpp"
+#include "Client.hpp"
 
+#include "../../parsing/request/Request.hpp"
 
 using namespace std;
 
+void test(ifstream *file)
+{
+    string line;
+    getline(*file, line);
+    cout << line << endl;
+    
+}
+
 int main(int ac, char **av)
 {
-    // SocketClass s;
-    // s.run();
 
-    string file = "./conf/mime.types";
+    // if (!file.is_open())
+    // {
+    //     cout << "file not open" << endl;
+    //     return 1;
+    // }
 
-    MimeTypes m;
-    m.parseMimeTypes(file);
+    // test(&file);
+   
+    // Client c;
 
-    cout << m.getMimeType("htm") << endl;
+    // c.setFile(av[1]);
 
+    // cout << c.getPacket() << endl;
+    SocketClass s;
+    s.run();
 
     return 0;
 }

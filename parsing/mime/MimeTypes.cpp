@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 05:05:54 by matef             #+#    #+#             */
-/*   Updated: 2023/03/19 00:43:30 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/21 22:24:30 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 #include "MimeTypes.hpp"
 
-MimeTypes::MimeTypes()
+MimeTypes::MimeTypes(string file)
 {
+    parseMimeTypes(file);
 }
 
 MimeTypes::~MimeTypes()
@@ -128,7 +129,7 @@ void MimeTypes::parseMimeTypes(string file)
     if (!isSyntaxValid(file))
     {
         cout << "mime.types : syntax error at line " << lineCounter << endl;
-        return ;
+        exit (EXIT_FAILURE);
     }
 
     fstream f(file.c_str(), fstream::in);
@@ -138,6 +139,7 @@ void MimeTypes::parseMimeTypes(string file)
         cout << "Error: mime type file: can't open" << endl;
         return ;
     }
+    
     string line;
     getline(f, line);
     
@@ -154,4 +156,12 @@ void MimeTypes::parseMimeTypes(string file)
     }
 
     f.close();
+}
+
+string MimeTypes::getExtension(string file)
+{
+    vector<string> splt = Request::getVector(file, '.');
+    
+    if (splt.size() == 1) return "";
+    return (splt.back());
 }

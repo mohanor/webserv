@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 05:05:57 by matef             #+#    #+#             */
-/*   Updated: 2023/03/18 23:19:33 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/21 22:28:02 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ using namespace std;
 class MimeTypes
 {
     public:
-        MimeTypes();
+        MimeTypes(string file = "./conf/mime.types");
         ~MimeTypes();
         MimeTypes &operator=(const MimeTypes &rhs);
         MimeTypes(const MimeTypes &rhs);
@@ -38,6 +38,8 @@ class MimeTypes
         bool allowedChars(string line);
 
         map<string, string> getMimeTypes() const;
+
+        string getExtension(string file);
 
     private:
         map<string, string> mimeTypes;
