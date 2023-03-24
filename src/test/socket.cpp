@@ -6,73 +6,56 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/03/18 22:43:59 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/24 20:02:14 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "socket.hpp"
 
-SocketClass::SocketClass() : port(PORT)
+SocketClass::SocketClass()
 {
+    servers = Configuration().getServers();
 }
 
 SocketClass::~SocketClass()
 {
 }
 
-int SocketClass::config(int ac, char **av)
-{
-    std::string config_file = "./config/default.conf";
-
-    if (ac == 2)
-        config_file = av[1];
-    else if (ac > 2)
-    {
-        std::cout << "Usage: ./webserv <config_file>" << std::endl;
-        return 1;
-    }
-
-    std::cout << "Config file: --> " << config_file << " <--" << std::endl;
-    std::cout << getFileContent(config_file);
-    return 0;
-}
-
 int SocketClass::create()
 {
     int listener;
 
-    listener = socket(AF_INET, SOCK_STREAM, 0);
+    listener = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = default protocol of socket type
     if (listener < 0)
     {
-        std::cerr << "socket failed" << std::endl;
+        cerr << "socket failed" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     return listener;
 }
 
-void SocketClass::bindSocket(int listener)
+void SocketClass::bindSocket(int listener, SocketServer &server)
 {
+    bzero(&server.address, sizeof(server.address));
     
-    memset(&address, 0, sizeof(address));
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(port);
-
+    server.address.sin_family = AF_INET;
+    server.address.sin_addr.s_addr = INADDR_ANY;
+    server.address.sin_port = htons(server.port);
 
     int opt = 1;
 
     opt = setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     if (opt < 0)
     {
-        std::cerr << "Error setting socket options" << std::endl;
+        cerr << "Error setting socket options" << std::endl;
         exit(EXIT_FAILURE);
     }
     
-    int bind_result = ::bind(listener, (struct sockaddr*) &address, sizeof(address));
+    int bind_result = ::bind(listener, (struct sockaddr*) &server.address, sizeof(server.address));
     if (bind_result < 0)
     {
-        std::cerr << "Error binding socket" << std::endl;
+        cerr << "Error binding socket" << std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -82,163 +65,169 @@ void SocketClass::listenSocket(int listener)
 {
     if (listen(listener, SOMAXCONN) < 0)
     {
-        std::cerr << "Failed to listen for incoming connections" << std::endl;
+        cerr << "Failed to listen for incoming connections" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
 
 void SocketClass::acceptSocket(int sockfd)
 {
-    
-    
 }
 
-int SocketClass::sendFileInPackets(std::string file, struct pollfd *fds, int i, string mimeType)
+int SocketClass::sendFileInPackets(std::string file, struct pollfd &fds)
 {
-    stringstream response;
-    string ENDL = "\r\n";
+    MimeTypes   mimeTypes;
     
-    response << "HTTP/1.1 200 Ok" + ENDL;
-    response << "Server: nginx/1.21.5" + ENDL;
-    response << "Content-Type: " + mimeType + ENDL;
-    // response << "charset=utf-8" + ENDL;
-    response << "Content-Length: " + std::to_string(getFileSize(file)) + ENDL + ENDL;
+    string mimeType = mimeTypes.getMimeType(mimeTypes.getExtension(file));
 
-    cout << "File size: " << getFileSize(file) << endl;
-    if (getFileContent(file).size() > 1024)
+    if (_clients[fds.fd].getStatus() == FILE_NOT_SET)
     {
-        send(fds[i].fd, response.str().c_str(), response.str().size(), 0);
+        _clients[fds.fd].setFileContent(getFileContent(file));
+        _clients[fds.fd].setStatus(READY_TO_SEND);
+        
+    }
 
-        char buffer[1023] = { 0 };
+    if (_clients[fds.fd].getStatus() == READY_TO_SEND)
+    {
+        string      response;
 
-        ifstream responsedFile(file.c_str(), ios::binary);
-        while (responsedFile.read(buffer, 1024))
-        {
-            send(fds[i].fd, buffer, 1024, 0);
-            memset(buffer, 0, 1024);
-        }
-
-        int bytesRemaining = responsedFile.gcount();
-        if (bytesRemaining > 0) {
-            responsedFile.read(buffer, bytesRemaining);
-            send(fds[i].fd, buffer, bytesRemaining, 0);
-        }
+        response = "HTTP/1.1 200 Ok" ENDL;
+        response += "Content-Type: " + mimeType + ENDL;
+        response += "Content-Length: " + to_string(getFileSize(file)) + ( ENDL ENDL );
+        
+        _clients[fds.fd].setStatus(SENDING);
+        send(fds.fd, response.c_str(), response.size(), 0);
 
         return 0;
     }
 
-    response << getFileContent(file);
-    send(fds[i].fd, response.str().c_str(), response.str().size(), 0);
+    string packet = _clients[fds.fd].getPacket();
+    send(fds.fd, packet.c_str(), packet.size(), 0);
 
     return 0;
 }
 
-int SocketClass::communicate(struct pollfd *fds, int i)
+string SocketClass::joinRootAndPath(string root, string path, Request &httpRequest)
 {
+    if (httpRequest.getRessource() == "/")
+        return "./www/html/index.html";
+
+    return "./www/html" + httpRequest.getRessource();
+}
+
+int SocketClass::communicate(struct pollfd &fds)
+{
+    int     size;
+    char    request[CHUNK_SIZE];
+
+    size = recv(fds.fd, request, sizeof(request), 0);
     
-    int size;
-    char request[MAX_REQUEST_SIZE];
-
-    cout << "Descriptor " << fds[i].fd << " is readable" << endl;
-
-    size = recv(fds[i].fd, request, sizeof(request), 0);
     if ( size < 0 )
     {
         cerr << "recv failed" << endl;
-        close(fds[i].fd); return false;
+        close(fds.fd); return false;
     }
-
     if ( !size )
     {
-        cout << "Connection closed" << endl;
-        close(fds[i].fd);
+        cerr << "Connection closed" << endl;
+        close(fds.fd);
         return false;
     }
 
 
-    Request httpRequest(Request::deserialize(request));
-    
-    httpRequest.resource();
+    httpRequest = Request(Request::deserialize(request));
+    fds.events = POLLOUT;
 
-    map<string, string> types;
+    Client client(fds.fd);
 
-    types["html"] = "text/html";
-    types["jpg"] = "image/jpeg";
-
-    string type = types[httpRequest.getRessource().substr(httpRequest.getRessource().find_last_of(".") + 1)];
-
-    cout << "Ressource " << httpRequest.getRessource();
-    
-    string file;
-    if (httpRequest.getRessource() == "/")
-        file = "./www/html/index.html";
-    else
-        file = "./www/html" + httpRequest.getRessource();
-
-    sendFileInPackets(file, fds, i, types[type]);
+    _clients.insert(make_pair(fds.fd, client));
 
     return true;
 }
 
+
+bool SocketClass::isNewConnection(int listener)
+{
+    for (size_t i = 0; i < _s.size(); i++)
+    {
+        if (_s[i].sockfd == listener)
+            return true;
+    }
+    return false;
+}
+
+struct pollfd SocketClass::createPollfd(int sockfd)
+{
+    struct pollfd pfd;
+    pfd.fd = sockfd;
+    pfd.events = POLLIN;
+    return pfd;
+}
+
+void SocketClass::setFds()
+{
+    int listener;
+
+    for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
+    {
+        listener = this->create();
+        
+        _s.push_back(SocketServer(listener, it->getPort(), it->getHost()));
+
+        this->bindSocket(listener, _s[_s.size() - 1]);
+        this->listenSocket(listener);
+        _fds.push_back(createPollfd(listener));
+
+    }
+}
+
 void SocketClass::run()
 {
-    char buffer[1024] = { 0 };
-    int counter = 0;
-    int nfds = 1, current_size = 0;
-    int addrlen;
-    
-    int listener = this->create();
-    this->bindSocket(listener);
-    this->listenSocket(listener);
-    
-    struct pollfd fds[20];
-    memset(fds, 0, sizeof(fds));
-    for(int i = 0; i < 20; i++)
-        fds[i].fd = -1;
+    int     current_size;
+    int     newClient;
 
-    fds[0].fd = listener;
-    fds[0].events = POLLIN;
-
-    int rc;
-    int new_client;
+    setFds();
     
+    cout << "listen ..." << endl;
     while (true)
     {
+        if (poll(&_fds[0], _fds.size(), -1) < 0) break;
 
-        cout << endl << "listen ..." << endl;
-    
-        rc = poll(fds, nfds, -1);
-        if (rc <= 0) { cerr << "poll return " << rc << endl; break; }
-
-        current_size = nfds;
+        current_size = _fds.size();
         for(int i = 0; i < current_size; i++)
         {
-            if (fds[i].revents == 0)
+            if (_fds[i].revents == 0)
                 continue;
             
-            if (fds[i].revents != POLLIN)
+            if (_fds[i].revents & POLLIN)
             {
-                cerr << "Error! revents = " << fds[i].revents << endl;
-                close(fds[i].fd);
-                fds[i].fd = -1;
-                break;
+                if (isNewConnection(_fds[i].fd))
+                {
+                    newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
+                    if (newClient < 0) { cerr << "fail to accept connection" << '\n'; return ; }
+
+                    _fds.push_back(createPollfd(newClient));
+                }
+                else if ( !communicate(_fds[i]) )
+                    break;
             }
 
-            if (fds[i].fd == listener)
+            if (_fds[i].revents & POLLOUT)
             {
+                httpRequest.resource();
                 
-                new_client = accept(listener, (struct sockaddr*)&address , (socklen_t*)&addrlen);
-                if (new_client < 0) { cerr << "fail to accept connection" << '\n'; return ; }
-
-                fds[nfds].fd = new_client;
-                fds[nfds].events = POLLIN;
-                nfds++;
-
-                cout << "New incoming connection " << new_client << endl;
-
+                string file = joinRootAndPath(LOCALHOST, httpRequest.getRessource(), httpRequest);
+                
+                sendFileInPackets(file, _fds[i]);
+                
+                if (_clients[_fds[i].fd].getStatus() == SENDED)
+                {
+                    close(_fds[i].fd);
+                    _clients.erase(_fds[i].fd);
+                    _fds.erase(_fds.begin() + i);
+                }
+                
             }
-            else if ( !communicate(fds, i) )
-                break;
 
         }
 

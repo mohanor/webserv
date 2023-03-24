@@ -1,5 +1,6 @@
 types {
   text/html                             html htm shtml;
+  video/mp4                             mp4;
   text/css                              css;
   text/xml                              xml rss;
   image/gif                             gif;

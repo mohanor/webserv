@@ -11,15 +11,14 @@
 #include "../server/Worker.hpp"
 
 #include "socket.hpp"
+#include "Client.hpp"
 
+#include "../../parsing/request/Request.hpp"
 
 using namespace std;
 
-template <typename T>
-T test(T a, T b)
-{
-   return  a + b;
-}
+    
+
 
 
 void runCode(Server &server, Request req)
@@ -47,6 +46,20 @@ void runCode(Server &server, Request req)
 
 int main(int ac, char **av)
 {
+
+
+    // if (!file.is_open())
+    // {
+    //     cout << "file not open" << endl;
+    //     return 1;
+    // }
+
+    // test(&file);
+   
+    // Client c;
+
+    // c.setFile(av[1]);
+
     SocketClass socket;
     string req = "DELETE /correction/hi/file.html HTTP/1.1\r\n";
 
@@ -63,6 +76,10 @@ int main(int ac, char **av)
    
 
 
+
+    // cout << c.getPacket() << endl;
+    SocketClass s;
+    s.run();
 
     return 0;
 }
