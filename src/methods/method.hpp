@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/23 20:45:30 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/23 22:11:08 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ class Method
         Request _request;
         Server  _server;
         string _path;
+        int     _status;
+        string _comment;
         map<string, Header> headers;
     public:
         Method(Request request, Server server);
@@ -47,12 +49,5 @@ class Post : public Method
         bool locationSupportUpload();
 };
 
-class Delete : public Method
-{
-    public:
-        Delete(Request request, Server server);
-        bool hasWriteAccesOnFolder();
-          
-};
 
 #endif
