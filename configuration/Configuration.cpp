@@ -22,17 +22,16 @@ Configuration::Configuration(string fileName)
     insertServer();
     checkLocation();
 
-    map<short int, bool> checkPorts;
+    map<std::string, bool> checkServerName;
     for (size_t i = 0; i < _server.size(); i++)
     {
-        if (checkPorts.find(_server[i].getPort()) != checkPorts.end())
+        if (checkServerName.find(_server[i].getServerName()) != checkServerName.end())
         {
-           cerr <<  "Error: port already in use" << endl;
+           cerr <<  "Error: ServerName already in use" << endl;
               exit(1);
         }
-        checkPorts[_server[i].getPort()] = false;
+        checkServerName[_server[i].getServerName()] = false;
     }
-    //cout << "All Done !" << endl;
 }
 
 Configuration::~Configuration()
@@ -56,40 +55,13 @@ Configuration &Configuration::operator=(const Configuration &copy)
     }
     return *this;
 }
-void Configuration::infoServer()
-{
-
-    // for (size_t i = 0; i < _server.size(); i++)
-    // {
-
-    //     map<string, Location>::iterator it = _server[i]._locations.begin();
-    //     while (it != _server[i]._locations.end())
-    //     {
-    //         cout << "name   : " << it->first << endl;
-
-    //         map<string, string>::iterator it2 = it->second._directives.begin();
-    //         while (it2 != it->second._directives.end())
-    //         {
-    //             cout << "key: " << it2->first << " value: " << it2->second << endl;
-    //             it2++;
-    //         }
-    //         it++;
-    //         cout << "-------------\n";
-    //     }
-
-    //     cout << "-------------\n";
-    // }
-}
 
 void Configuration::checkDirective(size_t index)
 {
-    
-
     if (_tokens[index].first == "listen")
     {
         _directive_server.push_back(make_pair(_tokens[index + 1].first, LISTEN));
-        _directive_server.push_back(make_pair(_tokens[index + 2].first, HOST));
-        
+        _directive_server.push_back(make_pair(_tokens[index + 2].first, HOST));       
     }
     if (_tokens[index].first == "root")
         _directive_server.push_back(make_pair(_tokens[index + 1].first, ROOT));

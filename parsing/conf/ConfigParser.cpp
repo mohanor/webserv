@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/11 18:46:37 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/20 12:01:38 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,16 @@ directive  value; context
  ************************************************************/
 
 //    <--------- function trim espace --------->
-string ft_trim(string str)
+string ft_trim(std::string str)
 {
-    int lengthReverse = str.length();
-    int i = 0;
-    for (; str[i] && (str[i] == 32 || str[i] == '\t'); i++)
-    {
-    }
-    for (; str[lengthReverse] && (str[lengthReverse] == 32 || str[lengthReverse] == '\t'); lengthReverse++)
-    {
-    }
+   size_t startpos = str.find_first_not_of(" \t");
+    if (startpos != std::string::npos)
+        str = str.substr(startpos);
 
-    return (str.substr(i, lengthReverse));
+    size_t endpos = str.find_last_not_of(" \t");
+    if (endpos != std::string::npos)
+        str = str.substr(0, endpos + 1);
+    return str;
 }
 string searchCommentInLine(string line)
 {
@@ -319,8 +317,11 @@ void ConfigParser::checkSynatxCurly()
 
 void ConfigParser::checkSyntaxMain()
 {
+   size_t index = 0;
+   while (index < _tokens.size() && _tokens[index].second == 7)index++;
 
-    if (_tokens[0].first != "server" || _tokens[1].second != OPEN_CURLY || _tokens[2].second == OPEN_CURLY)
+   
+    if (_tokens[index].first != "server" || _tokens[index + 1].second != OPEN_CURLY || _tokens[index + 2].second == OPEN_CURLY)
         errorLogs("error find server");
 }
 void ConfigParser::checkSyntackInServer(int currentIndex, int index)
