@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/24 01:33:28 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/24 23:29:45 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,5 @@ class Delete : public Method
         bool hasWriteAccesOnFolder();
           
 };
-
+string join_path(string s1, string s2);
 #endif

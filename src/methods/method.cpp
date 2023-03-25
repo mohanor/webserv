@@ -9,10 +9,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
         _url = loc._directives["root"];
     else
         _url = _server.getRoot();
-    if (_url.back() == '/' || resource[0] == '/')
-        _url += resource;
-    else 
-        _url += "/" + resource;
+    _url = join_path(_url, resource);
 }
 
 bool Method::getRequestedResource()
@@ -66,3 +63,11 @@ bool Method::hasCGI()
     return false;
 }
 
+string join_path(string s1, string s2)
+{
+    if (s1.back() == '/' && s2[0] == '/')
+        return (s1.erase(s1.length() - 2, s1.length() - 1) + s2);
+    if (s1.back() == '/' || s2[0] == '/')
+        return (s1 + s2);
+    return (s1 + "/" + s2);
+}
