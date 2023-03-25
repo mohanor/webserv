@@ -17,13 +17,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
 
 bool Method::getRequestedResource()
 {
-    DIR *dir = opendir(_url.c_str());
-    if (dir)
-    {
-        closedir(dir);
-        return true;
-    }
-    return isFile();
+    return (isDir() || isFile());
 }
 
 bool Method::isFile()
@@ -32,6 +26,17 @@ bool Method::isFile()
     if (fp)
     {
         fclose(fp);
+        return true;
+    }
+    return false;
+}
+
+bool Method::isDir()
+{
+    DIR *dir = opendir(_url.c_str());
+    if (dir)
+    {
+        closedir(dir);
         return true;
     }
     return false;

@@ -6,22 +6,19 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:57:50 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/24 16:47:20 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/25 02:26:06 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "delete.hpp"
 
-Delete::Delete(Request request, Server server):Method(request, server)
-{
-
-    cout << "path => " << _request.getRessource().c_str() << endl;
+Delete::Delete(Request request, Server server) : Method(request, server)
+{    
     getResourceType();
 }
 
 Delete::~Delete()
 {
-    
 }
 
 void Delete::MissingBackSlash()
@@ -32,8 +29,9 @@ void Delete::MissingBackSlash()
 
 void Delete::deleteAllFolderContent()
 {
+
     struct dirent *dirents;
-    DIR *dir = opendir(_request.getRessource().c_str());
+    DIR *dir = opendir(_url.c_str());
     if (dir != NULL)
     {
         dirents = readdir(dir);
@@ -41,11 +39,11 @@ void Delete::deleteAllFolderContent()
 
         while ((dirents = readdir(dir)) != NULL)
         {
-            string path = _request.getRessource() + dirents->d_name;
-          size_t res =  remove(path.c_str());
-          if (res == 0)
+            string path = _url + dirents->d_name;
+            size_t res = remove(path.c_str());
+            if (res == 0)
                 deleteSeccess();
-        } 
+        }
     }
     else
     {
@@ -54,7 +52,6 @@ void Delete::deleteAllFolderContent()
         else
             setError(500, "Internal Server Error");
     }
-    
 }
 
 void Delete::setError(int status, string comment)
@@ -65,32 +62,28 @@ void Delete::setError(int status, string comment)
 
 void Delete::getResourceType()
 {
-
-    if (getRequestedResource())
+    if (isDir())
     {
         if (hasSlashInTheEnd())
             deleteAllFolderContent();
         else
             MissingBackSlash();
-         cout << "resource found" << endl;
     }
-       
     else if (isFile())
-        cout << "file found" << endl;
+        deleteResource();
     else
-        cout << "resource not found" << endl;
-}
+        cout << "file not found" << endl;
 
+}
 
 void Delete::deleteResource()
 {
-    size_t reseltDelete = remove(_request.getRessource().c_str());
+    size_t reseltDelete = remove(_url.c_str());
 
     if (reseltDelete == 0)
         deleteSeccess();
     else
         cout << "file not deleted" << endl;
-    
 }
 
 void Delete::deleteSeccess()

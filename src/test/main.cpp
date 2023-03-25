@@ -48,7 +48,7 @@ void runCode(Server &server, Request req)
 int main(int ac, char **av)
 {
     SocketClass socket;
-    string req = "DELETE /correction/hi/file.html HTTP/1.1\r\n";
+    string req = "DELETE /correction/hi/ HTTP/1.1\r\n";
 
     req += "Host: localhost:8080\r\n";
 
