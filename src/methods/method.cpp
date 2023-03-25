@@ -68,6 +68,33 @@ bool Method::hasCGI()
     return false;
 }
 
+string Method::getIndex()
+{
+    string index = "";
+    vector<string> index_v;
+    map<string, string> map = _server._locations[_server.getMatchedLocation()]._directives;
+
+    if(map.find("index") != map.end())
+    {
+        index_v = Request::getVector(map["index"]);
+        for (int i=0; i < index_v.size(); i++)
+        {
+            if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
+                index = join_path(_url,index_v[i]);
+        }
+    }
+    else
+    {
+        index_v = Request::getVector(_server.getIndex());
+        for (int i=0; i < index_v.size(); i++)
+        {
+            if (FILE *f = fopen(index_v[i].c_str(), "r"))
+                index = join_path(_url,index_v[i]);
+        }
+    }
+    return index;
+}
+
 string join_path(string s1, string s2)
 {
     if (s1.back() == '/' && s2[0] == '/')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/24 23:29:45 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/25 03:47:38 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class Method
         bool hasIndexFile();
         bool getAutoIndex();
         bool hasCGI();
+        string getIndex();
 };
 
 class Post : public Method
