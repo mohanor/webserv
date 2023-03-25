@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/24 21:22:58 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/24 23:29:45 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,7 @@ class Post : public Method
         bool locationSupportUpload();
 };
 
+
+string join_path(string s1, string s2);
 
 #endif
