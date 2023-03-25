@@ -40,7 +40,7 @@ int main(int ac, char **av)
 
     SocketClass socket;
      Worker worker;
-    string req = "DELETE /home HTTP/1.1\r\n";
+    string req = "DELETE /home/ HTTP/1.1\r\n";
 
     req += "Host: localhost:8080\r\n";
 
@@ -53,9 +53,9 @@ int main(int ac, char **av)
     vector<Server> server = config.getServers();
     Method m =  worker.getMethodObject(r,server[0]);
 
-    cout << m.getStatus() << endl;
-    cout << m.getPath() << endl;
-    cout << m.getComment() << endl;
+    cout << "status : " << m.getStatus() << endl;
+    cout << "path   : " <<m.getPath() << endl;
+    cout << "comme  : "<<m.getComment() << endl;
     cout << "---------------------" << endl;
     worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www") ;
 
