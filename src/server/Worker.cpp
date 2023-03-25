@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/24 14:05:37 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/25 02:38:25 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,20 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
     vector<string> uri = Request::getVector(requestUri, '/');
 
    
-        size_t sizeLocation = uri.size() + 1;
+        size_t sizeLocation = uri.size() ;
         string location = "";
 
-        while (--sizeLocation)
+        while (sizeLocation)
         {
+           
             
             for (size_t i = 0; i < uri.size(); i++)
                 location += "/" + uri[i];
-          
+                
+           cout << "locations: " << location << endl;
             while (it != servers._locations.end())
             {
+                cout << "location: " << it->first << endl;
                 if (it->first == location)
                     return (servers.setMatchedLocation(it->first) ,true);
                 it++;
@@ -59,6 +62,7 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
             it = servers._locations.begin();
             uri.pop_back();
             location.clear();
+            sizeLocation--;
         }
         
     return (false);

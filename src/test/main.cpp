@@ -32,7 +32,8 @@ void runCode(Server &server, Request req)
             cout << "redirection" << endl;
             return;
         }
-        if (!worker.isMethodAllowdedInLocation("DELETE",server))
+        
+        if (!worker.isMethodAllowdedInLocation(req.getMethod(),server))
         {
             cout << "dont allowed" << endl;
             return;
@@ -61,7 +62,7 @@ int main(int ac, char **av)
     // c.setFile(av[1]);
 
     SocketClass socket;
-    string req = "DELETE /correction/hi/ HTTP/1.1\r\n";
+    string req = "DELETE /home HTTP/1.1\r\n";
 
     req += "Host: localhost:8080\r\n";
 
@@ -78,8 +79,8 @@ int main(int ac, char **av)
 
 
     // cout << c.getPacket() << endl;
-    SocketClass s;
-    s.run();
+    // SocketClass s;
+    // s.run();
 
     return 0;
 }
