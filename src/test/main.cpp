@@ -21,29 +21,6 @@ using namespace std;
 
 
 
-void runCode(Server &server, Request req)
-{
-     Worker worker;
-  
-    if (worker.getMatchedLocationFoRequestUri(req.getRessource(), server))
-    {
-        if (worker.isLocationHaveRedirection(server))
-        {
-            cout << "redirection" << endl;
-            return;
-        }
-        
-        if (!worker.isMethodAllowdedInLocation(req.getMethod(),server))
-        {
-            cout << "dont allowed" << endl;
-            return;
-        }
-    }
-    else
-     return;
-    Delete del(req, server);
-   
-}
 
 int main(int ac, char **av)
 {
@@ -62,6 +39,7 @@ int main(int ac, char **av)
     // c.setFile(av[1]);
 
     SocketClass socket;
+     Worker worker;
     string req = "DELETE /home HTTP/1.1\r\n";
 
     req += "Host: localhost:8080\r\n";
@@ -73,7 +51,15 @@ int main(int ac, char **av)
     
     Configuration config("./conf/default.conf");
     vector<Server> server = config.getServers();
-    runCode(server[0], r);
+    Method m =  worker.getMethodObject(r,server[0]);
+
+    cout << m.getStatus() << endl;
+    cout << m.getPath() << endl;
+    cout << m.getComment() << endl;
+    cout << "---------------------" << endl;
+    worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www") ;
+
+    
    
 
 

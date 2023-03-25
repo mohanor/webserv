@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:56:55 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/24 16:01:41 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:19:20 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ private:
 public:
     Delete(Request request, Server server);
     ~Delete();
+    Delete(const Delete &copy);
+    Delete &operator=(const Delete &copy);
     void getResourceType();
     void deleteResource();
     void MissingBackSlash();

@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:36:44 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/23 01:47:46 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:49:16 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,21 @@
 #include <string.h>
 #include <map>
 #include <vector>
+#include <dirent.h>
+#include <fstream>
 
 #include "../../parsing/conf/Server.hpp"
 #include "../../parsing/conf/Location.hpp"
 #include  "../../parsing/request/Request.hpp"
+#include "../methods/method.hpp"
+#include "../methods/delete.hpp"
 
 
 
 class Worker
 {
 private:
-    /* data */
+    
 public:
     Worker();
     ~Worker();
@@ -35,5 +39,12 @@ public:
     bool isLocationHaveRedirection(Server &servers);
     bool isMethodAllowdedInLocation(string Method,Server &servers);
     bool getAllowdedMethods(string methods, string allow);
+    Method getMethodObject(Request &req, Server &server);
+    void  runMethodGet(Request &req, Server &server);
+    void  runMethodPost(Request &req, Server &server);
+    Delete  runMethodDelete(Request &req, Server &server);
+    string listenDirectory(string path);
+    
+    
 };
 
