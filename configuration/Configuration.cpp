@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/21 22:58:11 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/19 16:10:03 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,6 @@ Configuration::Configuration(string fileName)
         }
         checkServerName[_server[i].getServerName()] = false;
     }
-    cout << "----------------------" << endl;
-    cout << "|     All Done !     |" << endl;
-    cout << "----------------------" << endl;
 }
 
 Configuration::~Configuration()

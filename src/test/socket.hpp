@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/03/18 04:32:51 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/23 22:08:05 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,54 @@
 #include "../utility/utility.hpp"
 #include "../../parsing/request/Request.hpp"
 
-#define PORT 8080
+#include "../../configuration/Configuration.hpp"
+#include "../../parsing/mime/MimeTypes.hpp"
+
+#include "Client.hpp"
+
+#define ENDL "\r\n"
 const int MAX_REQUEST_SIZE = 1024;
+#define CHUNK_SIZE  1024
+#define LOCALHOST "./www/html"
+
+
+struct SocketServer
+{
+    SocketServer(int sockfd, int port, std::string host) : sockfd(sockfd), port(port), host(host) {}
+    int                 sockfd;
+    int                 port;
+    std::string         host;
+    int                 addrlen;
+    struct sockaddr_in address;
+};
 
 class SocketClass
 {
     public:
         SocketClass();
         ~SocketClass();
-        int config(int ac, char**av);
         int create();
-        void bindSocket(int sockfd);
+        void bindSocket(int sockfd, SocketServer &server);
         void listenSocket(int sockfd);
         void acceptSocket(int sockfd);
-        int sendFileInPackets(std::string file, struct pollfd *fds, int i, string mimeType);
-        int communicate(struct pollfd *fds, int i);
+        int sendFileInPackets(string file, struct pollfd &fds);
+        int communicate(struct pollfd &fds);
         void run();
+        bool isNewConnection(int listener);
 
+        string joinRootAndPath(string root, string path, Request &httpRequest);
+        struct pollfd createPollfd(int sockfd);
+        void setFds();
+        
     private:
-        int port;
         struct sockaddr_in address;
+        vector<Server> servers;
+        vector<SocketServer> _s;
+        vector<struct pollfd> _fds;
+
+        map<int, Client> _clients;
+
+        Request httpRequest;
 };
 
 

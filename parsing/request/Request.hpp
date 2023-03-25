@@ -48,8 +48,7 @@ class Request
         typedef map<string, Header> Headers;
 
     public:
-        Request();
-        Request(string method, string resource, string version, Headers headers = Headers());
+        Request(string method = "", string resource = "", string version = "", Headers headers = Headers());
         Request(const Request &copy);
         Request &operator=(const Request &copy);
         ~Request();
@@ -67,6 +66,10 @@ class Request
         // bool transferEncoding();
         bool acceptUriLength();
         bool isVersionSupported();
+
+        string getMethod();
+        string getVersion();
+        
 
     private:
         string _method;

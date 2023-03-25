@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Http.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:50:32 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/05 21:19:38 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/19 17:03:09 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ string Http::getIndex() const
     return this->_index;
 }
 
-string Http::getErrorPage(int index) const
+string Http::getErrorPage(int) const
 {
     return this->_error_page;
 }
 
-string Http::getAllowedMethods(int index) const
+string Http::getAllowedMethods(int) const
 {
     return this->_allowed_methods;
 }
