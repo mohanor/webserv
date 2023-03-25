@@ -41,6 +41,16 @@ Request::Request(const Request &copy)
     *this = copy;
 }
 
+string Request::getMethod()
+{
+	return _method;
+}
+
+string Request::getVersion()
+{
+	return _version;
+}
+
 vector<string> Request::getVector(string line, char delimiter)
 {
     vector<string> v;

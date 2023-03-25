@@ -7,44 +7,79 @@
 #include "../../parsing/request/Request.hpp"
 
 #include "../../parsing/mime/MimeTypes.hpp"
+#include "../methods/delete.hpp"
+#include "../server/Worker.hpp"
 
 #include "socket.hpp"
+#include "Client.hpp"
 
+#include "../../parsing/request/Request.hpp"
 
 using namespace std;
 
-template <typename T>
-T test(T a, T b)
+    
+
+
+
+void runCode(Server &server, Request req)
 {
-   return  a + b;
+     Worker worker;
+  
+    if (worker.getMatchedLocationFoRequestUri(req.getRessource(), server))
+    {
+        if (worker.isLocationHaveRedirection(server))
+        {
+            cout << "redirection" << endl;
+            return;
+        }
+        if (!worker.isMethodAllowdedInLocation("DELETE",server))
+        {
+            cout << "dont allowed" << endl;
+            return;
+        }
+    }
+    else
+     return;
+    Delete del(req, server);
+   
 }
 
 int main(int ac, char **av)
 {
 
-    vector v;
-    // int a;
-    // SocketClass s;
-    // s.run();
-    // Request o("",av[1],"");
-    // o.resource();
 
-    // cout << o.getRessource() << endl;
-    // Configuration conf("./conf/default.conf");
-
-    // vector<Server> s = conf.getServers();
-
-    // vector<string> v = Request::getVector("vf kvbdk fvbdfk vbdk", 'f');
-
-    // for(int i = 0; i < s.size(); i++)
+    // if (!file.is_open())
     // {
-    //     cout << s[i].getHost() << endl;
-    //     cout << s[i].getPort() << endl;
+    //     cout << "file not open" << endl;
+    //     return 1;
     // }
 
+    // test(&file);
+   
+    // Client c;
+
+    // c.setFile(av[1]);
+
+    SocketClass socket;
+    string req = "DELETE /correction/hi/ HTTP/1.1\r\n";
+
+    req += "Host: localhost:8080\r\n";
+
+    req += "\r\n";
+    Request r(Request::deserialize(req));
+
+
+    
+    Configuration config("./conf/default.conf");
+    vector<Server> server = config.getServers();
+    runCode(server[0], r);
+   
 
 
 
+    // cout << c.getPacket() << endl;
+    SocketClass s;
+    s.run();
 
     return 0;
 }
