@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:57:50 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/25 20:18:52 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/25 20:25:52 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,5 +129,4 @@ void Delete::deleteSeccess()
 {
     _status = 204;
     _comment = "No Content";
-    _path = _request.getRessource();
 }
