@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/24 01:33:28 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:22:58 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Method
         Method(Request request, Server server);
         bool getRequestedResource();
         bool isFile();
+        bool isDir();
         bool hasSlashInTheEnd();
         bool hasIndexFile();
         bool getAutoIndex();
