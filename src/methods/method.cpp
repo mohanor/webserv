@@ -73,7 +73,7 @@ bool Method::hasCGI()
 string join_path(string s1, string s2)
 {
     if (s1.back() == '/' && s2[0] == '/')
-        return (s1.erase(s1.length() - 2, s1.length() - 1) + s2);
+        return (s1.erase(s1.length() - 1, s1.length() - 1) + s2);
     if (s1.back() == '/' || s2[0] == '/')
         return (s1 + s2);
     return (s1 + "/" + s2);

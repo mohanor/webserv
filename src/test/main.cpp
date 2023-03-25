@@ -40,7 +40,7 @@ int main(int ac, char **av)
 
     SocketClass socket;
      Worker worker;
-    string req = "DELETE /home HTTP/1.1\r\n";
+    string req = "DELETE /home/hh.s HTTP/1.1\r\n";
 
     req += "Host: localhost:8080\r\n";
 

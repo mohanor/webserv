@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:57:50 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/25 17:20:55 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/25 20:18:52 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,11 @@ void Delete::getResourceType()
         {
             _path = "./error_page/500.html";
             setError(500, "Internal Server Error");
+        }
+        else
+        {
+            _path = "./error_page/404.html";
+            setError(404, "Not Found");
         }
     }
 
