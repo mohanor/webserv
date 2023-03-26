@@ -10,6 +10,8 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     else
         _url = _server.getRoot();
     _url = join_path(_url, resource);
+    _status = 0;
+    _comment = "";
 }
 
 bool Method::getRequestedResource()
@@ -98,8 +100,29 @@ string Method::getIndex()
 string join_path(string s1, string s2)
 {
     if (s1.back() == '/' && s2[0] == '/')
-        return (s1.erase(s1.length() - 2, s1.length() - 1) + s2);
+        return (s1.erase(s1.length() - 1, s1.length() - 1) + s2);
     if (s1.back() == '/' || s2[0] == '/')
         return (s1 + s2);
     return (s1 + "/" + s2);
+}
+
+
+int Method::getStatus() const
+{
+    return _status;
+}
+
+string Method::getComment() const
+{
+    return _comment;
+}
+
+string Method::getURL() const
+{
+    return _url;
+}
+
+string Method::getPath() const
+{
+    return _path;
 }

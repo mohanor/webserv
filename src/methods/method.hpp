@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/25 03:47:38 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/26 02:09:50 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,10 @@ class Method
         bool hasIndexFile();
         bool getAutoIndex();
         bool hasCGI();
+        int getStatus() const;
+        string getComment() const;
+        string getURL() const;
+        string getPath() const;
         string getIndex();
 };
 

@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/20 12:01:38 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/25 19:50:22 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,16 +460,16 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
         
     }
 
-    if (_tokens[index].first == "root" )
-    {
-        ifstream file;
+    // if (_tokens[index].first == "root" )
+    // {
+    //     ifstream file;
         
-        string fileName =  _tokens[index + 1].first;
+    //     string fileName =  _tokens[index + 1].first;
             
-            file.open(fileName);
-            if(!file.is_open())
-                errorLogs("error find location root !"); 
-    }
+    //         file.open(fileName);
+    //         // if(!file.is_open())
+    //         //     errorLogs("error find location root !"); 
+    // }
     
     if (_tokens[index].first == "autoindex")
     {
