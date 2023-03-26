@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/25 03:50:30 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/26 00:45:10 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         {
             _status = 200;
             _comment = "OK";
-            _path = _request.getRessource();
+            _path = _url;
             return ;
         }
         // RUN CGI ON REQUESTED FILE
