@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/25 18:25:04 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/26 02:14:24 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ Method Worker::getMethodObject(Request &req, Server &server)
         return runMethodDelete(req, server);
     else
         return runMethodDelete(req, server);
-      
 }
 
 /************************************************************

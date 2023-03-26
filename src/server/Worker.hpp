@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:36:44 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/25 17:49:16 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/26 02:16:55 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ public:
     void  runMethodGet(Request &req, Server &server);
     void  runMethodPost(Request &req, Server &server);
     Delete  runMethodDelete(Request &req, Server &server);
-    string listenDirectory(string path);
+    static string listenDirectory(string path);
     
     
 };
