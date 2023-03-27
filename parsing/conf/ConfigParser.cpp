@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/25 19:50:22 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/27 00:01:32 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -601,16 +601,17 @@ void ConfigParser::checkSyntaxDirective()
             for (; j < 9; j++)
                 if (myDirective[j] == _tokens[i].first)
                     break;
+            
             if (j == 9)
                 errorLogs("error variable  " + _tokens[i].first);
         }
     }
 }
-
+// TODO: checkSyntaxDirectiveCondition
 void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool> &directiveLocation)
 {
     bool check = false;
-    string forbidenDirectiveLocation[3] = {"server_name", "listen", "host"};
+    string forbidenDirectiveLocation[9] = {"allow", "autoindex", "index", "error_page", "root", "cli_max_size", "return", "upload_store", "upload_enable"};
     
     while (index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
     {
@@ -620,11 +621,13 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
                 errorLogs("error directive location");
             else
                 directiveLocation.insert(make_pair(_tokens[index].first, check));
-            for (size_t i = 0; i < 3; i++)
-            {
+            size_t i = 0;
+            for (; i < 9; i++)
                 if (_tokens[index].first == forbidenDirectiveLocation[i])
-                    errorLogs("error directive location s " + _tokens[index].first);
-            }
+                    break;
+            if (i == 9)
+               errorLogs("error variable  " + _tokens[index].first);
+                
         }
         index++;
     }

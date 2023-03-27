@@ -25,22 +25,10 @@ using namespace std;
 int main(int ac, char **av)
 {
 
-
-    // if (!file.is_open())
-    // {
-    //     cout << "file not open" << endl;
-    //     return 1;
-    // }
-
-    // test(&file);
-   
-    // Client c;
-
-    // c.setFile(av[1]);
-
     SocketClass socket;
-     Worker worker;
-    string req = "DELETE /home/ HTTP/1.1\r\n";
+    Worker worker;
+    
+    string req = "GET /home/ HTTP/1.1\r\n";
 
     req += "Host: localhost:8080\r\n";
 
@@ -56,6 +44,7 @@ int main(int ac, char **av)
     cout << "status : " << m.getStatus() << endl;
     cout << "path   : " <<m.getPath() << endl;
     cout << "comme  : "<<m.getComment() << endl;
+    cout << "url  : "<<m.getURL() << endl;
     cout << "---------------------" << endl;
     worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www") ;
 

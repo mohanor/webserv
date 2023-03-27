@@ -10,8 +10,10 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     else
         _url = _server.getRoot();
     _url = join_path(_url, resource);
-    _status = 0;
-    _comment = "";
+    _status = 405;
+    _comment =  "Method Not Allowed";
+    _path =  "./error_pages/405.html";
+   
 }
 
 bool Method::getRequestedResource()
@@ -21,6 +23,8 @@ bool Method::getRequestedResource()
 
 bool Method::isFile()
 {
+    if (isDir())
+        return false;
     FILE *fp = fopen(_url.c_str(), "r");
     if (fp)
     {
@@ -63,8 +67,10 @@ bool Method::getAutoIndex()
 
 bool Method::hasCGI()
 {
+    string url = _url;
     string end = _url.erase(0, _url.find_last_of('.'));
 
+    _url =url;
     if (end == ".py" || end == ".php")
         return true;
     return false;
@@ -94,6 +100,7 @@ string Method::getIndex()
                 index = join_path(_url,index_v[i]);
         }
     }
+    
     return index;
 }
 
