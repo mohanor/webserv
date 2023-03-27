@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/19 16:10:03 by matef            ###   ########.fr       */
+/*   Updated: 2023/03/27 16:03:20 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,10 @@ void Configuration::checkDirectiveLocation(size_t index, size_t indexServer)
         }
         _server[indexServer]._location.push_back(make_pair(allow, ALLOWED_METHODS));
     }
+   if (_tokens[index].first == "upload_store")
+        _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, UPLOAD_STORE));
+    if (_tokens[index].first == "upload_enable")
+        _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, UPLOAD_ENABLE));
 }
 
 string Configuration::getKey(int index)
@@ -185,6 +189,10 @@ string Configuration::getKey(int index)
         return "autoindex";
     case ALLOWED_METHODS:
         return "allow";
+    case UPLOAD_STORE:
+        return "upload_store";
+    case UPLOAD_ENABLE:
+        return "upload_enable";
     default:
         return "return";
     }
@@ -239,6 +247,7 @@ void Configuration::checkLocation()
                 index = getDirectiveLocation(index, i, nameLocation);
                 pushLocation(i, nameLocation);
                 _server[i]._location.clear();
+               
             }
             index++;
         }

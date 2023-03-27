@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/25 02:11:12 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/27 02:01:28 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #include <iostream>
 using namespace std;
+
+#define ROOTPAGE "./var/www/html"
 
 struct directives
 {
@@ -33,7 +35,7 @@ struct directives
         listen = 8080;
         server_name = "localhost";
         host = "127.0.0.1";
-        root = "/var/www/html/";
+        root = "/";
         error_page = "404.html";
         autoindex = false;
         allow = "GET POST DELETE";
