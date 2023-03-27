@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/27 01:52:49 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/27 16:03:20 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void Configuration::checkDirective(size_t index)
         _directive_server.push_back(make_pair(_tokens[index + 2].first, HOST));       
     }
     if (_tokens[index].first == "root")
-        _directive_server.push_back(make_pair(ROOTPAGE + _tokens[index + 1].first, ROOT));
+        _directive_server.push_back(make_pair(_tokens[index + 1].first, ROOT));
     if (_tokens[index].first == "index")
     {
         string indexPage;
@@ -140,7 +140,7 @@ void Configuration::addToServer()
 void Configuration::checkDirectiveLocation(size_t index, size_t indexServer)
 {
     if (_tokens[index].first == "root")
-        _server[indexServer]._location.push_back(make_pair(ROOTPAGE +  _tokens[index + 1].first, ROOT));
+        _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, ROOT));
     if (_tokens[index].first == "index")
     {
         string indexPage;
