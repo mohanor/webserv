@@ -28,7 +28,7 @@ int main(int ac, char **av)
     SocketClass socket;
     Worker worker;
     
-    string req = "GET /home/ HTTP/1.1\r\n";
+    string req = "GET / HTTP/1.1\r\n";
 
     req += "Host: localhost:8080\r\n";
 
@@ -46,7 +46,7 @@ int main(int ac, char **av)
     cout << "comme  : "<<m.getComment() << endl;
     cout << "url  : "<<m.getURL() << endl;
     cout << "---------------------" << endl;
-    worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www") ;
+    worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www/html/") ;
 
     
    

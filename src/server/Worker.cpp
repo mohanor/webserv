@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/27 01:01:16 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:51:59 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ string Worker::listenDirectory(string pathUri)
         pathIndex += pathUri.length();
     }
 
-    std::ofstream out("dir.html");
+    std::ofstream out("./configuration/dir/index.html");
     out << str;
     closedir(pdir);
 
