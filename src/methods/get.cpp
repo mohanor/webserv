@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/27 01:58:24 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:54:50 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         Worker::listenDirectory(_url);
         _status = 200;
         _comment = "OK";
-        _path = "./dir.html";
+        _path = "./configuration/dir/index.html";
         return;
     }
     _url = getIndex();

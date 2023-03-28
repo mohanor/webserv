@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:57:50 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/27 00:20:48 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/28 00:07:33 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ Delete::Delete(const Delete &copy) : Method(copy)
     *this = copy;
 }
 
-Delete &Delete::operator=(const Delete &copy) 
+Delete &Delete ::operator=(const Delete &copy) 
 {
     if (this != &copy)
     {  

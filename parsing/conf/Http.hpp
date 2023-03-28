@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/27 02:01:28 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/28 02:25:52 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ struct directives
         listen = 8080;
         server_name = "localhost";
         host = "127.0.0.1";
-        root = "/";
+        root = "./www/html";
         error_page = "404.html";
         autoindex = false;
         allow = "GET POST DELETE";
