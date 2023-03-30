@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/27 00:01:32 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/30 02:47:19 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,26 @@ void ConfigParser::initalConfig(string content)
     synaxError();
 }
 
+void ConfigParser::SetAllowedDirective()
+{
+    _directive_allowed.push_back("allow");
+    _directive_allowed.push_back("autoindex");
+    _directive_allowed.push_back("index");
+    _directive_allowed.push_back("error_page");
+    _directive_allowed.push_back("root");
+    _directive_allowed.push_back("cli_max_size");
+    _directive_allowed.push_back("return");
+    _directive_allowed.push_back("upload_store");
+    _directive_allowed.push_back("upload_enable");
+    _directive_allowed.push_back("fastcgi_pass");
+    _directive_allowed.push_back("fastcgi_index");
+    _directive_allowed.push_back("include");
+    _directive_allowed.push_back("fastcgi_param");
+    _directive_allowed.push_back("fastcgi_split_path_info");
+    _directive_allowed.push_back("fastcgi_intercept_errors");
+    
+}
+
 int  ConfigParser::getLengthServer() const
 {
     return _lenght_server;
@@ -90,6 +110,7 @@ int  ConfigParser::getLengthServer() const
  }
 ConfigParser::~ConfigParser()
 {
+  
 }
 
 ConfigParser::ConfigParser(const ConfigParser &src)
@@ -485,14 +506,6 @@ void ConfigParser::checkSynaxDirective()
 
     while (i < _tokens.size())
     {
-        if (_tokens[i].second == CONTEXT && _tokens[i].first == "location")
-        {
-            if (_tokens[i + 1].first == "/php" || _tokens[i + 1].first == "/python")
-            {
-                while (_tokens[i].second != CLOSE_CURLY)
-                    i++;
-            }
-        }
         if (_tokens[i].second == DIRECTIVE)
         {
             
@@ -611,8 +624,7 @@ void ConfigParser::checkSyntaxDirective()
 void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool> &directiveLocation)
 {
     bool check = false;
-    string forbidenDirectiveLocation[9] = {"allow", "autoindex", "index", "error_page", "root", "cli_max_size", "return", "upload_store", "upload_enable"};
-    
+    SetAllowedDirective();
     while (index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
     {
         if (_tokens[index].second == DIRECTIVE)
@@ -622,15 +634,16 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
             else
                 directiveLocation.insert(make_pair(_tokens[index].first, check));
             size_t i = 0;
-            for (; i < 9; i++)
-                if (_tokens[index].first == forbidenDirectiveLocation[i])
+            for (; i < _directive_allowed.size(); i++)
+                if (_tokens[index].first == _directive_allowed[i])
                     break;
-            if (i == 9)
+            if (i == _directive_allowed.size())
                errorLogs("error variable  " + _tokens[index].first);
                 
         }
         index++;
     }
+    _directive_allowed.clear();
     directiveLocation.clear();
 }
 
@@ -653,10 +666,8 @@ void ConfigParser::checkSyntaxDiplicated()
             }
             if ((_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD))
             {
-                if (_tokens[index + 1].first != "/php" &&  _tokens[index + 1].first != "/python" )
+              
                     checkSyntaxDiplicatedLocation(index + 1, directiveLocation);
-                else
-                    checkSynatxCgi(index + 1, directiveLocation);
                 cxt = true;
             }
             if (_tokens[index].second == DIRECTIVE && !cxt)
@@ -682,38 +693,38 @@ void ConfigParser::checkSyntaxDiplicated()
 
     
 }
-void ConfigParser::checkSynatxCgi(size_t index, map<string, bool> &directiveLocation)
-{
-    string cgi[6] = {"fastcgi_pass", "fastcgi_index", "include","fastcgi_param", "fastcgi_split_path_info", "fastcgi_intercept_errors"};
-    while(index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
-    {
-        if (_tokens[index].second == DIRECTIVE)
-        {
-            int len =0 ;
-            for (size_t i = index; i < _tokens.size() && _tokens[i].second != SEMI_COLON; i++, len++)
-            {
-                if (len > 1)
-                    errorLogs("error cgi " + _tokens[index].first);
+// void ConfigParser::checkSynatxCgi(size_t index, map<string, bool> &directiveLocation)
+// {
+//     string cgi[6] = {"fastcgi_pass", "fastcgi_index", "include","fastcgi_param", "fastcgi_split_path_info", "fastcgi_intercept_errors"};
+//     while(index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
+//     {
+//         if (_tokens[index].second == DIRECTIVE)
+//         {
+//             int len =0 ;
+//             for (size_t i = index; i < _tokens.size() && _tokens[i].second != SEMI_COLON; i++, len++)
+//             {
+//                 if (len > 1)
+//                     errorLogs("error cgi " + _tokens[index].first);
                
-            }
+//             }
             
-            size_t j = 0;
-            while (j < 6)
-            {
-                if (cgi[j] == _tokens[index].first)
-                    break;
-                j++;
-            }
-            if (j == 6)
-                errorLogs("error cgi " + _tokens[index].first);
+//             size_t j = 0;
+//             while (j < 6)
+//             {
+//                 if (cgi[j] == _tokens[index].first)
+//                     break;
+//                 j++;
+//             }
+//             if (j == 6)
+//                 errorLogs("error cgi " + _tokens[index].first);
             
-        }
-        index++;
-    }
+//         }
+//         index++;
+//     }
     
     
     
-}
+// }
 
 void ConfigParser::synaxError()
 {
@@ -730,12 +741,3 @@ void ConfigParser::synaxError()
 /*****************************************
  ******** end syntax Error ***************
  *****************************************/
-
-void ConfigParser::printData()
-{
-
-    // for (size_t i = 0; i < _tokens.size(); i++)
-    // {
-    //     cout << _tokens[i].first << " =>" << _tokens[i].second << endl;
-    // }
-}
