@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/11 17:22:24 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/30 02:47:27 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ private:
     size_t _lenght_server;
     vector<string> _data;
     vector<pair<string, int> > _tokens;
+    vector<string> _directive_allowed;
     
 public:
     ConfigParser();
@@ -38,7 +39,6 @@ public:
     ConfigParser(const ConfigParser &src);
     ConfigParser &operator=(const ConfigParser &src);
     ~ConfigParser();
-    void printData();
     void initalConfig(string content);
 
     void parseLine(string line);
@@ -76,6 +76,6 @@ public:
     int getLengthServer() const;
     vector<pair<string, int> > getTokens() const;
      void checkCorrectSyntaxDirective(size_t index);
-     void checkSynatxCgi(size_t index, map<string, bool> &directiveLocation);
+   void SetAllowedDirective();
   
 };
