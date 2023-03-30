@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/27 16:03:20 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:31:29 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,7 @@ void Configuration::checkDirective(size_t index)
     {
         string indexPage;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
-        {
             indexPage += " " + _tokens[i].first;
-        }
         _directive_server.push_back(make_pair(indexPage, INDEX));
     }
     if (_tokens[index].first == "error_page")
@@ -86,14 +84,18 @@ void Configuration::checkDirective(size_t index)
     {
         string allow;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
-        {
             allow += " " + _tokens[i].first;
-        }
+            
         _directive_server.push_back(make_pair(allow, ALLOWED_METHODS));
     }
-    // map<string, bool>::iterator it = checkPorts.begin();
-
-   
+    if (_tokens[index].first == "cgi_info")
+    {
+        string cgi_info;
+        for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
+            cgi_info += " " + _tokens[i].first;
+            
+        _directive_server.push_back(make_pair(cgi_info, CGI_INFO));
+    }   
     
 }
 
@@ -132,6 +134,9 @@ void Configuration::addToServer()
         case ALLOWED_METHODS:
             directive.allow = _directive_server[i].first;
             break;
+        case CGI_INFO:
+            directive.cgi_info = _directive_server[i].first;
+            break;
         }
     }
     _server.push_back(Server(directive));
@@ -162,11 +167,17 @@ void Configuration::checkDirectiveLocation(size_t index, size_t indexServer)
     {
         string allow;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
-        {
             allow += " " + _tokens[i].first;
-        }
         _server[indexServer]._location.push_back(make_pair(allow, ALLOWED_METHODS));
     }
+    if (_tokens[index].first == "cgi_info")
+    {
+        string cgi_info;
+        for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
+            cgi_info += " " + _tokens[i].first;
+            
+        _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO));
+    }   
    if (_tokens[index].first == "upload_store")
         _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, UPLOAD_STORE));
     if (_tokens[index].first == "upload_enable")
@@ -193,6 +204,8 @@ string Configuration::getKey(int index)
         return "upload_store";
     case UPLOAD_ENABLE:
         return "upload_enable";
+    case CGI_INFO:
+        return "cgi_info";
     default:
         return "return";
     }

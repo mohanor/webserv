@@ -39,6 +39,7 @@ int main(int ac, char **av)
     
     Configuration config("./conf/default.conf");
     vector<Server> server = config.getServers();
+    cout << server[0].getCgiInfo() << endl;
     Method m =  worker.getMethodObject(r,server[0]);
 
     cout << "status : " << m.getStatus() << endl;

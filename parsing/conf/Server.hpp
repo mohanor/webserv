@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/24 21:17:33 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:16:33 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Server : public Http
         short int 	                _listen;
         string		                _server_name;
         string		                _host;
+        string		                _cgi_info;
         string		                _length_location;
         string		                _matched_location;
 
@@ -49,5 +50,6 @@ class Server : public Http
 		size_t	getPort() const;
         size_t getLengthLocation() const;
         string getMatchedLocation() const;
+        string getCgiInfo() const;
         
 };
