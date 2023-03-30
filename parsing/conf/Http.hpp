@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/28 02:25:52 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:11:11 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ struct directives
     string error_page;
     bool autoindex;
     string allow;
+    string cgi_info;
 
     directives()
     {
@@ -53,6 +54,7 @@ enum e_token
     CONTEXT,
     WSPACE,
     NEWLINE,
+   
 };
 
 class Http
