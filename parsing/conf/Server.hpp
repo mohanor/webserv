@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/24 21:17:33 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/03/30 19:51:25 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class Server : public Http
         string	getServerName() const;
 		string	getHost() const;
 		size_t	getPort() const;
+        string  getCGIINFO() const;
         size_t getLengthLocation() const;
         string getMatchedLocation() const;
         
