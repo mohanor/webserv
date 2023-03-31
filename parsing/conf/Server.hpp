@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/30 19:51:25 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/31 00:35:57 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Server : public Http
         short int 	                _listen;
         string		                _server_name;
         string		                _host;
+        string		                _cgi_info;
         string		                _length_location;
         string		                _matched_location;
 
@@ -50,5 +51,6 @@ class Server : public Http
         string  getCGIINFO() const;
         size_t getLengthLocation() const;
         string getMatchedLocation() const;
+        string getCgiInfo() const;
         
 };

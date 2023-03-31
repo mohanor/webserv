@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/26 07:15:35 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:54:50 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,12 @@ Get::Get(Request request, Server server) : Method(request, server)
     }
     if (!hasIndexFile())
     {
-        if(FILE *f = fopen("index.html","r"))
+        string file = _url + "index.html"; 
+        cout << file << endl;
+        if(FILE *f = fopen(file.c_str(),"r")) // should be joined with the server root
         {
             fclose(f);
-            _path = "index.html";
+            _path = "./index.html";
             _status = 200;
             _comment = "OK";
             return ;
@@ -60,7 +62,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         Worker::listenDirectory(_url);
         _status = 200;
         _comment = "OK";
-        _path = "./dir.html";
+        _path = "./configuration/dir/index.html";
         return;
     }
     _url = getIndex();
@@ -73,6 +75,7 @@ Get::Get(Request request, Server server) : Method(request, server)
     }
     if (!hasCGI())
     {
+        
         _status = 200;
         _comment = "OK";
         _path = _url;

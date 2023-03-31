@@ -10,8 +10,10 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     else
         _url = _server.getRoot();
     _url = join_path(_url, resource);
-    _status = 0;
-    _comment = "";
+    _status = 405;
+    _comment =  "Method Not Allowed";
+    _path =  "./error_pages/405.html";
+   
 }
 
 bool Method::getRequestedResource()
@@ -21,6 +23,8 @@ bool Method::getRequestedResource()
 
 bool Method::isFile()
 {
+    if (isDir())
+        return false;
     FILE *fp = fopen(_url.c_str(), "r");
     if (fp)
     {
@@ -63,8 +67,10 @@ bool Method::getAutoIndex()
 
 bool Method::hasCGI()
 {
+    string url = _url;
     string end = _url.erase(0, _url.find_last_of('.'));
 
+    _url =url;
     if (end == ".py" || end == ".php")
         return true;
     return false;
@@ -75,7 +81,6 @@ string Method::getIndex()
     string index = "";
     vector<string> index_v;
     map<string, string> map = _server._locations[_server.getMatchedLocation()]._directives;
-
     if(map.find("index") != map.end())
     {
         index_v = Request::getVector(map["index"]);
@@ -90,10 +95,11 @@ string Method::getIndex()
         index_v = Request::getVector(_server.getIndex());
         for (int i=0; i < index_v.size(); i++)
         {
-            if (FILE *f = fopen(index_v[i].c_str(), "r"))
+            if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
                 index = join_path(_url,index_v[i]);
         }
     }
+    
     return index;
 }
 
