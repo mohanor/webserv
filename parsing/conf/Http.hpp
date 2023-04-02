@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Http.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/24 04:55:16 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:11:11 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #include <iostream>
 using namespace std;
+
+#define ROOTPAGE "./var/www/html"
 
 struct directives
 {
@@ -26,6 +28,7 @@ struct directives
     string error_page;
     bool autoindex;
     string allow;
+    string cgi_info;
 
     directives()
     {
@@ -33,8 +36,7 @@ struct directives
         listen = 8080;
         server_name = "localhost";
         host = "127.0.0.1";
-        root = "/var/www/html/";
-        index = "index.html"; //index should not bet setted as "index.html"
+        root = "./www/html";
         error_page = "404.html";
         autoindex = false;
         allow = "GET POST DELETE";
@@ -52,6 +54,7 @@ enum e_token
     CONTEXT,
     WSPACE,
     NEWLINE,
+   
 };
 
 class Http
