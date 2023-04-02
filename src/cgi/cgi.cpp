@@ -5,9 +5,7 @@ CGI::CGI(Request request, Server server, string url)
     int pipefd[2];
     int save0 = dup(0);
     int save1 = dup(1);
-    string body = request.getBody(); // should get it from the request
     char **args = getScriptName(request, server, url);
-    FILE *tmp = tmpfile();
     if (args != NULL)
         _resp = "";
     else
@@ -16,12 +14,15 @@ CGI::CGI(Request request, Server server, string url)
         pid_t pid = fork();
         if (pid == 0) 
         {
-            dup2(pipefd[1], STDOUT_FILENO);
-            close(pipefd[1]);
+            chdir(url.erase(url.find_last_of('/'),url.length()).c_str());
+            string body = "" + request.getBody(); // should get it from the request
+            FILE *tmp = tmpfile();
     	    fputs(body.c_str(), tmp);
         	rewind(tmp);
             dup2(fileno(tmp), 0);
 		    close(fileno(tmp));
+            dup2(pipefd[1], STDOUT_FILENO);
+            close(pipefd[1]);
             execve(args[0], args, NULL);
             exit(1);
         }
@@ -63,7 +64,7 @@ char **CGI::setENV(Request request, Server server, string method)
 	_env.push_back("SERVER_PORT=" + server.getPort());
 	_env.push_back("REQUEST_METHOD=" + request.getMethod());
 	_env.push_back("SCRIPT_NAME=" + _scriptName);
-	_env.push_back("CONTENT_TYPE=" + request.getHeader("Content-Type")); // Matef should add this
+	_env.push_back("CONTENT_TYPE=" + request.getValueOf("Content-Type")); // Matef should add this
 	_env.push_back("QUERY_STRING=" + request.getQueryString()); // Matef should add this
     return (_envToChar());
 }
@@ -77,7 +78,7 @@ char **CGI::getScriptName(Request request, Server server, string url)
     if (map.find("cgi_info") != map.end())
         cgi_info = Request::getVector(map["cgi_info"]);
     else
-        cgi_info = Request::getVector(server.getCGIINFO().empty()); // Youssef should add this
+        cgi_info = Request::getVector(server.getCgiInfo());
     if (cgi_info.empty())
         return NULL;
     string _url = url;
@@ -87,5 +88,5 @@ char **CGI::getScriptName(Request request, Server server, string url)
         if (find(cgi_info.begin(), cgi_info.end(), ".py") != cgi_info.end())
             char *args[] = {(char *)cgi_info[2].c_str(), (char *)_url.c_str(), NULL};
     }
-    return nullptr;
+    return NULL;
 }
