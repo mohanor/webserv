@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 01:02:48 by matef             #+#    #+#             */
-/*   Updated: 2023/03/22 14:29:24 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/03/27 00:45:59 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Header
 {
 
     public:
-        Header(const string &key, const string &value);
+        Header(const string &key = "", const string &value = "");
         ~Header();
 
         string getKey();

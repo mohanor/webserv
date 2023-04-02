@@ -60,26 +60,28 @@ int main(int ac, char **av)
 
     // c.setFile(av[1]);
 
-    SocketClass socket;
-    string req = "DELETE /correction/hi/file.html HTTP/1.1\r\n";
+    // SocketClass socket;
+    string req = "POST / HTTP/1.1\r\n";
 
-    req += "Host: localhost:8080\r\n";
+    req += "Transfer-Encoding: chunked\r\n";
 
     req += "\r\n";
+    req += "5vnbnlgbmfg;l;\r\n";
     Request r(Request::deserialize(req));
 
+    r.setBody("5vnbnlgbmfg;l;");
+    cout << r.getBody() << endl;
 
     
-    Configuration config("./conf/default.conf");
-    vector<Server> server = config.getServers();
-    runCode(server[0], r);
+    // Configuration config("./conf/default.conf");
+    // vector<Server> server = config.getServers();
+    // runCode(server[0], r);
    
 
 
-
     // cout << c.getPacket() << endl;
-    SocketClass s;
-    s.run();
+    // SocketClass s;
+    // s.run();
 
     return 0;
 }

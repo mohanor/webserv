@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/03/23 22:08:05 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/02 01:41:21 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,19 +67,29 @@ class SocketClass
         void run();
         bool isNewConnection(int listener);
 
-        string joinRootAndPath(string root, string path, Request &httpRequest);
-        struct pollfd createPollfd(int sockfd);
-        void setFds();
+        string  joinRootAndPath(string root, string path, Request &httpRequest);
+        struct  pollfd createPollfd(int sockfd);
+        void    setFds();
+
+        bool    isHeaderReceived(string request);
+
+        bool recvError(int size, int fd);
+
+        void handlePostRequest(Client &client);
+        // bool handleChunkedRequest(Client &client);
+
+        void uploadFile(Client &client);
         
     private:
-        struct sockaddr_in address;
-        vector<Server> servers;
-        vector<SocketServer> _s;
-        vector<struct pollfd> _fds;
+        struct sockaddr_in      address;
+        vector<Server>          servers;
+        vector<SocketServer>    _s;
+        vector<struct pollfd>   _fds;
 
-        map<int, Client> _clients;
+        map<int, Client>        _clients;
 
-        Request httpRequest;
+        Request                 httpRequest;
+        MimeTypes               _mimeTypes;
 };
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/03/22 21:17:25 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/02 02:19:10 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,16 @@
 #define NOT_IMPLEMENTED 501
 #define VERSION_NOT_SUPPORTED 505
 
+#define GET "GET"
+#define POST "POST"
+#define DELETE "DELETE"
 
 using namespace std;
 
 class Request
 {
     public:
-        typedef map<string, Header> Headers;
+        typedef map<string, string> Headers;
 
     public:
         Request(string method = "", string resource = "", string version = "", Headers headers = Headers());
@@ -54,7 +57,7 @@ class Request
         ~Request();
 
         string serialize();
-        static Request deserialize(const string& request);
+        static Request deserialize(string request);
         static vector<string> getVector(string line, char delimiter = ' ');
         
 		void resource();
@@ -63,19 +66,33 @@ class Request
         int isReqWellFormed();
         bool isMethodAllowed();
         bool allowedChars();
-        // bool transferEncoding();
+        bool transferEncoding();
         bool acceptUriLength();
         bool isVersionSupported();
 
         string getMethod();
         string getVersion();
-        
+
+        void setUrlArgs();
+
+        bool isHeaderHasKey(string key);
+        string getValueOf(string key);
+
+        map<string, string> getHeader();
+
+        string getBody();
+        void setBody(string body);
+        string getQueryString();
 
     private:
         string _method;
         string _resource;
         string _version;
-        map<string, Header> _headers;
+        string _queryString;
+        string _body;
+
+        map<string, string> _headers;
+        map<string, string> _urlArgs;
 };
 
 

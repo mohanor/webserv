@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Style the body */
+        body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        }
+
+        /* Center the forms */
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            max-width: 400px;
+            margin-top: 30px;
+        }
+
+        /* Style the input elements */
+        input[type="file"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box; /* Ensures padding and border are included in width */
+        }
+
+        /* Style the submit button */
+        input[type="submit"], button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Add hover effect to submit button */
+        input[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+
+        button {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <form action="/uploadfile" method="POST" enctype="multipart/form-data">
+        <input type="file" name="fileToUpload" multiple >
+        <input type="submit" value="Upload File" name="submit">
+    </form>
+
+    <form action="http://localhost:5000/" method="get">
+        <input type="text" name="name" placeholder="Enter your name">
+        <input type="submit" name="submit" value="Submit">
+    </form>
+
+    <form method="DELETE" action="/example" id="example-form">
+        <label for="delete-item">Item to delete:</label>
+        <input type="text" id="delete-item" name="delete-item">
+        <button type="submit">Delete</button>
+    </form>
+
+    <form method="post" action="/">
+        int1: <input type="text" name="int1" /><br />
+        int2: <input type="text" name="int2" /><br />
+        <input type="submit" value="Submit" />
+    </form>
+      
+</body>
+</html>
+
