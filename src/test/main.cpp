@@ -25,18 +25,28 @@ using namespace std;
 int main(int ac, char **av)
 {
 
+
     SocketClass socket;
     Worker worker;
     
     string req = "GET / HTTP/1.1\r\n";
 
-    req += "Host: localhost:8080\r\n";
+
+    req += "Transfer-Encoding: chunked\r\n";
 
     req += "\r\n";
+    req += "5vnbnlgbmfg;l;\r\n";
     Request r(Request::deserialize(req));
 
+    r.setBody("5vnbnlgbmfg;l;");
+    cout << r.getBody() << endl;
 
     
+
+    // Configuration config("./conf/default.conf");
+    // vector<Server> server = config.getServers();
+    // runCode(server[0], r);
+
     Configuration config("./conf/default.conf");
     vector<Server> server = config.getServers();
     cout << server[0].getCgiInfo() << endl;
@@ -50,7 +60,6 @@ int main(int ac, char **av)
     worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www/html/") ;
 
     
-   
 
 
 
