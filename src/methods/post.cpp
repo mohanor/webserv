@@ -1,4 +1,5 @@
 #include "post.hpp"
+#include "method.hpp"
 
 Post::Post(Request request, Server server) : Method(request, server)
 {
@@ -44,5 +45,11 @@ Post::Post(Request request, Server server) : Method(request, server)
         _comment = "Forbidden";
         return ;
     }
+
     // RUN CGI ON INDEX
 }
+
+    bool Post::locationSupportUpload()
+    {
+        return false;
+    }
