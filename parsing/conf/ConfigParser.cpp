@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/30 22:06:27 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/01 20:01:01 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -653,6 +653,7 @@ void ConfigParser::checkSyntaxDiplicated()
 {
     size_t index = 1;
     map<string, bool> m;
+    map<string, bool> listen;
     map<string, bool> directiveLocation;
 
     for (size_t i = 0; i < _lenght_server; i++)
@@ -674,6 +675,13 @@ void ConfigParser::checkSyntaxDiplicated()
             }
             if (_tokens[index].second == DIRECTIVE && !cxt)
             {
+                if (_tokens[index].first == "listen")
+                {
+                    if (listen.find(_tokens[index + 1].first) != listen.end())
+                        errorLogs("error listen");
+                    else
+                        listen.insert(make_pair(_tokens[index + 1].first, false));
+                }
                 if (m.find(_tokens[index].first) != m.end())
                 {
                     m[_tokens[index].first] = true;
@@ -687,9 +695,10 @@ void ConfigParser::checkSyntaxDiplicated()
         }
         for (map<string, bool>::iterator it = m.begin(); it != m.end(); it++)
         {
-            if (it->second)
+            if (it->second && it->first != "listen")
                 errorLogs("error diplicated " + it->first);
         }
+        listen.clear();
         m.clear();
     }
 }

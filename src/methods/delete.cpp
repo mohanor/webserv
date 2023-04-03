@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:57:50 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/28 00:07:33 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/01 16:58:52 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,24 @@ void Delete::getResourceType()
    
     if (isDir())
     {
-        
         if (hasSlashInTheEnd())
-            deleteAllFolderContent();
+        {
+            if (hasCGI())
+                cout << "CGI" << endl;
+            // deleteAllFolderContent();
+        }
         else
             MissingBackSlash();
     }
     else if (isFile())
-        deleteResource();
+    {
+        
+       
+        if (hasCGI())
+            cout << "CGI" << endl;
+        else
+            deleteResource();
+    }
     else
     {
          if (errno == EACCES)
