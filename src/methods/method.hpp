@@ -3,10 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
 /*   Updated: 2023/04/03 06:17:59 by yel-khad         ###   ########.fr       */
+
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +39,7 @@ class Method
         map<string, Header> headers;
     public:
         Method(Request request, Server server);
+        Method(int status, string comment, string url, string path, Request request, Server server);
         bool getRequestedResource();
         bool isFile();
         bool isDir();

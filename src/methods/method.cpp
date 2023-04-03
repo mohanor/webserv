@@ -15,7 +15,8 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     _path =  "./error_pages/405.html";
    
 }
-
+Method::Method(int status, string comment, string url, string path, Request request, Server server) : _status(status), _comment(comment), _path(path) , _url(url) , _server(server), _request(request)
+{}
 bool Method::getRequestedResource()
 {
     return (isDir() || isFile());
