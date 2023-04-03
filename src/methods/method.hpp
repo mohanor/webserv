@@ -3,11 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/03 06:17:59 by yel-khad         ###   ########.fr       */
-
+/*   Updated: 2023/04/03 22:36:51 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +49,8 @@ class Method
         int getStatus() const;
         string getComment() const;
         string getURL() const;
-        string getPath() const;
         string getIndex();
+        string getResp() const;
 };
 
 class Post : public Method
