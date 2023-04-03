@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   method.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
+/*   Updated: 2023/04/03 17:34:49 by yoelhaim         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "method.hpp"
 
 Method::Method(Request request, Server server) : _request(request) , _server(server)
@@ -12,10 +24,10 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     _url = join_path(_url, resource);
     _status = 405;
     _comment =  "Method Not Allowed";
-    _path =  "./error_pages/405.html";
+    // _path =  "./error_pages/405.html";
    
 }
-Method::Method(int status, string comment, string url, string path, Request request, Server server) : _status(status), _comment(comment), _path(path) , _url(url) , _server(server), _request(request)
+Method::Method(int status, string comment, string url, string path, Request request, Server server) : _status(status), _comment(comment), _url(url) , _server(server), _request(request)
 {}
 bool Method::getRequestedResource()
 {
@@ -129,7 +141,7 @@ string Method::getURL() const
     return _url;
 }
 
-string Method::getPath() const
+string Method::getResponse() const
 {
-    return _path;
+    return this->_resp;
 }

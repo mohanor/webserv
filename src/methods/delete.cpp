@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:57:50 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/01 16:58:52 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/03 17:39:25 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ Delete &Delete ::operator=(const Delete &copy)
         _request = copy._request;
         _server = copy._server;
         _url = copy._url;
-        _path = copy._path;
+        _resp = copy._resp;
         _status = copy._status;
         _comment = copy._comment;
     }
@@ -70,7 +70,7 @@ void Delete::deleteAllFolderContent()
         }
          if (countFiles == 0)
          {
-            _path = "./error_page/404.html";
+           _resp = getFileContent("./error_page/404.html");
             setError(404, "Not Found");
          }
         
@@ -113,12 +113,12 @@ void Delete::getResourceType()
     {
          if (errno == EACCES)
         {
-            _path = "./error_page/500.html";
+            _resp = getFileContent("./error_page/500.html");
             setError(500, "Internal Server Error");
         }
         else
         {
-            _path = "./error_page/404.html";
+            _resp = getFileContent("./error_page/404.html");
             setError(404, "Not Found");
         }
     }
@@ -127,11 +127,11 @@ void Delete::getResourceType()
 
 void Delete::deleteResource()
 {
-    size_t reseltDelete = remove(_url.c_str());
+    // size_t reseltDelete = remove(_url.c_str());
 
-    if (reseltDelete == 0)
-        deleteSeccess();
-    else
+    // if (reseltDelete == 0)
+    //     deleteSeccess();
+    // else
         cout << "file not deleted" << endl;
 }
 
