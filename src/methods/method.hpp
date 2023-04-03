@@ -49,6 +49,7 @@ class Method
         int getStatus() const;
         string getComment() const;
         string getURL() const;
+        string getResponse() const;
         string getIndex();
         string getResp() const;
 };
