@@ -26,46 +26,43 @@ int main(int ac, char **av)
 {
 
 
-    SocketClass socket;
-    Worker worker;
+    // SocketClass socket;
+    // Worker worker;
     
-    string req = "GET / HTTP/1.1\r\n";
+    // string req = "GET /script.py HTTP/1.1\r\n";
 
+    // req += "\r\n";
 
-    req += "Transfer-Encoding: chunked\r\n";
+    // req += "librait\r\n";
+    // Request r(Request::deserialize(req));
 
-    req += "\r\n";
-    req += "5vnbnlgbmfg;l;\r\n";
-    Request r(Request::deserialize(req));
-
-    r.setBody("5vnbnlgbmfg;l;");
-    cout << r.getBody() << endl;
+    // int s = r.isReqWellFormed();
+    
+    // cout << s  << endl;
+    // cout << r.getQueryString()<< endl;
+    // r.setBody("12547");
 
     
 
     // Configuration config("./conf/default.conf");
     // vector<Server> server = config.getServers();
-    // runCode(server[0], r);
+    // // runCode(server[0], r);
 
-    Configuration config("./conf/default.conf");
-    vector<Server> server = config.getServers();
-    cout << server[0].getCgiInfo() << endl;
-    Method m =  worker.getMethodObject(r,server[0]);
+    // // Configuration config("./conf/default.conf");
+    // // vector<Server> server = config.getServers();
+    // // cout << server[0].getCgiInfo() << endl;
+    // Method m =  worker.getMethodObject(r,server[0]);
 
-    cout << "status : " << m.getStatus() << endl;
-    cout << "path   : " <<m.getPath() << endl;
-    cout << "comme  : "<<m.getComment() << endl;
-    cout << "url  : "<<m.getURL() << endl;
-    cout << "---------------------" << endl;
-    worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www/html/") ;
+    // cout << "status : " << m.getStatus() << endl;
+    // cout << "path   : " <<m.getPath() << endl;
+    // cout << "comme  : "<<m.getComment() << endl;
+    // cout << "url  : "<<m.getURL() << endl;
+    // cout << "---------------------" << endl;
+    // worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www/html/") ;
 
     
 
-
-
-    // cout << c.getPacket() << endl;
-    // SocketClass s;
-    // s.run();
+cout << getFileContent("./error_page/404.html") << endl ;
 
     return 0;
 }

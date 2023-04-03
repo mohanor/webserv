@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/03/27 17:54:50 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/03 06:25:04 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Get::Get(Request request, Server server) : Method(request, server)
     {
         _status = 404;
         _comment = "Not Found";
-        _path = "./error_page/404.html";
+        _resp = getFileContent("./error_page/404.html");
         return ;
     }
     if (isFile())
@@ -27,17 +27,18 @@ Get::Get(Request request, Server server) : Method(request, server)
         {
             _status = 200;
             _comment = "OK";
-            _path = _url;
+            _resp = getFileContent(_url);
             return ;
         }
-        // RUN CGI ON REQUESTED FILE
+        CGI cgi(request, server, _url, "GET");
+        cout << cgi.getResp() << endl; 
         return ;
     }
     if (!hasSlashInTheEnd())
     {
         _status = 301;
         _comment = "Moved Permanently";
-        _path = "./error_page/301.html";
+        _resp = getFileContent("./error_page/301.html");
         return ;
     }
     if (!hasIndexFile())
@@ -47,7 +48,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         if(FILE *f = fopen(file.c_str(),"r")) // should be joined with the server root
         {
             fclose(f);
-            _path = "./index.html";
+            _resp = getFileContent("./index.html");
             _status = 200;
             _comment = "OK";
             return ;
@@ -56,13 +57,13 @@ Get::Get(Request request, Server server) : Method(request, server)
         {
             _status = 403;
             _comment = "Forbidden";
-            _path = "./error_page/403.html";
+            _resp = getFileContent("./error_page/403.html");
             return ;
         }
         Worker::listenDirectory(_url);
         _status = 200;
         _comment = "OK";
-        _path = "./configuration/dir/index.html";
+        _resp = getFileContent("./configuration/dir/index.html");
         return;
     }
     _url = getIndex();
@@ -70,7 +71,7 @@ Get::Get(Request request, Server server) : Method(request, server)
     {
         _status = 403;
         _comment = "Forbidden";
-        _path = "./error_page/403.html";
+        _resp = getFileContent("./error_page/403.html");
         return ;
     }
     if (!hasCGI())
@@ -78,7 +79,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         
         _status = 200;
         _comment = "OK";
-        _path = _url;
+        _resp = getFileContent(_url);
         return ;
     }
     // RUN CGI ON REQUESTED FILE
