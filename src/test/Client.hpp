@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:14 by matef             #+#    #+#             */
-/*   Updated: 2023/03/24 17:24:22 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/02 03:02:25 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,49 +14,100 @@
 # define CLIENT_HPP
 
 #include <iostream>
-# include <fstream>
+#include <fstream>
+#include <sstream>
+
+#include <vector>
+#include <map>
+#include "../../parsing/request/Request.hpp"
 
 using namespace std;
 
 #define ERROR -1
 
+// #define EMPTY 0
+// #define HEADER_RECEIVED 1
+// #define FILE_NOT_SET 1
+// #define READY_TO_SEND 2
+// #define SENDING 3
+// #define SENDED 4
 
-#define FILE_NOT_SET 0
-#define READY_TO_SEND 1
-#define SENDING 2
-#define SENDED 3
+enum Status
+{
+    EMPTY,
+    REDING,
+    HEADER_RECEIVED,
+    FILE_NOT_SET,
+    READY_TO_SEND,
+    SENDING,
+    SENDED
+};
 
 #define PACKET_SIZE 1024
 
 #define TIMEOUT 20000
+
+#define ENDL "\r\n"
+
 
 class Client
 {
     public:
         Client();
         Client(int fd);
-        Client(string fileContent);
         Client(const Client &copy);
         Client &operator=(const Client &copy);
         ~Client();
 
-        void setFileContent(string fileContent);
-        string getFileContent();
-        string getPacket();
-        int getStatus();
-        void setStatus(int status);
-        double getTimeout();
-        void setFd(int fd);
-        void setFile(string file);
+        void        setFileContent(string fileContent);
+        string      getFileContent();
+        string      getPacket();
+        int         getStatus();
+        void        setStatus(int status);
+        double      getTimeout();
+        void        setFd(int fd);
+        void        setHeader(string header);
+        string      getHeader();
+        // string  getRequest();
+
+        void        receiveHeader();
+
+        void        setRequestHeader(map<string, string> header_map);
+        void        setHeaderReceivedVar(bool val);
+        
+        bool        isHeaderRecived();
+        void        setRequest(Request request);
+        Request     getRequest();
+        
+        void        setIsUploading(bool isUploading);
+        bool        isUploading();
+        void        setBody();
+        string      getBody();
+
+        size_t                  getReceivedLength();
+        string                  _request_string;
+        int                     _request_length;
+        string                  _requestString;
 
     private:
-        int _fd;
-        int _status;
-        double _timeout;
-        string _fileContent;
-        ifstream* _file;
-        char _packet[PACKET_SIZE];
+        int                     _fd;
+        int                     _status;
+        double                  _timeout;
+        string                  _fileContent;
+        char                    _packet[PACKET_SIZE];
+        string                  _header;
+        string                  _body;
+        bool                    _isUploading;
+        bool                    _headerReceived;
+        map<string, string>     _header_map;
+        Request                 _request;
 
+        // Client(string fileContent);
+        // void    setFile(const string &file);
+        // void    setRequest(string request);
+        // void    setHeadAndBody();
+        // string      _request;
+        // std::ifstream*   _file;
 };
 
 
