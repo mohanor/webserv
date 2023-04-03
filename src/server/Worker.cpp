@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/27 17:51:59 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/01 18:02:28 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,11 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
     return (false);
 }
 
-bool Worker::isLocationHaveRedirection(Server &servers)
+bool Worker::isLocationHaveRedirection(Server &servers, string &path)
 {
     map<string, string> maps = servers._locations[servers.getMatchedLocation()]._directives;
-
-    return maps.find("return") != maps.end();
+    // path = maps["return"];
+    return maps.find("return") != maps.end() ? path = maps["return"], true : false;
 }
 
 bool Worker::getAllowdedMethods(string methods, string allow)
@@ -109,13 +109,14 @@ Get Worker::runMethodGet(Request &req, Server &server)
     return get;
 }
 
-bool Worker::checkLocations(Request &req, Server &server)
+bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path)
 {
+
     if (getMatchedLocationFoRequestUri(req.getRessource(), server))
     {
 
-        if (isLocationHaveRedirection(server))
-            return (cout << "redirection" << endl, false);
+        if (isLocationHaveRedirection(server, path))
+            return (isRedirection = true, false);
 
         else if (!isMethodAllowdedInLocation(req.getMethod(), server))
             return (cout << "not allowd" << endl, false);
@@ -126,7 +127,9 @@ bool Worker::checkLocations(Request &req, Server &server)
 
 Method Worker::getMethodObject(Request &req, Server &server)
 {
-    if (checkLocations(req, server))
+    bool isRedirection = false;
+    string path;
+    if (checkLocations(req, server, isRedirection, path))
     {
         if (req.getMethod() == "DELETE")
             return runMethodDelete(req, server);
@@ -135,8 +138,16 @@ Method Worker::getMethodObject(Request &req, Server &server)
         else
             return runMethodDelete(req, server);
     }
-    else
-        return Method(req, server);
+    else if (isRedirection)
+    {
+        vector<string> urlVector = Request::getVector(path);
+
+        std::fstream fs;
+        fs.open(urlVector[1]);
+        fs.close();
+        return Method(301, " Moved Permanently", urlVector[0], urlVector[1], req, server);
+    }
+    return Method(req, server);
 }
 
 /************************************************************

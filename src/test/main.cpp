@@ -29,7 +29,7 @@ int main(int ac, char **av)
     SocketClass socket;
     Worker worker;
     
-    string req = "GET / HTTP/1.1\r\n";
+    string req = "DELETE /home/l.py HTTP/1.1\r\n";
 
 
     req += "Transfer-Encoding: chunked\r\n";
@@ -49,7 +49,7 @@ int main(int ac, char **av)
 
     Configuration config("./conf/default.conf");
     vector<Server> server = config.getServers();
-    cout << server[0].getCgiInfo() << endl;
+    // cout << server[0].getCgiInfo() << endl;
     Method m =  worker.getMethodObject(r,server[0]);
 
     cout << "status : " << m.getStatus() << endl;
