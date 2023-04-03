@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/02 05:39:18 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/03 22:39:52 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,85 +136,75 @@ bool SocketClass::recvError(int size, int fd)
     return true;
 }
 
+unsigned long SocketClass::hex2dec(string hex)
+{
+    unsigned long result = 0;
+
+    for (int i=0; i<hex.length(); i++) {
+        if (hex[i]>=48 && hex[i]<=57)
+        {
+            result += (hex[i]-48)*pow(16,hex.length()-i-1);
+        } else if (hex[i]>=65 && hex[i]<=70) {
+            result += (hex[i]-55)*pow(16,hex.length( )-i-1);
+        } else if (hex[i]>=97 && hex[i]<=102) {
+            result += (hex[i]-87)*pow(16,hex.length()-i-1);
+        }
+    }
+    return result;
+}
+
+string SocketClass::parseChunked(string body)
+{
+    size_t pos = 0;
+    string chunked;
+    string size;
+    bool isSize = true;
+    bool firstLine = true;
+    
+    string prasedBody;
+
+    while (body.size())
+    {
+        if (firstLine)
+        {
+            pos = body.find(ENDL);
+            size = body.substr(0, pos);
+            body.erase(0, pos + 2);
+            firstLine = false;
+            if (size == "0") break;
+            continue;
+        }
+        
+        prasedBody += body.substr(0, hex2dec(size));
+        body.erase(0, hex2dec(size) + 2);
+        firstLine = true;
+    }
+
+    return prasedBody;
+}
 
 void SocketClass::handlePostRequest(Client &client)
 {
-/*  
-    if (client.getRequest().isHeaderHasKey("Content-Length"))
-    {
-        if (client.getRequest().isHeaderHasKey("Content-Type"))
-        {
-            cout << client.getRequest().getValueOf("Content-Type") << endl;
-
-            vector<string> contentType = Request::getVector(client.getRequest().getValueOf("Content-Type"));
-        
-            if (contentType[0] == "multipart/form-data;" && !client.isUploading())
-            {
-                //TODO create file
-                // client.setIsUploading(true);
-            }
-
-            // if (client.isUploading())
-            // {
-            //     //TODO write in file
-
-            //     exit(0);
-            // }
-        }
-        else
-        {
-            cout << "Content-Type not found" << endl;
-            exit(0);
-        }
-    }
-    else if (client.getRequest().isHeaderHasKey("Transfer-Encoding"))
-    {
-        if (client.getRequest().getValueOf("Transfer-Encoding") == "chunked")
-        {
-            cout << "chunked" << endl;
-            exit(0);
-        }
-    }
-*/
-
-    cout << "POST method" << endl;
-    cout << "Content-Length: " << httpRequest.getValueOf("Content-Length") << endl;
-    cout << "_requestString size: " << client._requestString.size() << endl;
-
     if (httpRequest.isHeaderHasKey("Content-Length"))
     {
-        
-        cout << "recived " << client.getReceivedLength() << endl;
         if ((int)atof(httpRequest.getValueOf("Content-Length").c_str()) == client.getReceivedLength())
         {
-
-            // vector<string> contentType = Request::getVector(client.getRequest().getValueOf("Content-Type"));
-        
-            // if (contentType[0] == "multipart/form-data;" && !client.isUploading())
-            // {
-            //     //TODO create file
-            //     uploadFile(client);
-            //     // client.setIsUploading(true);
-            // }
-            // else
-            // {
-                
-                cout << client.getBody() << endl;
-                //TODO write in file
-                
-            // }
+            cerr << "Content-Length: " << httpRequest.getValueOf("Content-Length") << endl;
+            client.setBody();
+            uploadFile(client);
         }
     }
     else if (httpRequest.isHeaderHasKey("Transfer-Encoding"))
     {
         if (httpRequest.getValueOf("Transfer-Encoding") == "chunked")
         {
-            cout << "chunked" << endl;
-            exit(0);
+            if (client._requestString.rfind(ENDL "0" ENDL ENDL) != string::npos)
+            {
+                client.setBody();
+                parseChunked(client.getBody());
+            }
         }
     }
-
-
 }
 
 void SocketClass::uploadFile(Client &client)
@@ -261,59 +251,18 @@ void SocketClass::uploadFile(Client &client)
 
 
         client.getRequest().setBody(tmp);
-
-        cout << "body : " << endl;
-
-
-        // cout << client.getRequest().getBody() << endl;
-
         tmp.clear();
     }
 
 }
 
-/*
-bool handleChunkedRequest(Client &client)
-{
-    size_t pos;
-    int size = 0;
-    string sizeStr;
-    string tmp;
-    string cunked;
-    char *end_ptr;
-    bool atSizeLine = true;
-
-    stringstream ss(content);
-
-    string line;
-    while (getline(ss, line))
-    {
-        if (atSizeLine)
-        {
-            size = strtol(line.c_str(), &end_ptr, 16);
-            if (size == 0) return true;
-            atSizeLine = false;
-        }
-        else
-        {
-            if (size == line.size())
-                atSizeLine = true;
-            c += line;
-            size -= line.size();
-            continue;
-        }
-    }
-    return false;
-}
-*/
-
 int SocketClass::communicate(struct pollfd &fds)
 {
 
-    // cout << "communicate" << endl;
+    cerr << "communicate" << endl;
     string			req;
     size_t			size;
-    char			request[MAX_REQUEST_SIZE];
+    char			request[MAX_REQUEST_SIZE] = {0};
 
     size = recv(fds.fd, request, MAX_REQUEST_SIZE, 0);
     if ( !recvError(size, fds.fd) ) return 0;
@@ -335,7 +284,7 @@ int SocketClass::communicate(struct pollfd &fds)
         int isOk = httpRequest.isReqWellFormed();
         if (isOk != 200)
         {
-            cout << "Request not well formed >> " << isOk << "<<" << endl;
+            cerr << "Request not well formed >> " << isOk << "<<" << endl;
             exit(0);
         }
 
@@ -353,7 +302,7 @@ int SocketClass::communicate(struct pollfd &fds)
         }
         else if (_clients[fds.fd].getRequest().getMethod() == DELETE)
         {
-            cout << "************************DELETE method" << endl;
+            cerr << "************************DELETE method" << endl;
             exit(0);
         }
     }
@@ -365,7 +314,7 @@ int SocketClass::communicate(struct pollfd &fds)
 
 bool SocketClass::isNewConnection(int listener)
 {
-    // cout << "NewConnection" << endl;
+    cerr << "NewConnection" << endl;
     for (size_t i = 0; i < _s.size(); i++)
     {
         if (_s[i].sockfd == listener)
@@ -396,6 +345,11 @@ void SocketClass::setFds()
         _fds.push_back(createPollfd(listener));
 
     }
+
+    for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
+    {
+        cerr << "http://localhost:" << it->getPort() << endl;
+    }
 }
 
 void SocketClass::run()
@@ -407,7 +361,7 @@ void SocketClass::run()
     
     while (true)
     {
-        cout << "listen ..." << endl;
+        // cout << "listen ..." << endl;
         if (poll(&_fds[0], _fds.size(), -1) < 0) break;
 
         current_size = _fds.size();
