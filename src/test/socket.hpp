@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/02 01:41:21 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/03 07:09:47 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+
+#include <math.h>
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -75,11 +77,14 @@ class SocketClass
 
         bool recvError(int size, int fd);
 
+        unsigned long hex2dec(string hex);
+
         void handlePostRequest(Client &client);
         // bool handleChunkedRequest(Client &client);
 
         void uploadFile(Client &client);
         
+        string parseChunked(string body);
     private:
         struct sockaddr_in      address;
         vector<Server>          servers;

@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/02 05:47:55 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/03 03:47:49 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,12 +100,13 @@ Request Request::deserialize(string request)
 		tokens = getVector(line);
 
 		string key = tokens[0];
-		string value = line.substr(key.length());
+		string value = line.substr(key.length() + 1);
 
 		key.pop_back();
 		headers.insert(make_pair(key, value));
 	}
 
+	// headerFirstLine[2].pop_back();
 	return Request(headerFirstLine[0], headerFirstLine[1], headerFirstLine[2], headers);
 
 	error:
@@ -201,7 +202,6 @@ bool Request::acceptUriLength()
 
 bool Request::isVersionSupported()
 {
-	cout << "\n1" + _version + "2" << endl;
 	return (_version != "HTTP/1.1");
 }
 
@@ -216,7 +216,6 @@ int Request::isReqWellFormed()
 	
 	if ( transferEncoding() )
 	{
-		cout << "transferEncoding" << _headers["Transfer-Encoding"] << endl;
 		if (_headers["Transfer-Encoding"] != "chunked")
 			return NOT_IMPLEMENTED;
 	}
