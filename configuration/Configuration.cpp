@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/30 22:31:29 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/04 02:15:15 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Configuration::Configuration(string fileName)
     {
         if (checkServerName.find(_server[i].getServerName()) != checkServerName.end())
         {
-           cerr <<  "Error: ServerName already in use" << endl;
+           cerr <<  "Error : ServerName already in use" << endl;
               exit(1);
         }
         checkServerName[_server[i].getServerName()] = false;
