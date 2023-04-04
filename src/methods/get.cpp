@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/03 06:25:04 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/03 22:28:33 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Get::Get(Request request, Server server) : Method(request, server)
             return ;
         }
         CGI cgi(request, server, _url, "GET");
-        cout << cgi.getResp() << endl; 
+        _resp = cgi.getResp(); 
         return ;
     }
     if (!hasSlashInTheEnd())
@@ -44,7 +44,6 @@ Get::Get(Request request, Server server) : Method(request, server)
     if (!hasIndexFile())
     {
         string file = _url + "index.html"; 
-        cout << file << endl;
         if(FILE *f = fopen(file.c_str(),"r")) // should be joined with the server root
         {
             fclose(f);
@@ -82,5 +81,6 @@ Get::Get(Request request, Server server) : Method(request, server)
         _resp = getFileContent(_url);
         return ;
     }
-    // RUN CGI ON REQUESTED FILE
+    CGI cgi(request, server, _url, "GET");
+    _resp = cgi.getResp();
 }
