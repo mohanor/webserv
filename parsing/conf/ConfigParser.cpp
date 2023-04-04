@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/04 02:37:54 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/04 02:45:40 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ ConfigParser &ConfigParser::operator=(const ConfigParser &src)
 
 void ConfigParser::errorLogs(string titleError)
 {
-    cerr << titleError << endl;
+    cerr << "\x1B[31m" << titleError <<"\x1B[0m" << endl;
     exit(1);
 }
 
