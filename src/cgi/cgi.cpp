@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cgi.cpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
+/*   Updated: 2023/04/05 07:28:59 by yel-khad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cgi.hpp"
 
 CGI::CGI(Request request, Server server, string url, string method) : _request(request) , _server(server) , _url(url) , _method(method)
@@ -5,46 +17,52 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     int pipefd[2];
     int save0 = dup(0);
     int save1 = dup(1);
+    
     getScriptName();
-    if (!_args)
-        _resp = "";
-    else
+    pid_t pid;
+    if ((pid = fork()) < 0 || pipe(pipefd) < 0 || !_args)
     {
-        pipe(pipefd);
-        pid_t pid = fork();
-        if (pid == 0) 
-        {
-            chdir(url.erase(url.find_last_of('/'),url.length()).c_str());
-            string body = "" + _request.getBody();
-            FILE *tmp = tmpfile();
-    	    fputs(body.c_str(), tmp);
-        	rewind(tmp);
-            dup2(fileno(tmp), 0);
-		    close(fileno(tmp));
-            dup2(pipefd[1], STDOUT_FILENO);
-            close(pipefd[1]);
-            execve(_args[0], _args, NULL);
-            exit(1);
-        }
-        waitpid(pid, NULL, 0);
-        close(pipefd[1]);
-        char buffer[4096] = "";
-        size_t nread;
-        while ((nread = read(pipefd[0], buffer, sizeof(buffer))) > 0)
-            _resp += buffer;
-        
-        close(pipefd[0]);
-        dup2(save0, STDIN_FILENO);
-        dup2(save1,STDOUT_FILENO);
-        close(save0);
-        close(save1);
+        _resp = "error";
+        return ;
     }
+    if (pid == 0) 
+    {
+        if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) < 0)
+            exit(1);
+        string body = "" + _request.getBody();
+        FILE *tmp = tmpfile();
+        if (!tmp)
+            exit(1);
+        fputs(body.c_str(), tmp);
+        rewind(tmp);
+        dup2(fileno(tmp), 0);
+        close(fileno(tmp));
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+        alarm(300);
+        execve(_args[0], _args, setENV());
+        exit(1);
+    }
+    int status;
+    waitpid(pid, &status, 0);
+    char buffer[4096] = "";
+    size_t nread;
+    close(pipefd[1]);
+    while ((nread = read(pipefd[0], buffer, sizeof(buffer))) > 0)
+        _resp += buffer;
+    close(pipefd[0]);
+    dup2(save0, STDIN_FILENO);
+    dup2(save1, STDOUT_FILENO);
+    close(save0);
+    close(save1);
+    if (WIFSIGNALED(status) || status != 0)
+        _resp = "error";
 }
 
 char **CGI::_envToChar()
 {
     char **ret = new char*[_env.size() + 1];
-    int i=0;
+    int i = 0;
 
     for (;i < _env.size(); i++)
     {

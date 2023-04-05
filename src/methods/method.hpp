@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/03 22:36:51 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/04 05:12:43 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include "../../parsing/conf/Location.hpp"
 # include "../utility/utility.hpp"
 # include "../cgi/cgi.hpp"
+# include "../../parsing/mime/mimeTypes.hpp"
+
 
 
 using namespace std;
@@ -34,6 +36,8 @@ class Method
         int     _status;
         string  _comment;
         string  _url;
+        MimeTypes _mime;
+        string  _contentType;
 
         map<string, Header> headers;
     public:
@@ -51,7 +55,7 @@ class Method
         string getURL() const;
         string getResponse() const;
         string getIndex();
-        string getResp() const;
+        string getContentType();
 };
 
 class Post : public Method
