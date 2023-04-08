@@ -3,11 +3,17 @@
 
 Post::Post(Request request, Server server) : Method(request, server)
 {
-    if (locationSupportUpload())
+    if (request.isUploadable())
     {
-        _status = 201;
-        _comment = "Created";
-        // UPLOAD FILE
+        if (locationSupportUpload())
+        {
+            _status = 201;
+            _comment = "Created";
+            // UPLOAD FILE
+            return ;
+        }
+        _status = 403;
+        _comment = "Forbidden";
         return ;
     }
     if (!getRequestedResource())
