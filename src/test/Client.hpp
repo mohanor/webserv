@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:14 by matef             #+#    #+#             */
-/*   Updated: 2023/04/02 03:02:25 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/04 00:54:04 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,13 +101,6 @@ class Client
         bool                    _headerReceived;
         map<string, string>     _header_map;
         Request                 _request;
-
-        // Client(string fileContent);
-        // void    setFile(const string &file);
-        // void    setRequest(string request);
-        // void    setHeadAndBody();
-        // string      _request;
-        // std::ifstream*   _file;
 };
 
 

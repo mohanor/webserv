@@ -24,7 +24,11 @@ Post::Post(Request request, Server server) : Method(request, server)
             _comment = "Forbidden";
             return ;
         }
-        // RUN CGI ON REQUESTED FILE
+        CGI cgi(_request, _server, _url, "POST");
+        _status = 200;
+        _comment = "OK";
+        _resp = cgi.getResp();
+        return ;
     }
     if (!hasSlashInTheEnd())
     {

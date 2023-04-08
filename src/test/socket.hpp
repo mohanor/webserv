@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/03 07:09:47 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/04 03:50:58 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,16 @@ const int MAX_REQUEST_SIZE = 1024;
 #define CHUNK_SIZE  1024
 #define LOCALHOST "./www/html"
 
+#include "../methods/get.hpp"
+#include "../server/Worker.hpp"
 
 struct SocketServer
 {
-    SocketServer(int sockfd, int port, std::string host) : sockfd(sockfd), port(port), host(host) {}
+    SocketServer(int sockfd, Server s) : sockfd(sockfd), server(s) {}
     int                 sockfd;
-    int                 port;
-    std::string         host;
+    // int                 port;
+    // std::string         host;
+    Server              server;
     int                 addrlen;
     struct sockaddr_in address;
 };
@@ -85,6 +88,7 @@ class SocketClass
         void uploadFile(Client &client);
         
         string parseChunked(string body);
+        Server getServer(int sockfd);
     private:
         struct sockaddr_in      address;
         vector<Server>          servers;

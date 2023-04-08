@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   delete.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:57:50 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/03 17:39:25 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/04 01:37:48 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,39 +46,6 @@ void Delete::MissingBackSlash()
     _comment = "Conflict";
 }
 
-void Delete::deleteAllFolderContent()
-{
-    struct dirent *dirents;
-    DIR *dir = opendir(_url.c_str());
-    int countFiles = 0;
-
-    
-    if (dir != NULL)
-    {
-        dirents = readdir(dir);
-        dirents = readdir(dir);
-        
-        while ((dirents = readdir(dir)) != NULL)
-        {
-            string path = _url + dirents->d_name;
-            size_t res = remove(path.c_str());
-            if (res == 0)
-                deleteSeccess();
-            else
-                cout << "file not deleted not found" << endl;
-            countFiles++;
-        }
-         if (countFiles == 0)
-         {
-           _resp = getFileContent("./error_page/404.html");
-            setError(404, "Not Found");
-         }
-        
-    }
-    else
-        return;
-}
-
 void Delete::setError(int status, string comment)
 {
     _status = status;
@@ -87,8 +54,6 @@ void Delete::setError(int status, string comment)
 
 void Delete::getResourceType()
 {
-
-   
     if (isDir())
     {
         if (hasSlashInTheEnd())
@@ -102,8 +67,6 @@ void Delete::getResourceType()
     }
     else if (isFile())
     {
-        
-       
         if (hasCGI())
             cout << "CGI" << endl;
         else

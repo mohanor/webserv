@@ -27,15 +27,15 @@ int main(int ac, char **av)
 
 
     // SocketClass socket;
-    Worker worker;
+    // Worker worker;
     
-    string req = "GET /home/ HTTP/1.1\r\n";
+    // string req = "GET /home/ HTTP/1.1\r\n";
 
 
-    req += "\r\n";
+    // req += "\r\n";
 
     // req += "librait\r\n";
-    Request r(Request::deserialize(req));
+    // Request r(Request::deserialize(req));
 
     // cout << "#" << r.getMethod() << "\n\r123456789" << endl;
     // int s = r.isReqWellFormed();
@@ -51,14 +51,14 @@ int main(int ac, char **av)
     // // runCode(server[0], r);
 
 
-    Configuration config("./conf/default.conf");
-    vector<Server> server = config.getServers();
-    cout << server.size() << endl;
-    Method m =  worker.getMethodObject(r, server[0]);
+    // Configuration config("./conf/default.conf");
+    // vector<Server> server = config.getServers();
+    // cout << server.size() << endl;
+    // Method m =  worker.getMethodObject(r, server[0]);
 
-    cout << "status : " << m.getStatus() << endl;
-    cout << "path   : " <<m.getResponse() << endl;
-    cout << "comme  : "<<m.getComment() << endl;
+    // cout << "status : " << m.getStatus() << endl;
+    // cout << "path   : " <<m.getResponse() << endl;
+    // cout << "comme  : "<<m.getComment() << endl;
     // cout << "url  : "<<m.getURL() << endl;
     // cout << "---------------------" << endl;
     // worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www/html/") ;
@@ -67,5 +67,8 @@ int main(int ac, char **av)
 
 // cout << getFileContent("./error_page/404.html") << endl ;
 
+    SocketClass s;
+
+    s.run();
     return 0;
 }

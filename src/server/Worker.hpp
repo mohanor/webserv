@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:36:44 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/01 18:00:12 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/04 01:18:05 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ public:
     bool isLocationHaveRedirection(Server &servers,string &path);
     bool isMethodAllowdedInLocation(string Method,Server &servers);
     bool getAllowdedMethods(string methods, string allow);
-    Method getMethodObject(Request &req, Server &server);
+    Method getMethodObject(Request req, Server server);
     Get  runMethodGet(Request &req, Server &server);
     void  runMethodPost(Request &req, Server &server);
     Delete  runMethodDelete(Request &req, Server &server);
