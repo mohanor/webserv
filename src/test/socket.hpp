@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/04 03:50:58 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/08 04:58:41 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ class SocketClass
         
         string parseChunked(string body);
         Server getServer(int sockfd);
+        Request                 httpRequest;
     private:
         struct sockaddr_in      address;
         vector<Server>          servers;
@@ -97,7 +98,6 @@ class SocketClass
 
         map<int, Client>        _clients;
 
-        Request                 httpRequest;
         MimeTypes               _mimeTypes;
 };
 

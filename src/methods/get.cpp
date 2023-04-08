@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/08 00:48:47 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/08 01:18:12 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ Get::Get(Request request, Server server) : Method(request, server)
     }
     if (!hasIndexFile())
     {
+    cout << "url:hhh " << _url << endl;
         string file = _url + "index.html"; 
         if(FILE *f = fopen(file.c_str(),"r"))
         {
@@ -80,6 +81,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         return;
     }
     _url = getIndex();
+
     if (_url.empty())
     {
         _status = 403;

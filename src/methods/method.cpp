@@ -15,8 +15,9 @@
 Method::Method(Request request, Server server) : _request(request) , _server(server) ,_resp(""), _contentType("text/html")
 {
     Location loc = _server._locations[_server.getMatchedLocation()];
-    // cout << "matched location: " << _server.getMatchedLocation() << endl;
+    cout << "matched location: " << _server.getMatchedLocation() << endl;
     string resource = _request.getRessource().erase(0, _server.getMatchedLocation().length());
+    
     // cerr << "resource: "<< resource << endl;
     if (loc._directives.find("root") != loc._directives.end())
     {
