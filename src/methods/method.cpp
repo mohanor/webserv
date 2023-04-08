@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/07 14:24:15 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/05 07:54:12 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "method.hpp"
 
-Method::Method(Request request, Server server) : _request(request) , _server(server) ,_resp("")
+Method::Method(Request request, Server server) : _request(request) , _server(server) ,_resp(""), _contentType("text/html")
 {
     Location loc = _server._locations[_server.getMatchedLocation()];
     // cout << "matched location: " << _server.getMatchedLocation() << endl;
@@ -29,11 +29,11 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     _status = 405;
     _comment =  "Method Not Allowed";
     _resp =  getFileContent("./error_pages/405.html");
-
-   
 }
+
 Method::Method(int status, string comment, string url, string path, Request request, Server server) : _status(status), _comment(comment), _url(url) , _server(server), _request(request)
 {}
+
 bool Method::getRequestedResource()
 {
     return (isDir() || isFile());
@@ -117,8 +117,12 @@ string Method::getIndex()
                 index = join_path(_url,index_v[i]);
         }
     }
-    
     return index;
+}
+
+string Method::getContentType()
+{  
+    return _contentType;
 }
 
 string join_path(string s1, string s2)

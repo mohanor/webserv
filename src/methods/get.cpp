@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/03 22:28:33 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/08 00:48:47 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,20 @@ Get::Get(Request request, Server server) : Method(request, server)
             _status = 200;
             _comment = "OK";
             _resp = getFileContent(_url);
+            _contentType = _mime.getMimeType(_mime.getExtension(_url));
             return ;
         }
         CGI cgi(request, server, _url, "GET");
-        _resp = cgi.getResp(); 
+        _resp = cgi.getResp();
+        if (_resp == "error")
+        {
+            _resp = "";
+            _status = 502;
+            _comment = "Bad Gateway";
+            return ;
+        }
+        _status = 200;
+        _comment = "OK";
         return ;
     }
     if (!hasSlashInTheEnd())
@@ -39,15 +49,17 @@ Get::Get(Request request, Server server) : Method(request, server)
         _status = 301;
         _comment = "Moved Permanently";
         _resp = getFileContent("./error_page/301.html");
+        _contentType = _mime.getMimeType(_mime.getExtension("./error_page/301.html"));
         return ;
     }
     if (!hasIndexFile())
     {
         string file = _url + "index.html"; 
-        if(FILE *f = fopen(file.c_str(),"r")) // should be joined with the server root
+        if(FILE *f = fopen(file.c_str(),"r"))
         {
             fclose(f);
             _resp = getFileContent("./index.html");
+            _contentType = _mime.getMimeType(_mime.getExtension("./index.html"));
             _status = 200;
             _comment = "OK";
             return ;
@@ -57,12 +69,14 @@ Get::Get(Request request, Server server) : Method(request, server)
             _status = 403;
             _comment = "Forbidden";
             _resp = getFileContent("./error_page/403.html");
+            _contentType = _mime.getMimeType(_mime.getExtension("./error_page/403.html"));
             return ;
         }
         Worker::listenDirectory(_url);
         _status = 200;
         _comment = "OK";
         _resp = getFileContent("./configuration/dir/index.html");
+        _contentType = _mime.getMimeType(_mime.getExtension("./configuration/dir/index.html"));
         return;
     }
     _url = getIndex();
@@ -71,6 +85,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         _status = 403;
         _comment = "Forbidden";
         _resp = getFileContent("./error_page/403.html");
+        _contentType = _mime.getMimeType(_mime.getExtension("./error_page/403.html"));
         return ;
     }
     if (!hasCGI())
@@ -79,8 +94,19 @@ Get::Get(Request request, Server server) : Method(request, server)
         _status = 200;
         _comment = "OK";
         _resp = getFileContent(_url);
+        _contentType = _mime.getMimeType(_mime.getExtension(_url));
         return ;
     }
     CGI cgi(request, server, _url, "GET");
     _resp = cgi.getResp();
+    if (_resp == "error")
+    {
+        _resp = "";
+        _status = 502;
+        _comment = "Bad Gateway";
+        return ;
+    }
+    _status = 200;
+    _comment = "OK";
+    return ;
 }
