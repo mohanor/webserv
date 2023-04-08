@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/01 18:02:28 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/04 01:17:44 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
     return true;
 }
 
-Method Worker::getMethodObject(Request &req, Server &server)
+Method Worker::getMethodObject(Request req, Server server)
 {
     bool isRedirection = false;
     string path;
