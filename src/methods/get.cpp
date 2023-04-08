@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/05 07:18:38 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/08 00:48:47 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ Get::Get(Request request, Server server) : Method(request, server)
         _status = 404;
         _comment = "Not Found";
         _resp = getFileContent("./error_page/404.html");
-        _contentType = _mime.getMimeType(_mime.getExtension("./error_page/404.html"));
         return ;
     }
     if (isFile())

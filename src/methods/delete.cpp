@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 05:20:49 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/05 07:56:05 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/07 00:32:11 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,14 @@ Delete::Delete(Request request, Server server) : Method(request, server)
     {
         if (!hasCGI())
         {
+            if (!remove(_url.c_str()))
+            {
+                _status = 403;
+                _comment = "Forbidden";
+                return ;
+            }
             _status = 204;
             _comment = "No Content";
-            remove(_url.c_str());
             return ;
         }
         CGI cgi(request, server, _url, "DELETE");
@@ -74,5 +79,4 @@ Delete::Delete(Request request, Server server) : Method(request, server)
         _comment = "OK";
         return ;
     }
-    rmdir(url.c_str()); // remove directory
 }
