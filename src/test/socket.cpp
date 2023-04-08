@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/03 22:39:52 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/07 22:23:14 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ int SocketClass::create()
     return listener;
 }
 
-void SocketClass::bindSocket(int listener, SocketServer &server)
+void SocketClass::bindSocket(int listener, SocketServer &serverToBind)
 {
-    bzero(&server.address, sizeof(server.address));
+    bzero(&serverToBind.address, sizeof(serverToBind.address));
     
-    server.address.sin_family = AF_INET;
-    server.address.sin_addr.s_addr = INADDR_ANY;
-    server.address.sin_port = htons(server.port);
+    serverToBind.address.sin_family = AF_INET;
+    serverToBind.address.sin_addr.s_addr = INADDR_ANY;
+    serverToBind.address.sin_port = htons(serverToBind.server.getPort());
 
     int opt = 1;
 
@@ -52,7 +52,7 @@ void SocketClass::bindSocket(int listener, SocketServer &server)
         exit(EXIT_FAILURE);
     }
     
-    int bind_result = ::bind(listener, (struct sockaddr*) &server.address, sizeof(server.address));
+    int bind_result = ::bind(listener, (struct sockaddr*) &serverToBind.address, sizeof(serverToBind.address));
     if (bind_result < 0)
     {
         cerr << "Error binding socket" << std::endl;
@@ -79,8 +79,7 @@ int SocketClass::sendFileInPackets(std::string file, struct pollfd &fds)
     // cout << "sendFileInPacket" << endl;
     if (_clients[fds.fd].getStatus() == FILE_NOT_SET)
     {
-        // _clients[fds.fd].setFile(file);
-        _clients[fds.fd].setFileContent(getFileContent(file));
+        _clients[fds.fd].setFileContent(file);
         _clients[fds.fd].setStatus(READY_TO_SEND);
     }
 
@@ -89,10 +88,10 @@ int SocketClass::sendFileInPackets(std::string file, struct pollfd &fds)
         string mimeType;
         string response;
 
-        mimeType = _mimeTypes.getMimeType(_mimeTypes.getExtension(file));
+        mimeType = "text/html"; //TODO: get mime type from file extension
         response = "HTTP/1.1 200 Ok" ENDL;
         response += "Content-Type: " + mimeType + ENDL;
-        response += "Content-Length: " + to_string(getFileSize(file)) + ( ENDL ENDL );
+        response += "Content-Length: " + to_string(file.size()) + ( ENDL ENDL );
         
         _clients[fds.fd].setStatus(SENDING);
         send(fds.fd, response.c_str(), response.size(), 0);
@@ -106,7 +105,7 @@ int SocketClass::sendFileInPackets(std::string file, struct pollfd &fds)
     return 0;
 }
 
-string SocketClass::joinRootAndPath(string root, string path, Request &httpRequest)
+string SocketClass::joinRootAndPath(string root, string path, Request &httpRequest) //TODO : should be removed be cause i don't need it anymore
 {
     if (httpRequest.getRessource() == "/")
         return "./www/html/index.html";
@@ -136,7 +135,7 @@ bool SocketClass::recvError(int size, int fd)
     return true;
 }
 
-unsigned long SocketClass::hex2dec(string hex)
+unsigned long SocketClass::hex2dec(string hex) 
 {
     unsigned long result = 0;
 
@@ -207,11 +206,20 @@ void SocketClass::handlePostRequest(Client &client)
     }
 }
 
+Server SocketClass::getServer(int sockfd)
+{
+    for(size_t i = 0; i < _s.size(); i++)
+    {
+        if (_s[i].sockfd == sockfd)
+            return _s[i].server;
+    }
+    return _s[0].server; // return default server
+}
+
 void SocketClass::uploadFile(Client &client)
 {
-    size_t pos_1 = client._requestString.find("\r\n\r\n") + 4;
 
-    client._requestString.erase(0, pos_1);
+    size_t nextLine ;
 
     vector<string> contentType = Request::getVector(client.getRequest().getValueOf("Content-Type"));
     string boundary = "--" + contentType[1].substr(9);
@@ -221,36 +229,35 @@ void SocketClass::uploadFile(Client &client)
     size_t pos_2 = client._requestString.find(endBoundary);
     if (pos == string::npos || pos_2 == string::npos) // return msg error : bad request
         return;
+        
     string tmp;
 
     while (pos != string::npos && pos < pos_2)
     {
-
-        pos_1 = client._requestString.find("\r\n\r\n") + 4;
-
-        string bodyHead = client._requestString.substr(0, pos_1);
-
+        nextLine = client._requestString.find("\r\n\r\n") + 4;
+        string bodyHead = client._requestString.substr(0, nextLine);
         while (bodyHead.find("\r\n") != string::npos)
             bodyHead.replace(bodyHead.find("\r\n"), 2, " ");
 
         vector <string> bodyHeadVector = Request::getVector(bodyHead);
-
         while (bodyHeadVector.size() && bodyHeadVector[0].find("filename") == string::npos)
             bodyHeadVector.erase(bodyHeadVector.begin());
 
+        
         if (!bodyHeadVector.size())
-            exit (0);
-
+            return ;
+        
         string filename = bodyHeadVector[0].substr(bodyHeadVector[0].find("\"") + 1);
-
         filename.erase(filename.find("\""));
 
-        client._requestString.erase(0, pos_1);
+        client._requestString.erase(0, nextLine);
         pos = client._requestString.find(boundary);
         tmp = client._requestString.substr(0, pos);
 
-
-        client.getRequest().setBody(tmp);
+        ofstream file("./uploads/" + filename, ios::out | ios::trunc);
+        // client.getRequest().setBody(tmp);
+        
+        file << tmp;
         tmp.clear();
     }
 
@@ -259,7 +266,7 @@ void SocketClass::uploadFile(Client &client)
 int SocketClass::communicate(struct pollfd &fds)
 {
 
-    cerr << "communicate" << endl;
+    // cerr << "communicate" << endl;
     string			req;
     size_t			size;
     char			request[MAX_REQUEST_SIZE] = {0};
@@ -285,7 +292,7 @@ int SocketClass::communicate(struct pollfd &fds)
         if (isOk != 200)
         {
             cerr << "Request not well formed >> " << isOk << "<<" << endl;
-            exit(0);
+            return (false);
         }
 
         if (_clients[fds.fd].isHeaderRecived())
@@ -294,19 +301,22 @@ int SocketClass::communicate(struct pollfd &fds)
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
             handlePostRequest(_clients[fds.fd]);
+            return (true);
         }
-        else if (_clients[fds.fd].getRequest().getMethod() == GET)
+
+        if (_clients[fds.fd].getRequest().getMethod() == GET)
         {
             _clients[fds.fd].setStatus(FILE_NOT_SET);
             fds.events = POLLOUT;
+            return (true);
         }
-        else if (_clients[fds.fd].getRequest().getMethod() == DELETE)
+
+        if (_clients[fds.fd].getRequest().getMethod() == DELETE)
         {
             cerr << "************************DELETE method" << endl;
             exit(0);
         }
     }
-
 
     return true;
 }
@@ -314,7 +324,7 @@ int SocketClass::communicate(struct pollfd &fds)
 
 bool SocketClass::isNewConnection(int listener)
 {
-    cerr << "NewConnection" << endl;
+    // cerr << "NewConnection" << endl;
     for (size_t i = 0; i < _s.size(); i++)
     {
         if (_s[i].sockfd == listener)
@@ -338,7 +348,7 @@ void SocketClass::setFds()
     {
         listener = this->create();
         
-        _s.push_back(SocketServer(listener, it->getPort(), it->getHost()));
+        _s.push_back(SocketServer(listener, *it));
 
         this->bindSocket(listener, _s[_s.size() - 1]);
         this->listenSocket(listener);
@@ -347,9 +357,7 @@ void SocketClass::setFds()
     }
 
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
-    {
         cerr << "http://localhost:" << it->getPort() << endl;
-    }
 }
 
 void SocketClass::run()
@@ -361,7 +369,7 @@ void SocketClass::run()
     
     while (true)
     {
-        // cout << "listen ..." << endl;
+        cout << "listen ..." << endl;
         if (poll(&_fds[0], _fds.size(), -1) < 0) break;
 
         current_size = _fds.size();
@@ -390,12 +398,9 @@ void SocketClass::run()
 
             if (_fds[i].revents & POLLOUT)
             {
-                httpRequest.resource();
-                
-                string file = joinRootAndPath(LOCALHOST, httpRequest.getRessource(), httpRequest);
-                
-                sendFileInPackets(file, _fds[i]);
-                
+                Worker w;
+                Method g = w.getMethodObject(_clients[_fds[i].fd].getRequest(), getServer(_fds[i].fd));
+                sendFileInPackets(g.getResponse(), _fds[i]);
                 if (_clients[_fds[i].fd].getStatus() == SENDED)
                 {
                     close(_fds[i].fd);
