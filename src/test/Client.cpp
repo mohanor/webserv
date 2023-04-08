@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:11 by matef             #+#    #+#             */
-/*   Updated: 2023/04/02 03:02:55 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/08 04:55:12 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,10 @@ void Client::setStatus(int status)
 
 string      Client::getBody()
 {
-    return _body;
+    size_t pos = _requestString.find("\r\n\r\n");
+    _requestString.erase(0, pos + 4);
+
+    return _requestString;
 }
 
 void Client::setBody()

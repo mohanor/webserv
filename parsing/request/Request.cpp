@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/03 03:47:49 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/08 05:13:45 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "Request.hpp"
 
 
-Request::Request(string method, string resource, string version, map<string, string> headers)
+Request::Request(string method, string resource, string version, map<string, string> headers) : _isUploadable(false)
 {
 	this->_method = method, this->_resource = resource;
 	this->_version = version, this->_headers = headers;
@@ -187,6 +187,7 @@ bool Request::allowedChars()
 
 bool Request::isMethodAllowed()
 {
+	cout << "#" << _method << "#" << endl;
 	return (_method != "GET" && _method != "DELETE" && _method != "POST");
 }
 
@@ -250,6 +251,11 @@ string Request::getQueryString()
 	return _queryString;
 }
 
+bool Request::isUploadable()
+{
+    return _isUploadable;
+}
+
 string Request::getBody()
 {
 	return _body;
@@ -303,5 +309,10 @@ map<string, string> Request::getHeader()
 
 //     return Request(version, method, resource);
 // }
+
+void Request::setUploadable()
+{
+	_isUploadable = true;
+}
 
 Request::~Request() {}
