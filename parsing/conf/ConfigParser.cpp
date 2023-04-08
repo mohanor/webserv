@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/01 20:01:01 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/04 02:45:40 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ ConfigParser &ConfigParser::operator=(const ConfigParser &src)
 
 void ConfigParser::errorLogs(string titleError)
 {
-    cerr << titleError << endl;
+    cerr << "\x1B[31m" << titleError <<"\x1B[0m" << endl;
     exit(1);
 }
 
@@ -326,16 +326,11 @@ void ConfigParser::checkSynatxCurly()
         if (_tokens[i].second == OPEN_CURLY && _tokens[i - 1].second != WORD)
         {
             if (_tokens[i - 1].second != CONTEXT || _tokens[i].second == WORD)
-                errorLogs("ERROR File");
+                errorLogs("Error : Config File does not a valid format");
         }
         if (_tokens[i].second == OPEN_CURLY || _tokens[i].second == CLOSE_CURLY)
             countCurly++;
     }
-    // if (_tokens[_tokens.size() - 2].second != CLOSE_CURLY)
-    // {
-    //     errorLogs("Error find closed curly");
-
-    // }
     if (countCurly % 2 != 0)
         errorLogs("Error find closed curlys");
 }
@@ -395,14 +390,14 @@ void ConfigParser::checkSyntaxContext()
         {
             lenghtServer(i);
             if (_tokens[i].first != "server")
-                errorLogs("error server synatx");
+                errorLogs("Error 'Server' synatx does not valid");
         }
         if (_tokens[i].second == CONTEXT && _tokens[i + 1].second != OPEN_CURLY)
         {
             if (_tokens[i].first != "location" || (_tokens[i + 1].second != WORD || _tokens[i + 2].second != OPEN_CURLY))
-                errorLogs("error Location synatx");
+                errorLogs("Error : 'Location' synatx does not valid");
             if ((_tokens[i + 1].first.find("/")) != 0 || _tokens[i + 1].first[1] == '/')
-                errorLogs("error Location synatx camnnot find /");
+                errorLogs("Error : 'Location' synatx does not find  '/'");
         }
     }
 }
@@ -468,11 +463,11 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
 
                 file.open(fileName);
                 if (!file.is_open())
-                    throw out_of_range("error file");
+                    throw out_of_range("Error : file not found !");
             }
             for (size_t i = 0; i < _tokens[index + 1].first.size(); i++)
                 if (!isdigit(_tokens[index + 1].first[i]))
-                    throw out_of_range("error status code !" + _tokens[index + 1].first);
+                    throw out_of_range("Error : Status code not a valid " + _tokens[index + 1].first);
 
             stod(_tokens[index + 1].first);
         }
@@ -497,10 +492,32 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
     if (_tokens[index].first == "autoindex")
     {
         if (_tokens[index + 1].first != "on" && _tokens[index + 1].first != "off")
-            errorLogs("error autoindex " + _tokens[index + 1].first);
+            errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid autoindex");
     }
 }
-
+bool checkSyntaxValidHost(string host)
+{
+    vector<string> hst = Request::getVector(host, '.');
+    if (hst.size() != 4)
+        return false;
+    for (size_t i = 0; i < host.size(); i++)
+    {
+        if (host[i] == '.' && host[i + 1] == '.')
+            return false;
+    }
+    if (host.find(".") == 0 || host.rfind(".") == host.size() - 1)
+        return false;
+    
+    for (size_t i = 0; i < hst.size(); i++)
+    {
+        for (size_t j = 0; j < hst[i].size(); j++)
+        {
+            if (!isdigit(hst[i][j]))
+                return false;
+        }
+    }
+    return true;
+}
 void ConfigParser::checkSynaxDirective()
 {
     int i = 0;
@@ -511,38 +528,29 @@ void ConfigParser::checkSynaxDirective()
         {
 
             if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2)
-                errorLogs("error error_page");
+                errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
             if (_tokens[i].first == "listen" && lengthDirective(i + 1) != 2)
-                errorLogs("error listen");
+                errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
             else if (_tokens[i].first == "listen")
-            {
-                try
-                {
-                    for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
+            { 
+                int port =   atof(_tokens[i + 1].first.c_str());
+                 if (port > 65535 || port < 1)
+                         errorLogs("Error : Port not valid ");
+                  for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
                         if (!isdigit(_tokens[i + 1].first[in]))
-                            throw out_of_range("");
-                    (stod(_tokens[i + 1].first) > 65535 || stod(_tokens[i + 1].first) < 1) ? throw out_of_range("") : 0;
-                }
-                catch (const std::exception &e)
-                {
-                    std::cerr << "error port" << '\n';
-                    exit(1);
-                }
+                            errorLogs("Error : Port size not valid");
+               if (!checkSyntaxValidHost(_tokens[i + 2].first))
+                    errorLogs("Error : Host not valid");
+            
             }
             else if (_tokens[i].first == "cli_max_size")
             {
-                try
-                {
-                    for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
+                    int size = stod(_tokens[i + 1].first);
+                    if (size <= 0)
+                        errorLogs("Error : Max size not valid");
+                     for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
                         if (!isdigit(_tokens[i + 1].first[in]))
-                            throw out_of_range("");
-                    stod(_tokens[i + 1].first);
-                }
-                catch (const std::exception &e)
-                {
-                    std::cerr << "error cli_max_size" << '\n';
-                    exit(1);
-                }
+                            errorLogs("Error : Max size not valid");
             }
             else
 
@@ -553,7 +561,7 @@ void ConfigParser::checkSynaxDirective()
             if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow" && _tokens[i].first != "listen" && _tokens[i].first != "cgi_info")
             {
                 if (lengthDirective(i + 1) != 1)
-                    errorLogs("error directive length " + _tokens[i].first);
+                    errorLogs("Error : Directive "+_tokens[i].first+" doesn't support " );
             }
             checkCorrectSyntaxDirective(i);
         }
@@ -572,11 +580,11 @@ void ConfigParser::checkSyntaxCemiColom()
             while (_tokens[i].second != NEWLINE && i < _tokens.size())
                 i++;
             if (_tokens[i - 1].second != SEMI_COLON)
-                errorLogs("error cemi colom");
+                errorLogs("Error : 'Semicolom' is missing");
             else
             {
                 if (_tokens[i - 2].second == SEMI_COLON)
-                    errorLogs("error cemi colom");
+                    errorLogs("Error : 'Semicolom' is missing'");
             }
         }
     }
@@ -591,7 +599,7 @@ void ConfigParser::checkSyntaxAfterCemiColom()
         if (_tokens[i].second == SEMI_COLON)
         {
             if (_tokens[i + 1].second != NEWLINE)
-                errorLogs("error cemi colom");
+                errorLogs("Error : 'Semicolom' is missing'");
         }
         i++;
     }
@@ -618,7 +626,7 @@ void ConfigParser::checkSyntaxDirective()
                     break;
 
             if (j ==  _directive_allowed.size())
-                errorLogs("error Directive Server  " + _tokens[i].first);
+                errorLogs("Error : '" + _tokens[i].first+"' is not a directive in this context");
         }
     }
     _directive_allowed.clear();
@@ -633,7 +641,7 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
         if (_tokens[index].second == DIRECTIVE)
         {
             if (directiveLocation.find(_tokens[index].first) != directiveLocation.end())
-                errorLogs("error directive location");
+                errorLogs("Error : Directive '" + _tokens[index].first + "' is diplicated");
             else
                 directiveLocation.insert(make_pair(_tokens[index].first, check));
             size_t i = 0;
@@ -641,7 +649,7 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
                 if (_tokens[index].first == _directive_allowed[i])
                     break;
             if (i == _directive_allowed.size())
-                errorLogs("error Directive Location " + _tokens[index].first);
+                errorLogs("Error : '" + _tokens[index].first+ "' is not a directive in this context");
         }
         index++;
     }
@@ -678,7 +686,7 @@ void ConfigParser::checkSyntaxDiplicated()
                 if (_tokens[index].first == "listen")
                 {
                     if (listen.find(_tokens[index + 1].first) != listen.end())
-                        errorLogs("error listen");
+                        errorLogs("Error : Port is already in use");
                     else
                         listen.insert(make_pair(_tokens[index + 1].first, false));
                 }
@@ -696,7 +704,7 @@ void ConfigParser::checkSyntaxDiplicated()
         for (map<string, bool>::iterator it = m.begin(); it != m.end(); it++)
         {
             if (it->second && it->first != "listen")
-                errorLogs("error diplicated " + it->first);
+                errorLogs("Error : '" + it->first+ "' is diplicated");
         }
         listen.clear();
         m.clear();
