@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:14 by matef             #+#    #+#             */
-/*   Updated: 2023/04/04 00:54:04 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/08 05:10:08 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ class Client
         string                  _request_string;
         int                     _request_length;
         string                  _requestString;
+        Request                 _request;
 
     private:
         int                     _fd;
@@ -100,7 +101,6 @@ class Client
         bool                    _isUploading;
         bool                    _headerReceived;
         map<string, string>     _header_map;
-        Request                 _request;
 };
 
 

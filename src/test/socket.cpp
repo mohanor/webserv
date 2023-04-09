@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/07 22:23:14 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/08 05:50:11 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,18 +184,27 @@ string SocketClass::parseChunked(string body)
 
 void SocketClass::handlePostRequest(Client &client)
 {
-    if (httpRequest.isHeaderHasKey("Content-Length"))
+    if (client._request.isHeaderHasKey("Content-Length"))
     {
-        if ((int)atof(httpRequest.getValueOf("Content-Length").c_str()) == client.getReceivedLength())
+        size_t contentLength = (size_t)atof(httpRequest.getValueOf("Content-Length").c_str());
+        if (contentLength == client.getReceivedLength() && httpRequest.isHeaderHasKey("Content-Type"))
         {
-            cerr << "Content-Length: " << httpRequest.getValueOf("Content-Length") << endl;
-            client.setBody();
+            vector <string> contentType = Request::getVector(httpRequest.getValueOf("Content-Type"));
+            if (contentType[0] == "multipart/form-data;")
+                httpRequest.setUploadable();
+
+            // else case is not should handled
+            
+            httpRequest.setBody(client.getBody());
+            client._requestString.clear();
+            cout << httpRequest.getBody() << endl;
+            
             uploadFile(client);
         }
     }
-    else if (httpRequest.isHeaderHasKey("Transfer-Encoding"))
+    else if (client._request.isHeaderHasKey("Transfer-Encoding"))
     {
-        if (httpRequest.getValueOf("Transfer-Encoding") == "chunked")
+        if (client._request.getValueOf("Transfer-Encoding") == "chunked")
         {
             if (client._requestString.rfind(ENDL "0" ENDL ENDL) != string::npos)
             {
@@ -204,6 +213,8 @@ void SocketClass::handlePostRequest(Client &client)
             }
         }
     }
+
+
 }
 
 Server SocketClass::getServer(int sockfd)
@@ -286,17 +297,21 @@ int SocketClass::communicate(struct pollfd &fds)
 
     if (_clients[fds.fd].getStatus() == HEADER_RECEIVED)
     {
-        httpRequest = Request::deserialize(_clients[fds.fd].getHeader());
-
-        int isOk = httpRequest.isReqWellFormed();
-        if (isOk != 200)
+        if ( _clients[fds.fd].isHeaderRecived() )
         {
-            cerr << "Request not well formed >> " << isOk << "<<" << endl;
-            return (false);
+            _clients[fds.fd]._request = Request::deserialize(_clients[fds.fd].getHeader());
+
+            int isOk = _clients[fds.fd]._request.isReqWellFormed();
+            if (isOk != 200)
+            {
+                cerr << "Request not well formed >> " << isOk << "<<" << endl;
+                return (true);
+            }
+
+            _clients[fds.fd].setHeaderReceivedVar(false);
         }
 
-        if (_clients[fds.fd].isHeaderRecived())
-            _clients[fds.fd].setRequest(httpRequest); // set request without body
+        // else if (_clients[fds.fd].isHeaderRecived()) _clients[fds.fd].setRequest(httpRequest); // set request without body
 
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
