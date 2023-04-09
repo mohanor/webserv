@@ -1,4 +1,4 @@
 import os
 
-request = input()
-print(request)
+# request = input()
+print("request")
