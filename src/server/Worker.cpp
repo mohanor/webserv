@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/04 01:17:44 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/09 02:44:39 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
             return (isRedirection = true, false);
 
         else if (!isMethodAllowdedInLocation(req.getMethod(), server))
-            return (cout << "not allowd" << endl, false);
+            return (Method(405, "Method Not Allowed ", getFileContent("./error_pages/405.html"), req, server), false);
     }
 
     return true;
@@ -142,10 +142,10 @@ Method Worker::getMethodObject(Request req, Server server)
     {
         vector<string> urlVector = Request::getVector(path);
 
-        std::fstream fs;
-        fs.open(urlVector[1]);
-        fs.close();
-        return Method(301, " Moved Permanently", urlVector[0], urlVector[1], req, server);
+        // std::fstream fs;
+        // fs.open(urlVector[1]);
+        // fs.close();
+        return Method(301, " Moved Permanently", urlVector[1], req, server);
     }
     return Method(req, server);
 }

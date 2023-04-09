@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/05 07:28:59 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/09 01:46:33 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,11 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     dup2(save1, STDOUT_FILENO);
     close(save0);
     close(save1);
-    if (WIFSIGNALED(status) || status != 0)
+    if (WIFSIGNALED(status))
+    {
+       cout << "i am is here hehe!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
         _resp = "error";
+    }
 }
 
 char **CGI::_envToChar()
@@ -112,7 +115,8 @@ void    CGI::getScriptName()
         if (find(cgi_info.begin(), cgi_info.end(), ".py") != cgi_info.end())
         {
             args[0] = (char *)cgi_info[1].c_str();
-            args[1] = (char *)Request::getVector(_url, '/').back().c_str();
+            args[1] = (char *)("./" +Request::getVector(_url, '/').back()).c_str();
+            cout << args[1] << endl;
             args[2] = NULL;
             _args = args;
         }

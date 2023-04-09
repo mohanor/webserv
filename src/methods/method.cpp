@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/08 01:48:43 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 02:36:31 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     else
         _url = _server.getRoot();
     _url = join_path(_url, resource);
-    _status = 405;
-    _comment =  "Method Not Allowed";
-    _resp =  getFileContent("./error_pages/405.html");
+    _status = 404;
+    _comment =  " Not Found";
+    _resp =  getFileContent("./error_pages/404.html");
 }
 
-Method::Method(int status, string comment, string url, string path, Request request, Server server) : _status(status), _comment(comment), _url(url) , _server(server), _request(request)
+Method::Method(int status, string comment, string url, Request request, Server server) : _status(status), _comment(comment), _url(url) , _server(server), _request(request)
 {}
 
 bool Method::getRequestedResource()
