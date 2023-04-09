@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Http.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:50:32 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/19 17:03:09 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/09 17:55:42 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ Http &Http::operator=(const Http &copy)
         this->_error_page = copy._error_page;
         this->_allowed_methods = copy._allowed_methods;
         this->_autoindex = copy._autoindex;
+        
     }
     return *this;
 }
@@ -57,7 +58,7 @@ string Http::getIndex() const
     return this->_index;
 }
 
-string Http::getErrorPage(int) const
+vector<pair<int, string> > Http::getErrorPage() const
 {
     return this->_error_page;
 }

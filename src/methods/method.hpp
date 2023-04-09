@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/09 02:29:10 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 20:10:01 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class Method
         string  _contentType;
 
         map<string, Header> headers;
+        map<int, string> _error_page;
     public:
         Method(Request request, Server server);
         Method(int status, string comment, string url, Request request, Server server);
@@ -56,17 +57,9 @@ class Method
         string getResponse() const;
         string getIndex();
         string getContentType();
+        void insetErrorPage();
 
 };
-
-class Post : public Method
-{
-    public:
-        Post(Request request, Server server);
-        bool locationSupportUpload();
-};
-
-
 string join_path(string s1, string s2);
 
 #endif
