@@ -54,6 +54,7 @@ Get::Get(Request request, Server server) : Method(request, server)
     }
     if (!hasIndexFile())
     {
+    cout << "url:hhh " << _url << endl;
         string file = _url + "index.html"; 
         if(FILE *f = fopen(file.c_str(),"r"))
         {
@@ -80,6 +81,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         return;
     }
     _url = getIndex();
+
     if (_url.empty())
     {
         _status = 403;
