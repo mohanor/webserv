@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/09 01:46:33 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 07:13:30 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     int save1 = dup(1);
     
     getScriptName();
+    pipe(pipefd);
     pid_t pid;
-    if ((pid = fork()) < 0 || pipe(pipefd) < 0 || !_args)
+    if ((pid = fork()) < 0 || !_args)
     {
         _resp = "error";
         return ;
