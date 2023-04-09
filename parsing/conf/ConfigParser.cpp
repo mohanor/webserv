@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/08 02:41:00 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 16:05:38 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -703,7 +703,7 @@ void ConfigParser::checkSyntaxDiplicated()
         }
         for (map<string, bool>::iterator it = m.begin(); it != m.end(); it++)
         {
-            if (it->second && it->first != "listen" && it->first != "cgi_info")
+            if (it->second && it->first != "listen" && it->first != "cgi_info" && it->first != "error_page" )
                 errorLogs("Error : '" + it->first+ "' is diplicated");
         }
         listen.clear();

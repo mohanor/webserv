@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/08 22:45:08 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 17:06:12 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Get::Get(Request request, Server server) : Method(request, server)
     {
         _status = 404;
         _comment = "Not Found";
-        _resp = getFileContent("./error_page/404.html");
+        _resp = getFileContent(_error_page[404]);
         return ;
     }
     if (isFile())
@@ -35,7 +35,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         _resp = cgi.getResp();
         if (_resp == "error")
         {
-            _resp = "";
+            _resp = getFileContent(_error_page[502]);
             _status = 502;
             _comment = "Bad Gateway";
             return ;
@@ -48,8 +48,8 @@ Get::Get(Request request, Server server) : Method(request, server)
     {
         _status = 301;
         _comment = "Moved Permanently";
-        _resp = getFileContent("./error_page/301.html");
-        _contentType = _mime.getMimeType(_mime.getExtension("./error_page/301.html"));
+        _resp = getFileContent(_error_page[301]);
+        _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[301])));
         return ;
     }
     if (!hasIndexFile())
@@ -69,8 +69,8 @@ Get::Get(Request request, Server server) : Method(request, server)
         {
             _status = 403;
             _comment = "Forbidden";
-            _resp = getFileContent("./error_page/403.html");
-            _contentType = _mime.getMimeType(_mime.getExtension("./error_page/403.html"));
+            _resp = getFileContent(_error_page[403]);
+            _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[403])));
             return ;
         }
         Worker::listenDirectory(_url);
@@ -86,8 +86,8 @@ Get::Get(Request request, Server server) : Method(request, server)
     {
         _status = 403;
         _comment = "Forbidden";
-        _resp = getFileContent("./error_page/403.html");
-        _contentType = _mime.getMimeType(_mime.getExtension("./error_page/403.html"));
+        _resp =getFileContent(_error_page[403]);
+        _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[403])));
         return ;
     }
     if (!hasCGI())

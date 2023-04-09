@@ -6,13 +6,14 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/30 22:11:11 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 17:26:17 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
+#include <vector>
 using namespace std;
 
 #define ROOTPAGE "./var/www/html"
@@ -25,7 +26,7 @@ struct directives
     string host ;
     string root ;
     string index ;
-    string error_page;
+    vector<pair<int, string> > error_page;
     bool autoindex;
     string allow;
     string cgi_info;
@@ -37,7 +38,6 @@ struct directives
         server_name = "localhost";
         host = "127.0.0.1";
         root = "./www/html";
-        error_page = "404.html";
         autoindex = false;
         allow = "GET POST DELETE";
     }
@@ -63,7 +63,7 @@ protected:
     size_t _cli_max_size;
     string _root;
     string _index;
-    string _error_page;
+    vector<pair<int, string> > _error_page;
     string _allowed_methods;
     bool _autoindex;
 
@@ -76,7 +76,7 @@ public:
     size_t getMaxSize() const;
     string getRoot() const;
     string getIndex() const;
-    string getErrorPage(int index) const;
+    vector<pair<int, string> > getErrorPage() const;
     string getAllowedMethods(int index) const;
     bool getAutoIndex() const;
 
