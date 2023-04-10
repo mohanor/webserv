@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 17:26:17 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/10 00:24:04 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ struct directives
     vector<pair<int, string> > error_page;
     bool autoindex;
     string allow;
-    string cgi_info;
+    string cgi_info_php;
+    string cgi_info_py;
+    
 
     directives()
     {

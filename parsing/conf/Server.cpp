@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 18:21:26 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/10 00:28:15 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ Server::Server(directives dir) : Http(dir)
     this->_listen = dir.listen;
     this->_host = dir.host;
     this->_matched_location = "/";
-    this->_cgi_info = dir.cgi_info;
-
+    this->_cgi_info_php = dir.cgi_info_php;
+    this->_cgi_info_py = dir.cgi_info_py;
 }
 
 Server::~Server() {}
@@ -40,7 +40,8 @@ Server &Server::operator=(const Server &copy)
         this->_locations = copy._locations;
         this->_host = copy._host;
         this->_matched_location = copy._matched_location;
-        this->_cgi_info = copy._cgi_info;
+        this->_cgi_info_php = copy._cgi_info_php;
+        this->_cgi_info_py = copy._cgi_info_py;
         _locations = copy._locations;
     }
 
@@ -80,7 +81,11 @@ string Server::getMatchedLocation() const
     return this->_matched_location;
 }
 
-string Server::getCgiInfo() const
+string Server::getCgiInfoPHP() const
 {
-    return this->_cgi_info;
+    return this->_cgi_info_php;
+}
+string Server::getCgiInfoPY() const
+{
+    return this->_cgi_info_py;
 }

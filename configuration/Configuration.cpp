@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 20:17:27 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/10 00:29:52 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,21 @@ void Configuration::checkDirective(size_t index)
             
         _directive_server.push_back(make_pair(allow, ALLOWED_METHODS));
     }
-    if (_tokens[index].first == "cgi_info")
+    if (_tokens[index].first == "cgi_info_php")
     {
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
             
-        _directive_server.push_back(make_pair(cgi_info, CGI_INFO));
+        _directive_server.push_back(make_pair(cgi_info, CGI_INFO_PHP));
+    }   
+    if (_tokens[index].first == "cgi_info_py")
+    {
+        string cgi_info;
+        for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
+            cgi_info += " " + _tokens[i].first;
+            
+        _directive_server.push_back(make_pair(cgi_info, CGI_INFO_PYTHON));
     }   
     
 }
@@ -139,8 +147,11 @@ void Configuration::addToServer()
         case ALLOWED_METHODS:
             directive.allow = _directive_server[i].first;
             break;
-        case CGI_INFO:
-            directive.cgi_info = _directive_server[i].first;
+        case CGI_INFO_PHP:
+            directive.cgi_info_php = _directive_server[i].first;
+            break;
+        case CGI_INFO_PYTHON:
+            directive.cgi_info_py = _directive_server[i].first;
             break;
         }
     }
@@ -175,13 +186,21 @@ void Configuration::checkDirectiveLocation(size_t index, size_t indexServer)
             allow += " " + _tokens[i].first;
         _server[indexServer]._location.push_back(make_pair(allow, ALLOWED_METHODS));
     }
-    if (_tokens[index].first == "cgi_info")
+    if (_tokens[index].first == "cgi_info_php")
     {
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
             
-        _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO));
+        _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO_PHP));
+    }   
+    if (_tokens[index].first == "cgi_info_py")
+    {
+        string cgi_info;
+        for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
+            cgi_info += " " + _tokens[i].first;
+            
+        _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO_PYTHON));
     }   
    if (_tokens[index].first == "upload_store")
         _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, UPLOAD_STORE));
@@ -209,8 +228,10 @@ string Configuration::getKey(int index)
         return "upload_store";
     case UPLOAD_ENABLE:
         return "upload_enable";
-    case CGI_INFO:
-        return "cgi_info";
+    case CGI_INFO_PHP:
+        return "cgi_info_php";
+    case CGI_INFO_PYTHON:
+        return "cgi_info_py";
     default:
         return "return";
     }

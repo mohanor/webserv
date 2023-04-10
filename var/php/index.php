@@ -8,7 +8,7 @@
 </head>
 <body>
     
-asdasdas1
+<?php echo  $_GET['q']; ?>
     
 </body>
 </html>
