@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/10 00:30:35 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/10 01:34:13 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,11 @@ void    CGI::getScriptName()
     vector<string> cgi_info;
     char **args = new char*[3];
     _args = NULL;
-    if (map.find("cgi_info") != map.end())
-        cgi_info = Request::getVector(map["cgi_info"]);
+    if (map.find("cgi_info_php") != map.end())
+    {
+        cout << "i am here ::: "<< map["cgi_info_php"] << endl;
+        cgi_info = Request::getVector(map["cgi_info_php"]);
+    }
     else
         cgi_info = Request::getVector(_server.getCgiInfoPHP());
     if (cgi_info.empty())
