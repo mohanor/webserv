@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 02:36:31 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 22:19:54 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,45 @@
 Method::Method(Request request, Server server) : _request(request) , _server(server) ,_resp(""), _contentType("text/html")
 {
     Location loc = _server._locations[_server.getMatchedLocation()];
-    cout << "matched location: " << _server.getMatchedLocation() << endl;
     string resource = _request.getRessource().erase(0, _server.getMatchedLocation().length());
     
-    // cerr << "resource: "<< resource << endl;
     if (loc._directives.find("root") != loc._directives.end())
-    {
-    // cerr << "url: "<< endl;
         _url = loc._directives["root"];
-    }
     else
         _url = _server.getRoot();
     _url = join_path(_url, resource);
+
+    
+    insetErrorPage();
+    
     _status = 404;
     _comment =  " Not Found";
-    _resp =  getFileContent("./error_pages/404.html");
+    _resp =  getFileContent(_error_page[404]);
+}
+
+void Method::insetErrorPage()
+{
+    string statusCode = "301 400 401 403 404 405 408 413 414 500 501 502 503 504 505";
+
+    vector<string> status = Request::getVector(statusCode);
+
+    for (size_t i = 0; i < status.size(); i++)
+         this->_error_page[atoi(status[i].c_str())] = "./error_page/" + status[i] + ".html";
+    
+         map<string, string>::iterator maps = _server._locations[_server.getMatchedLocation()].error_page_location.begin();
+
+         while (maps != _server._locations[_server.getMatchedLocation()].error_page_location.end())
+         {
+            this->_error_page[atoi(maps->first.c_str())] = maps->second;
+            maps++;
+         }
+    
+        vector<pair<int, string> > err = _server.getErrorPage();
+        for (size_t i = 0; i < err.size(); i++)
+        {
+            if (_error_page.find(err[i].first) != _error_page.end())
+                this->_error_page[err[i].first] = err[i].second;
+        }
 }
 
 Method::Method(int status, string comment, string url, Request request, Server server) : _status(status), _comment(comment), _url(url) , _server(server), _request(request)

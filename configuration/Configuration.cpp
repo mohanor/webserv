@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/04 02:15:15 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/10 00:29:52 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Configuration &Configuration::operator=(const Configuration &copy)
         this->_length_server = copy._length_server;
         this->_server = copy._server;
         this->_directive_server = copy._directive_server;
+        
     }
     return *this;
 }
@@ -88,13 +89,21 @@ void Configuration::checkDirective(size_t index)
             
         _directive_server.push_back(make_pair(allow, ALLOWED_METHODS));
     }
-    if (_tokens[index].first == "cgi_info")
+    if (_tokens[index].first == "cgi_info_php")
     {
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
             
-        _directive_server.push_back(make_pair(cgi_info, CGI_INFO));
+        _directive_server.push_back(make_pair(cgi_info, CGI_INFO_PHP));
+    }   
+    if (_tokens[index].first == "cgi_info_py")
+    {
+        string cgi_info;
+        for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
+            cgi_info += " " + _tokens[i].first;
+            
+        _directive_server.push_back(make_pair(cgi_info, CGI_INFO_PYTHON));
     }   
     
 }
@@ -126,16 +135,23 @@ void Configuration::addToServer()
             directive.index = _directive_server[i].first;
             break;
         case ERROR_PAGE:
-            directive.error_page = _directive_server[i].first;
+        {
+            vector<string> errorPage = Request::getVector(_directive_server[i].first);
+            directive.error_page.push_back(make_pair(atoi(errorPage[0].c_str()), errorPage[1]));
             break;
+        }
+            
         case AUTOINDEX:
             directive.autoindex = _directive_server[i].first == "on" ? true : false;
             break;
         case ALLOWED_METHODS:
             directive.allow = _directive_server[i].first;
             break;
-        case CGI_INFO:
-            directive.cgi_info = _directive_server[i].first;
+        case CGI_INFO_PHP:
+            directive.cgi_info_php = _directive_server[i].first;
+            break;
+        case CGI_INFO_PYTHON:
+            directive.cgi_info_py = _directive_server[i].first;
             break;
         }
     }
@@ -170,13 +186,21 @@ void Configuration::checkDirectiveLocation(size_t index, size_t indexServer)
             allow += " " + _tokens[i].first;
         _server[indexServer]._location.push_back(make_pair(allow, ALLOWED_METHODS));
     }
-    if (_tokens[index].first == "cgi_info")
+    if (_tokens[index].first == "cgi_info_php")
     {
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
             
-        _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO));
+        _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO_PHP));
+    }   
+    if (_tokens[index].first == "cgi_info_py")
+    {
+        string cgi_info;
+        for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
+            cgi_info += " " + _tokens[i].first;
+            
+        _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO_PYTHON));
     }   
    if (_tokens[index].first == "upload_store")
         _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, UPLOAD_STORE));
@@ -204,8 +228,10 @@ string Configuration::getKey(int index)
         return "upload_store";
     case UPLOAD_ENABLE:
         return "upload_enable";
-    case CGI_INFO:
-        return "cgi_info";
+    case CGI_INFO_PHP:
+        return "cgi_info_php";
+    case CGI_INFO_PYTHON:
+        return "cgi_info_py";
     default:
         return "return";
     }
@@ -218,15 +244,22 @@ void Configuration::pushLocation(size_t index, string nameLocation)
 
     while (i < _server[index]._location.size())
     {
+        
         int indexOfKey = _server[index]._location[i].second;
         string value = _server[index]._location[i].first;
-        directive._directives[getKey(indexOfKey)] = value;
+
+        if (getKey(indexOfKey) == "error_page") 
+        {
+            vector<string> errorPage = Request::getVector(value);
+            directive.error_page_location.insert(make_pair(errorPage[0], errorPage[1]));  
+        }
+        else
+            directive._directives[getKey(indexOfKey)] = value;
         i++;
     }
 
     directive.path = nameLocation;
     _server[index].setLocation(directive.path , directive);
-    
 }
 
 size_t Configuration::getDirectiveLocation(size_t index, size_t indexServer, string nameLocation)
