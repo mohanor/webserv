@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:51 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/05 06:37:52 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/10 02:39:12 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,10 @@ class CGI
 
     public:
         CGI(Request request, Server server,string url, string method);
-        char **_envToChar();
-        string getResp();
-        char **setENV();
+        char    **_envToChar();
+        string  getResp();
+        char    **setENV();
         void    getScriptName();
+        bool    isPython();
 
 };
