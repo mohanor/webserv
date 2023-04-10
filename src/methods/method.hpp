@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/08 01:39:01 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 02:29:10 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Method
         map<string, Header> headers;
     public:
         Method(Request request, Server server);
-        Method(int status, string comment, string url, string path, Request request, Server server);
+        Method(int status, string comment, string url, Request request, Server server);
         bool getRequestedResource();
         bool isFile();
         bool isDir();
