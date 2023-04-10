@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/10 00:28:15 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/10 18:04:00 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ size_t Server::getPort() const { return this->_listen; }
 
 void Server::setLocation(string path, Location locations)
 {
+    if (this->_locations.find(path) != this->_locations.end())
+    {
+        cerr << "Error: duplicate location path" << endl;
+        exit(1);
+    }
     this->_locations[path] = locations;
 }
 
