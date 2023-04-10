@@ -7,8 +7,21 @@
     <title>php</title>
 </head>
 <body>
-    
-<?php echo  $_GET['q']; ?>
+
+
+ <?php
+// session_start();
+
+// Set a session variable
+$_SESSION['username'] = 'john';
+
+// Set a session cookie
+
+// Output data to the browser
+echo "Hello, world!";
+echo "Hello, " . $_SESSION['username'] . "!";
+?>
+?>
     
 </body>
 </html>
