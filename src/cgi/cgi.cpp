@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/10 02:26:03 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/10 02:48:28 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,29 +97,30 @@ char **CGI::setENV()
     return (_envToChar());
 }
 
+bool CGI::isPython()
+{
+    string url = _url;
+    string end = url.erase(0, url.find_last_of('.'));
+    if (end == ".py")
+        return true;
+    return false;
+}
+
 void    CGI::getScriptName()
 {
     map<string, string> map = _server._locations[_server.getMatchedLocation()]._directives;
     vector<string> cgi_info;
     char **args = new char*[3];
     _args = NULL;
-    if (map.find("cgi_info") != map.end())
-        cgi_info = Request::getVector(map["cgi_info"]);
+    string cgi_key = (isPython()) ? "cgi_python" : "cgi_php";
+    if (map.find(cgi_key) != map.end())
+        cgi_info = Request::getVector(map[cgi_key]);
     else
         cgi_info = Request::getVector(_server.getCgiInfo());
     if (cgi_info.empty())
         return ;
-    string url = _url;
-    string end = url.erase(0, url.find_last_of('.'));
-    if (end == ".py")
-    {
-        if (find(cgi_info.begin(), cgi_info.end(), ".py") != cgi_info.end())
-        {
-            args[0] = (char *)cgi_info[1].c_str();
-            args[1] = (char *)("./" +Request::getVector(_url, '/').back()).c_str();
-            cout << args[1] << endl;
-            args[2] = NULL;
-            _args = args;
-        }
-    }
+    args[0] = (char *)cgi_info[1].c_str();
+    args[1] = (char *)("./" +Request::getVector(_url, '/').back()).c_str();
+    args[2] = NULL;
+    _args = args;
 }
