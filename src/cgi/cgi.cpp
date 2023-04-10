@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/09 07:13:30 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/10 00:30:35 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     }
     if (pid == 0) 
     {
-        if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) < 0)
-            exit(1);
+        chdir(url.erase(url.find_last_of('/'),url.length()).c_str());
+        // if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) < 0)
+        //     exit(1);
         string body = "" + _request.getBody();
         FILE *tmp = tmpfile();
         if (!tmp)
@@ -106,17 +107,17 @@ void    CGI::getScriptName()
     if (map.find("cgi_info") != map.end())
         cgi_info = Request::getVector(map["cgi_info"]);
     else
-        cgi_info = Request::getVector(_server.getCgiInfo());
+        cgi_info = Request::getVector(_server.getCgiInfoPHP());
     if (cgi_info.empty())
         return ;
     string url = _url;
     string end = url.erase(0, url.find_last_of('.'));
-    if (end == ".py")
+    if (end == ".php")
     {
-        if (find(cgi_info.begin(), cgi_info.end(), ".py") != cgi_info.end())
+        if (find(cgi_info.begin(), cgi_info.end(), ".php") != cgi_info.end())
         {
             args[0] = (char *)cgi_info[1].c_str();
-            args[1] = (char *)("./" +Request::getVector(_url, '/').back()).c_str();
+            args[1] = (char *)(Request::getVector(_url, '/').back()).c_str();
             cout << args[1] << endl;
             args[2] = NULL;
             _args = args;
