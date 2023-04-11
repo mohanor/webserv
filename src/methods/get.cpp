@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/09 17:06:12 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 01:00:24 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ Get::Get(Request request, Server server) : Method(request, server)
         return;
     }
     _url = getIndex();
-
     if (_url.empty())
     {
         _status = 403;
@@ -101,6 +100,7 @@ Get::Get(Request request, Server server) : Method(request, server)
     }
     CGI cgi(request, server, _url, "GET");
     _resp = cgi.getResp();
+
     if (_resp == "error")
     {
         _resp = "";
