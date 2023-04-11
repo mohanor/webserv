@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/04 02:45:40 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/10 00:18:06 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ void ConfigParser::SetAllowedDirective(bool isInServer)
     _directive_allowed.push_back("root");
     _directive_allowed.push_back("cli_max_size");
 
-    _directive_allowed.push_back("cgi_info");
+    _directive_allowed.push_back("cgi_info_php");
+    _directive_allowed.push_back("cgi_info_py");
     _directive_allowed.push_back("include");
 }
 
@@ -543,6 +544,18 @@ void ConfigParser::checkSynaxDirective()
                     errorLogs("Error : Host not valid");
             
             }
+
+            else if (_tokens[i].first == "cgi_info_php" || _tokens[i].first == "cgi_info_py")
+            {
+                if (lengthDirective(i + 1) != 2)
+                    errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
+                else
+                {
+                    cout << _tokens[i + 1].first << endl;
+                    if (_tokens[i + 1].first != ".py" && _tokens[i + 1].first != ".php")
+                        errorLogs("Error s: " + _tokens[i].first + " syntax does not valid");
+                }
+            }
             else if (_tokens[i].first == "cli_max_size")
             {
                     int size = stod(_tokens[i + 1].first);
@@ -558,10 +571,10 @@ void ConfigParser::checkSynaxDirective()
                 errorLogs("error allow");
             else if (_tokens[i].first == "allow")
                 checkSyntaxMethod(i + 1);
-            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow" && _tokens[i].first != "listen" && _tokens[i].first != "cgi_info")
+            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow" && _tokens[i].first != "listen" &&  _tokens[i].first != "cgi_info_php" && _tokens[i].first != "cgi_info_py" )
             {
                 if (lengthDirective(i + 1) != 1)
-                    errorLogs("Error : Directive "+_tokens[i].first+" doesn't support " );
+                    errorLogs("Error s: Directive "+_tokens[i + 1].first+" doesn't support " );
             }
             checkCorrectSyntaxDirective(i);
         }
@@ -640,10 +653,10 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
     {
         if (_tokens[index].second == DIRECTIVE)
         {
-            if (directiveLocation.find(_tokens[index].first) != directiveLocation.end())
+            if (directiveLocation.find(_tokens[index].first) != directiveLocation.end() )
                 errorLogs("Error : Directive '" + _tokens[index].first + "' is diplicated");
             else
-                directiveLocation.insert(make_pair(_tokens[index].first, check));
+                _tokens[index].first != "error_page" ? directiveLocation[_tokens[index].first] = check: check = true;
             size_t i = 0;
             for (; i < _directive_allowed.size(); i++)
                 if (_tokens[index].first == _directive_allowed[i])
@@ -703,7 +716,7 @@ void ConfigParser::checkSyntaxDiplicated()
         }
         for (map<string, bool>::iterator it = m.begin(); it != m.end(); it++)
         {
-            if (it->second && it->first != "listen")
+            if (it->second && it->first != "listen" && it->first != "cgi_info" && it->first != "error_page" )
                 errorLogs("Error : '" + it->first+ "' is diplicated");
         }
         listen.clear();

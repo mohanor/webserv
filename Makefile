@@ -24,6 +24,7 @@ src = 	$(PARSER)request/Request.cpp \
 		$(TEST)Client.cpp \
 		$(METHOD)method.cpp \
 		$(METHOD)get.cpp \
+		$(METHOD)post.cpp \
 		$(METHOD)delete.cpp \
 		$(METHOD)post.cpp \
 		$(CGI)cgi.cpp \
@@ -43,8 +44,10 @@ $(NAME): $(OBJ)
 
 %.o: %.c $(METHOD)post.hpp \ $(UTILS)utility.hpp $(TEST)socket.hpp $(CGI)cgi.hpp $(PARSER)request/Request.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp  $(CONFIG)Configuration.hpp $(PARSER)conf/Location.hpp $(PARSER)mime/MimeTypes.hpp $(TEST)Client.hpp
 
-%.o: %.c $(METHOD)post.hpp $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(CGI)cgi.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp  $(CONFIG)Configuration.hpp $(PARSER)conf/Location.hpp $(PARSER)mime/MimeTypes.hpp $(SERVER)Worker.hpp \
-$(METHOD)method.cpp $(METHOD)get.cpp $(METHOD)delete.cpp 
+
+%.o: %.c $(UTILS)utility.hpp $(TEST)socket.hpp $(PARSER)request/Request.hpp $(CGI)cgi.hpp $(PARSER)request/Header.hpp $(PARSER)conf/ConfigParser.hpp $(PARSER)conf/Server.hpp $(PARSER)conf/Http.hpp  $(CONFIG)Configuration.hpp $(PARSER)conf/Location.hpp $(PARSER)mime/MimeTypes.hpp $(SERVER)Worker.hpp \
+$(METHOD)method.hpp $(METHOD)get.hpp $(METHOD)post.hpp $(METHOD)delete.hpp 
+
 
 	$(CC) $(FLAGS) -c $< -o $@
 

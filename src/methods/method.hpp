@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/09 01:23:29 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/11 00:47:33 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include "../../parsing/conf/Location.hpp"
 # include "../utility/utility.hpp"
 # include "../cgi/cgi.hpp"
-# include "../../parsing/mime/MimeTypes.hpp"
+# include "../../parsing/mime/MimeTypes.hpp" 
 
 
 
@@ -40,9 +40,10 @@ class Method
         string  _contentType;
 
         map<string, Header> headers;
+        map<int, string> _error_page;
     public:
         Method(Request request, Server server);
-        Method(int status, string comment, string url, string path, Request request, Server server);
+        Method(int status, string comment, string url, Request request, Server server);
         bool getRequestedResource();
         bool isFile();
         bool isDir();
@@ -56,15 +57,9 @@ class Method
         string getResponse() const;
         string getIndex();
         string getContentType();
+        void insetErrorPage();
 
 };
-
-// class Post : public Method
-// {
-//     public:
-//         Post(Request request, Server server);
-//         bool locationSupportUpload();
-// };
 
 
 string join_path(string s1, string s2);

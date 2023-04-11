@@ -8,6 +8,7 @@ Post::Post(Request request, Server server) : Method(request, server)
         if (locationSupportUpload())
         {
             _status = 201;
+            _resp = getFileContent(_error_page[_status]);
             _comment = "Created";
             // UPLOAD FILE
             request.uploadFile();

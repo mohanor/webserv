@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:36:44 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 01:24:17 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/11 16:33:22 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ class Get;
 class Worker
 {
 private:
-    
 public:
     Worker();
     ~Worker();
@@ -45,7 +44,7 @@ public:
     Get  runMethodGet(Request &req, Server &server);
     //void  runMethodPost(Request &req, Server &server);
     Delete  runMethodDelete(Request &req, Server &server);
-    static string listenDirectory(string path);
+    static string listenDirectory(string RequestUri, string pathDir);
     bool checkLocations(Request &req, Server &server,bool &isRedirection, string &path);
     Post runMethodPost(Request &req, Server &server);
     
