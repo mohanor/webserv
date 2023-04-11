@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/08 01:48:43 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 21:22:01 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     Location loc = _server._locations[_server.getMatchedLocation()];
     cout << "matched location: " << _server.getMatchedLocation() << endl;
     string resource = _request.getRessource().erase(0, _server.getMatchedLocation().length());
-    
+    cout << "resource: " << __LINE__ << endl;
     // cerr << "resource: "<< resource << endl;
     if (loc._directives.find("root") != loc._directives.end())
     {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/08 01:39:01 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 01:23:29 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,12 @@ class Method
 
 };
 
-class Post : public Method
-{
-    public:
-        Post(Request request, Server server);
-        bool locationSupportUpload();
-};
+// class Post : public Method
+// {
+//     public:
+//         Post(Request request, Server server);
+//         bool locationSupportUpload();
+// };
 
 
 string join_path(string s1, string s2);

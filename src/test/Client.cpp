@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:11 by matef             #+#    #+#             */
-/*   Updated: 2023/04/08 04:55:12 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/09 21:31:38 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,26 @@ string      Client::getBody()
     _requestString.erase(0, pos + 4);
 
     return _requestString;
+}
+
+void Client::setContentLength(size_t size)
+{
+    _contentLength = size;
+}
+
+size_t Client::getContentLength()
+{
+    return _contentLength;
+}
+
+void       Client::setMimeType(string mimeType)
+{
+    _mimeType = mimeType;
+}
+
+string     Client::getMimeType()
+{
+    return _mimeType;
 }
 
 void Client::setBody()

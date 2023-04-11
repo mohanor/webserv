@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/04 01:17:44 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/09 02:14:29 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,13 @@ Get Worker::runMethodGet(Request &req, Server &server)
     return get;
 }
 
+Post Worker::runMethodPost(Request &req, Server &server)
+{
+    cout << "post 11111111" << endl;
+    Post post(req, server);
+    return post;
+}
+
 bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path)
 {
 
@@ -136,7 +143,7 @@ Method Worker::getMethodObject(Request req, Server server)
         else if (req.getMethod() == "GET")
             return runMethodGet(req, server);
         else
-            return runMethodDelete(req, server);
+            return runMethodPost(req, server);
     }
     else if (isRedirection)
     {

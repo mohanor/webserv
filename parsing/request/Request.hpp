@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/04/08 02:39:29 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/08 20:46:06 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,12 @@ class Request
         map<string, string> getHeader();
 
         string getBody();
-        void setBody(string body);
+        void setBody(string request);
         string getQueryString();
 
         bool isUploadable();
         void setUploadable();
+        void uploadFile();
 
     private:
         string _method;
