@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 21:30:06 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/11 22:55:24 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,6 @@ void SocketClass::listenSocket(int listener)
     }
 }
 
-void SocketClass::acceptSocket(int sockfd)
-{
-}
-
 int SocketClass::sendFileInPackets(struct pollfd &fds)
 {
     // cout << "sendFileInPacket" << endl;
@@ -87,7 +83,6 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
         string response;
         
         string mimeType;
-        int status;
         string comment;
         
 
@@ -105,13 +100,7 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
     return 0;
 }
 
-string SocketClass::joinRootAndPath(string root, string path, Request &httpRequest) //TODO : should be removed be cause i don't need it anymore
-{
-    if (httpRequest.getRessource() == "/")
-        return "./www/html/index.html";
 
-    return "./www/html" + httpRequest.getRessource();
-}
 
 bool SocketClass::isHeaderReceived(string request)
 {
@@ -139,7 +128,7 @@ unsigned long SocketClass::hex2dec(string hex)
 {
     unsigned long result = 0;
 
-    for (int i=0; i<hex.length(); i++) {
+    for (size_t i=0; i<hex.length(); i++) {
         if (hex[i]>=48 && hex[i]<=57)
         {
             result += (hex[i]-48)*pow(16,hex.length()-i-1);
@@ -157,7 +146,6 @@ string SocketClass::parseChunked(string body)
     size_t pos = 0;
     string chunked;
     string size;
-    bool isSize = true;
     bool firstLine = true;
     
     string prasedBody;
@@ -310,6 +298,7 @@ int SocketClass::communicate(struct pollfd &fds)
         {
             _clients[fds.fd]._request = Request::deserialize(_clients[fds.fd].getHeader());
 
+        cout << __LINE__<< " " << __FILE__ << " " << _clients[fds.fd]._request.getMethod() << " " << _clients[fds.fd]._request.getRessource() << endl;
             int isOk = _clients[fds.fd]._request.isReqWellFormed();
             if (isOk != 200)
             {
@@ -336,7 +325,6 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == GET)
         {
-            cout << "************************GET method" << endl;
             _clients[fds.fd].setStatus(FILE_NOT_SET);
             fds.events = POLLOUT;
             return (true);
@@ -404,7 +392,7 @@ void    SocketClass::closeConnection(int fd, int i)
 void    SocketClass::initResponse(int fd)
 {
     Worker worker;
-
+    cout << __LINE__<< " " << __FILE__ << " POST" << endl;
     Method method = worker.getMethodObject(_clients[fd]._request, getServer(_serverHandler[fd]));
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
@@ -412,11 +400,25 @@ void    SocketClass::initResponse(int fd)
     _clients[fd].setMimeType(method.getContentType());
 }
 
+void SocketClass::createNewClient(int i)
+{
+    int newClient;
+    
+    newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
+    if (newClient < 0)
+    {
+        cerr << "fail to accept connection" << endl;
+        return;
+    }
+    
+    _serverHandler.insert(make_pair(newClient, _fds[i].fd));
+    _fds.push_back(createPollfd(newClient));
+}
+
 void SocketClass::run()
 {
     size_t     current_size;
-    int     newClient;
-
+    int       newClient;
     setFds();
     
     while (true)
@@ -429,7 +431,7 @@ void SocketClass::run()
         }
 
         current_size = _fds.size();
-        for(int i = 0; i < current_size; i++)
+        for(size_t i = 0; i < current_size; i++)
         {
             if (_fds[i].revents == 0)
                 continue;
@@ -444,10 +446,17 @@ void SocketClass::run()
             {   
                 if (isNewConnection(_fds[i].fd))
                 {
-                    newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
-                    if (newClient < 0) { cerr << "fail to accept connection" << '\n'; continue; }
-                    _serverHandler.insert(make_pair(newClient, _fds[i].fd));
-                    _fds.push_back(createPollfd(newClient));
+                        newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
+                        if (newClient < 0)
+                        {
+                            cerr << "fail to accept connection" << endl;
+                            return;
+                        }
+                        
+                        _serverHandler.insert(make_pair(newClient, _fds[i].fd));
+                        _fds.push_back(createPollfd(newClient));
+                    // createNewClient(_fds[i].fd);
+                    // continue;
                 }
                 else if ( !communicate(_fds[i]) )
                     break;

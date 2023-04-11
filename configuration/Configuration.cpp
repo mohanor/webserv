@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/10 00:29:52 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 21:51:33 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ void Configuration::pushLocation(size_t index, string nameLocation)
     _server[index].setLocation(directive.path , directive);
 }
 
-size_t Configuration::getDirectiveLocation(size_t index, size_t indexServer, string nameLocation)
+size_t Configuration::getDirectiveLocation(size_t index, size_t indexServer)
 {
     while (index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
     {
@@ -290,7 +290,7 @@ void Configuration::checkLocation()
             if (_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD)
             {
                 string nameLocation = _tokens[index + 1].first;
-                index = getDirectiveLocation(index, i, nameLocation);
+                index = getDirectiveLocation(index, i);
                 pushLocation(i, nameLocation);
                 _server[i]._location.clear();
                

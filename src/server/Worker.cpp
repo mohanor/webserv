@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/11 16:55:33 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 22:58:57 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,12 +138,13 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
 
 Method Worker::getMethodObject(Request req, Server server)
 {
+    cout << __LINE__<< " " << __FILE__ << " POST" << endl;
     bool isRedirection = false;
     string path;
     
     if (checkLocations(req, server, isRedirection, path))
     {
-       
+       cout << __LINE__<< " " << __FILE__ << " POST 11" << endl;
         if (req.getMethod() == "DELETE")
             return runMethodDelete(req, server);
         else if (req.getMethod() == "GET")
@@ -153,10 +154,11 @@ Method Worker::getMethodObject(Request req, Server server)
     }
     else if (isRedirection)
     {
+        cout << __LINE__<< " " << __FILE__ << " POST 11" << endl;
         vector<string> urlVector = Request::getVector(path);
         return Method(301, " Moved Permanently", urlVector[1], req, server);
     }
-   
+   cout << __LINE__<< " " << __FILE__ << " POST 222" << endl;
     return Method(req, server);
 }
 

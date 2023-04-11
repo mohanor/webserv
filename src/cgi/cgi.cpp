@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/11 18:12:24 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 22:37:36 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
 char **CGI::_envToChar()
 {
     char **ret = new char*[_env.size() + 1];
-    int i = 0;
+    size_t i = 0;
 
     for (;i < _env.size(); i++)
     {
@@ -95,7 +95,7 @@ char **CGI::setENV()
 	_env.push_back("CONTENT_TYPE=" + _request.getValueOf("Content-Type"));
 	_env.push_back("QUERY_STRING=" + _request.getQueryString());
 	_env.push_back("REDIRECT_STATUS=200");
-    _env.push_back("SCRIPT_FILENAME=index.php");
+    _env.push_back("SCRIPT_FILENAME=post.php");
     _env.push_back("CONTENT_LENGTH=" + to_string(_request.getBody().length()));
     _env.push_back("DOCUMENT_ROOT=" + _server.getRoot());
 

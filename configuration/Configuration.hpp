@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/10 00:20:17 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 21:51:06 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ public:
     void checkDirective(size_t index);
     void checkLocation();
     void checkDirectiveLocation(size_t index, size_t indexServer);
-    size_t getDirectiveLocation(size_t i , size_t indexServer, string nameLocation);
+    size_t getDirectiveLocation(size_t i , size_t indexServer);
     void pushLocation(size_t index, string nameLocation);
     string getKey(int index);
     vector <Server> getServers() const ;
