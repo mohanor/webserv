@@ -111,6 +111,13 @@ Get Worker::runMethodGet(Request &req, Server &server)
     return get;
 }
 
+Post Worker::runMethodPost(Request &req, Server &server)
+{
+    cout << "post 11111111" << endl;
+    Post post(req, server);
+    return post;
+}
+
 bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path)
 {
 
@@ -142,7 +149,7 @@ Method Worker::getMethodObject(Request req, Server server)
         else if (req.getMethod() == "GET")
             return runMethodGet(req, server);
         else
-            return runMethodDelete(req, server);
+            return runMethodPost(req, server);
     }
     else if (isRedirection)
     {

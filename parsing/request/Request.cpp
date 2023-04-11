@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/09 16:04:10 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 02:51:06 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ Request &Request::operator=(const Request &copy)
 		this->_headers = copy._headers;
 		this->_body = copy._body;
 		this->_queryString = copy._queryString;
+		this->_isUploadable = copy._isUploadable;
     }
     return *this;
 }
@@ -261,9 +262,9 @@ string Request::getBody()
 	return _body;
 }
 
-void Request::setBody(string body)
+void Request::setBody(string request)
 {
-	_body = body;
+	_body = request;
 }
 
 bool 	Request::isHeaderHasKey(string key)
@@ -281,38 +282,63 @@ map<string, string> Request::getHeader()
 	return _headers;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Request Request::deserialize(const std::string& request)
-// {
-//     string method = "GET";
-//     string resource = "/";
-//     string version = "HTTP/1.1";
-
-
-
-//     return Request(version, method, resource);
-// }
-
 void Request::setUploadable()
 {
 	_isUploadable = true;
 }
+
+void Request::uploadFile()
+{
+    size_t nextLine ;
+    string boundary;
+    string endBoundary;
+
+    vector<string> contentType = Request::getVector(getValueOf("Content-Type"));
+    
+    boundary = "--" + contentType[1].substr(9);
+    endBoundary = boundary + "--";
+
+    size_t start = _body.find(boundary);
+    size_t end = _body.find(endBoundary);
+
+    if (start == string::npos || end == string::npos) // return msg error : bad request
+    {
+        cerr << "bad request" << endl;
+        return;
+    }
+    
+    string tmp;
+    string bodyHead;
+    vector <string> bodyHeadVector;
+    
+    while (start != string::npos && start < end)
+    {
+        nextLine = _body.find("\r\n\r\n") + 4;
+        bodyHead = _body.substr(0, nextLine);
+
+        while (bodyHead.find("\r\n") != string::npos)
+            bodyHead.replace(bodyHead.find("\r\n"), 2, " ");
+
+        bodyHeadVector = Request::getVector(bodyHead);
+        while (bodyHeadVector.size() && bodyHeadVector[0].find("filename") == string::npos)
+            bodyHeadVector.erase(bodyHeadVector.begin());
+
+        if (!bodyHeadVector.size())
+            return ;
+        
+        string filename = bodyHeadVector[0].substr(bodyHeadVector[0].find("\"") + 1);
+        filename.erase(filename.find("\""));
+
+        _body.erase(0, nextLine);
+        start = _body.find(boundary);
+        tmp = _body.substr(0, start);
+
+        ofstream file("./uploads/" + filename, ios::out | ios::trunc);
+
+        file << tmp;
+        tmp.clear();
+    }
+}
+
 
 Request::~Request() {}

@@ -11,6 +11,7 @@ Post::Post(Request request, Server server) : Method(request, server)
             _resp = getFileContent(_error_page[_status]);
             _comment = "Created";
             // UPLOAD FILE
+            request.uploadFile();
             return ;
         }
         _status = 403;

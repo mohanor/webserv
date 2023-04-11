@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 05:05:54 by matef             #+#    #+#             */
-/*   Updated: 2023/03/21 22:24:30 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/09 05:21:40 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ MimeTypes::MimeTypes(const MimeTypes &rhs)
 
 string MimeTypes::getMimeType(string extension)
 {
+    if (mimeTypes.find(extension) == mimeTypes.end()) return "text/plain";
     return mimeTypes[extension];
 }
 

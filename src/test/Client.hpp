@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:14 by matef             #+#    #+#             */
-/*   Updated: 2023/04/08 05:10:08 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/09 21:30:57 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,19 @@ class Client
         bool        isUploading();
         void        setBody();
         string      getBody();
+        
+        void        setContentLength(size_t size);
+        size_t      getContentLength();
 
-        size_t                  getReceivedLength();
-        string                  _request_string;
-        int                     _request_length;
-        string                  _requestString;
-        Request                 _request;
+        void       setMimeType(string mimeType);
+        string     getMimeType();
+
+        size_t      getReceivedLength();
+        string      _request_string;
+        string      _requestString;
+        Request     _request;
+        size_t         _request_length;
+        
 
     private:
         int                     _fd;
@@ -101,6 +108,8 @@ class Client
         bool                    _isUploading;
         bool                    _headerReceived;
         map<string, string>     _header_map;
+        size_t                  _contentLength;
+        string                  _mimeType;
 };
 
 

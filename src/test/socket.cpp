@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/09 16:49:55 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 21:30:06 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int SocketClass::create()
     if (listener < 0)
     {
         cerr << "socket failed" << std::endl;
-        exit(EXIT_FAILURE);
+        // exit(EXIT_FAILURE);
     }
 
     return listener;
@@ -44,8 +44,8 @@ void SocketClass::bindSocket(int listener, SocketServer &serverToBind)
     serverToBind.address.sin_port = htons(serverToBind.server.getPort());
 
     int opt = 1;
-
-    opt = setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    // opt = setsockopt(listener, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
+    opt = setsockopt(listener, SOL_SOCKET, SO_REUSEADDR , &opt, sizeof(opt));
     if (opt < 0)
     {
         cerr << "Error setting socket options" << std::endl;
@@ -74,34 +74,34 @@ void SocketClass::acceptSocket(int sockfd)
 {
 }
 
-int SocketClass::sendFileInPackets(std::string file, struct pollfd &fds)
+int SocketClass::sendFileInPackets(struct pollfd &fds)
 {
     // cout << "sendFileInPacket" << endl;
-    if (_clients[fds.fd].getStatus() == FILE_NOT_SET)
-    {
-        _clients[fds.fd].setFileContent(file);
-        _clients[fds.fd].setStatus(READY_TO_SEND);
-    }
-
+    // if (_clients[fds.fd].getStatus() == FILE_NOT_SET)
+    // {
+    //     _clients[fds.fd].setFileContent(file);
+    //     _clients[fds.fd].setStatus(READY_TO_SEND);
+    // }
     if (_clients[fds.fd].getStatus() == READY_TO_SEND)
     {
-        string mimeType;
         string response;
+        
+        string mimeType;
+        int status;
+        string comment;
+        
 
-        mimeType = "text/html"; //TODO: get mime type from file extension
         response = "HTTP/1.1 200 Ok" ENDL;
-        response += "Content-Type: " + mimeType + ENDL;
-        response += "Content-Length: " + to_string(file.size()) + ( ENDL ENDL );
+        response += "Content-Type: " + _clients[fds.fd].getMimeType() + ENDL;
+        response += "Content-Length: " + to_string(_clients[fds.fd].getContentLength()) + ( ENDL ENDL );
         
         _clients[fds.fd].setStatus(SENDING);
         send(fds.fd, response.c_str(), response.size(), 0);
 
         return 0;
     }
-
     string packet = _clients[fds.fd].getPacket();
     send(fds.fd, packet.c_str(), packet.size(), 0);
-
     return 0;
 }
 
@@ -182,24 +182,25 @@ string SocketClass::parseChunked(string body)
     return prasedBody;
 }
 
-void SocketClass::handlePostRequest(Client &client)
+bool SocketClass::handlePostRequest(Client &client)
 {
     if (client._request.isHeaderHasKey("Content-Length"))
     {
-        size_t contentLength = (size_t)atof(httpRequest.getValueOf("Content-Length").c_str());
-        if (contentLength == client.getReceivedLength() && httpRequest.isHeaderHasKey("Content-Type"))
+        size_t contentLength = (size_t)atof( client._request.getValueOf("Content-Length").c_str() );
+
+        if (contentLength == client.getReceivedLength() && client._request.isHeaderHasKey("Content-Type"))
         {
-            vector <string> contentType = Request::getVector(httpRequest.getValueOf("Content-Type"));
+
+            vector <string> contentType = Request::getVector(client._request.getValueOf("Content-Type"));
             if (contentType[0] == "multipart/form-data;")
-                httpRequest.setUploadable();
+                client._request.setUploadable();
+            
 
             // else case is not should handled
             
-            httpRequest.setBody(client.getBody());
+            client._request.setBody(client.getBody());
             client._requestString.clear();
-            cout << httpRequest.getBody() << endl;
-            
-            uploadFile(client);
+            return true;
         }
     }
     else if (client._request.isHeaderHasKey("Transfer-Encoding"))
@@ -210,11 +211,12 @@ void SocketClass::handlePostRequest(Client &client)
             {
                 client.setBody();
                 parseChunked(client.getBody());
+                return true;
             }
         }
     }
 
-
+    return false;
 }
 
 Server SocketClass::getServer(int sockfd)
@@ -227,57 +229,64 @@ Server SocketClass::getServer(int sockfd)
     return _s[0].server; // return default server
 }
 
-void SocketClass::uploadFile(Client &client)
+void SocketClass::uploadFile(Request request)
 {
-
     size_t nextLine ;
+    string boundary;
+    string endBoundary;
+    string body;
 
-    vector<string> contentType = Request::getVector(client.getRequest().getValueOf("Content-Type"));
-    string boundary = "--" + contentType[1].substr(9);
-    string endBoundary = boundary + "--";
+    body = request.getBody();
+    vector<string> contentType = Request::getVector(request.getValueOf("Content-Type"));
+    
+    boundary = "--" + contentType[1].substr(9);
+    endBoundary = boundary + "--";
 
-    size_t pos = client._requestString.find(boundary);
-    size_t pos_2 = client._requestString.find(endBoundary);
-    if (pos == string::npos || pos_2 == string::npos) // return msg error : bad request
-        return;
-        
-    string tmp;
 
-    while (pos != string::npos && pos < pos_2)
+    size_t start = body.find(boundary);
+    size_t end = body.find(endBoundary);
+
+    if (start == string::npos || end == string::npos) // return msg error : bad request
     {
-        nextLine = client._requestString.find("\r\n\r\n") + 4;
-        string bodyHead = client._requestString.substr(0, nextLine);
+        cerr << "bad request" << endl;
+        return;
+    }
+    
+    string tmp;
+    string bodyHead;
+    vector <string> bodyHeadVector;
+    
+    while (start != string::npos && start < end)
+    {
+        nextLine = body.find("\r\n\r\n") + 4;
+        bodyHead = body.substr(0, nextLine);
+
         while (bodyHead.find("\r\n") != string::npos)
             bodyHead.replace(bodyHead.find("\r\n"), 2, " ");
 
-        vector <string> bodyHeadVector = Request::getVector(bodyHead);
+        bodyHeadVector = Request::getVector(bodyHead);
         while (bodyHeadVector.size() && bodyHeadVector[0].find("filename") == string::npos)
             bodyHeadVector.erase(bodyHeadVector.begin());
 
-        
         if (!bodyHeadVector.size())
             return ;
         
         string filename = bodyHeadVector[0].substr(bodyHeadVector[0].find("\"") + 1);
         filename.erase(filename.find("\""));
 
-        client._requestString.erase(0, nextLine);
-        pos = client._requestString.find(boundary);
-        tmp = client._requestString.substr(0, pos);
+        body.erase(0, nextLine);
+        start = body.find(boundary);
+        tmp = body.substr(0, start);
 
         ofstream file("./uploads/" + filename, ios::out | ios::trunc);
-        // client.getRequest().setBody(tmp);
-        
+
         file << tmp;
         tmp.clear();
     }
-
 }
 
 int SocketClass::communicate(struct pollfd &fds)
 {
-
-    // cerr << "communicate" << endl;
     string			req;
     size_t			size;
     char			request[MAX_REQUEST_SIZE] = {0};
@@ -304,7 +313,8 @@ int SocketClass::communicate(struct pollfd &fds)
             int isOk = _clients[fds.fd]._request.isReqWellFormed();
             if (isOk != 200)
             {
-                cerr << "Request not well formed >> " << isOk << "<<" << endl;
+                cout << "Request not well formed >> " << _clients[fds.fd]._request.getMethod() << " <<" << endl;
+                cerr << "Request not well formed >> " << isOk << " <<" << endl;
                 return (true);
             }
 
@@ -315,12 +325,18 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
-            handlePostRequest(_clients[fds.fd]);
+            cerr << "************************POST method" << endl;
+            if (handlePostRequest(_clients[fds.fd]))
+            {
+                _clients[fds.fd].setStatus(FILE_NOT_SET);
+                fds.events = POLLOUT;
+            }
             return (true);
         }
 
         if (_clients[fds.fd].getRequest().getMethod() == GET)
         {
+            cout << "************************GET method" << endl;
             _clients[fds.fd].setStatus(FILE_NOT_SET);
             fds.events = POLLOUT;
             return (true);
@@ -373,56 +389,82 @@ void SocketClass::setFds()
 
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
         cerr << "http://localhost:" << it->getPort() << endl;
+    cout << "_fds: " << _fds.size() << endl;
+    for(size_t i = 0; i < _fds.size(); i++)
+        cout << _fds[i].fd << endl;
+}
+
+void    SocketClass::closeConnection(int fd, int i)
+{
+    close(fd);
+    _clients.erase(fd);
+    _fds.erase(_fds.begin() + i);
+}
+
+void    SocketClass::initResponse(int fd)
+{
+    Worker worker;
+
+    Method method = worker.getMethodObject(_clients[fd]._request, getServer(_serverHandler[fd]));
+    _clients[fd].setFileContent(method.getResponse());
+    _clients[fd].setStatus(READY_TO_SEND);
+    _clients[fd].setContentLength(method.getResponse().size());
+    _clients[fd].setMimeType(method.getContentType());
 }
 
 void SocketClass::run()
 {
-    int     current_size;
+    size_t     current_size;
     int     newClient;
 
     setFds();
     
     while (true)
     {
-        cout << "listen ..." << endl;
-        if (poll(&_fds[0], _fds.size(), -1) < 0) break;
+        // cout << "listen ..." << endl;
+        if (poll(&_fds[0], _fds.size(), -1) < 0)
+        {
+            cerr << "poll error" << endl;
+            break;
+        }
 
         current_size = _fds.size();
         for(int i = 0; i < current_size; i++)
         {
             if (_fds[i].revents == 0)
                 continue;
+
             if (_fds[i].revents & POLLHUP)
             {
-                close(_fds[i].fd);
-                _clients.erase(_fds[i].fd);
-                _fds.erase(_fds.begin() + i);
+                closeConnection(_fds[i].fd, i);
+                current_size--;
+                i--;
             }
             else if (_fds[i].revents & POLLIN)
             {   
                 if (isNewConnection(_fds[i].fd))
                 {
                     newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
-                    if (newClient < 0) { cerr << "fail to accept connection" << '\n'; return ; }
-
+                    if (newClient < 0) { cerr << "fail to accept connection" << '\n'; continue; }
+                    _serverHandler.insert(make_pair(newClient, _fds[i].fd));
                     _fds.push_back(createPollfd(newClient));
                 }
                 else if ( !communicate(_fds[i]) )
                     break;
             }
-
-            if (_fds[i].revents & POLLOUT)
+            else if (_fds[i].revents & POLLOUT)
             {
-                Worker w;
-                Method g = w.getMethodObject(_clients[_fds[i].fd].getRequest(), getServer(_fds[i].fd));
-                sendFileInPackets(g.getResponse(), _fds[i]);
+                if (_clients[_fds[i].fd].getStatus() == FILE_NOT_SET)
+                    initResponse(_fds[i].fd);
+
+                sendFileInPackets(_fds[i]);
+                
                 if (_clients[_fds[i].fd].getStatus() == SENDED)
                 {
-                    close(_fds[i].fd);
-                    _clients.erase(_fds[i].fd);
-                    _fds.erase(_fds.begin() + i);
+                    closeConnection(_fds[i].fd, i);
+                    current_size--;
+                    i--;
                 }
-                
             }
         }
 

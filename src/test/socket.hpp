@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/08 04:58:41 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/11 20:17:18 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ struct SocketServer
 {
     SocketServer(int sockfd, Server s) : sockfd(sockfd), server(s) {}
     int                 sockfd;
-    // int                 port;
-    // std::string         host;
     Server              server;
     int                 addrlen;
     struct sockaddr_in address;
@@ -67,7 +65,7 @@ class SocketClass
         void bindSocket(int sockfd, SocketServer &server);
         void listenSocket(int sockfd);
         void acceptSocket(int sockfd);
-        int sendFileInPackets(string file, struct pollfd &fds);
+        int sendFileInPackets(struct pollfd &fds);
         int communicate(struct pollfd &fds);
         void run();
         bool isNewConnection(int listener);
@@ -82,14 +80,17 @@ class SocketClass
 
         unsigned long hex2dec(string hex);
 
-        void handlePostRequest(Client &client);
+        bool handlePostRequest(Client &client);
         // bool handleChunkedRequest(Client &client);
 
-        void uploadFile(Client &client);
+        void uploadFile(Request request);
         
         string parseChunked(string body);
         Server getServer(int sockfd);
         Request                 httpRequest;
+        
+        void    closeConnection(int fd, int i);
+        void    initResponse(int fd);
     private:
         struct sockaddr_in      address;
         vector<Server>          servers;
@@ -99,6 +100,8 @@ class SocketClass
         map<int, Client>        _clients;
 
         MimeTypes               _mimeTypes;
+
+        map<int, int>           _serverHandler;
 };
 
 

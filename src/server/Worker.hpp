@@ -23,8 +23,9 @@
 #include  "../../parsing/request/Request.hpp"
 // #include "../methods/method.hpp"
 #include "../methods/delete.hpp"
+#include "../methods/post.hpp"
 class Get;
-
+// class Post;
 
 
 class Worker
@@ -41,11 +42,11 @@ public:
     bool getAllowdedMethods(string methods, string allow);
     Method getMethodObject(Request req, Server server);
     Get  runMethodGet(Request &req, Server &server);
-    void  runMethodPost(Request &req, Server &server);
+    //void  runMethodPost(Request &req, Server &server);
     Delete  runMethodDelete(Request &req, Server &server);
     static string listenDirectory(string RequestUri, string pathDir);
     bool checkLocations(Request &req, Server &server,bool &isRedirection, string &path);
-    
+    Post runMethodPost(Request &req, Server &server);
     
 };
 
