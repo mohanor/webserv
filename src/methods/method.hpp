@@ -6,7 +6,11 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/04/10 23:25:21 by yel-khad         ###   ########.fr       */
+=======
+/*   Updated: 2023/04/09 21:48:59 by yoelhaim         ###   ########.fr       */
+>>>>>>> a53309f7479213fe4a59655d4e816dccdf3727b3
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +25,7 @@
 # include "../../parsing/conf/Location.hpp"
 # include "../utility/utility.hpp"
 # include "../cgi/cgi.hpp"
-# include "../../parsing/mime/MimeTypes.hpp"
+# include "../../parsing/mime/MimeTypes.hpp" 
 
 
 
@@ -40,6 +44,7 @@ class Method
         string  _contentType;
 
         map<string, Header> headers;
+        map<int, string> _error_page;
     public:
         Method(Request request, Server server);
         Method(int status, string comment, string url, Request request, Server server);
@@ -56,11 +61,15 @@ class Method
         string getResponse() const;
         string getIndex();
         string getContentType();
+        void insetErrorPage();
 
 };
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> a53309f7479213fe4a59655d4e816dccdf3727b3
 string join_path(string s1, string s2);
 
 #endif

@@ -6,15 +6,15 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 02:44:39 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/09 16:44:14 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Worker.hpp"
 #include "../methods/get.hpp"
 
-Worker::Worker(/* args */)
-{
+Worker::Worker()
+{  
 }
 
 Worker::~Worker()

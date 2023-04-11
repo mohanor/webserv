@@ -28,8 +28,9 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     }
     if (pid == 0) 
     {
-        if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) < 0)
-            exit(1);
+        chdir(url.erase(url.find_last_of('/'),url.length()).c_str());
+        // if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) < 0)
+        //     exit(1);
         string body = "" + _request.getBody();
         FILE *tmp = tmpfile();
         if (!tmp)
@@ -116,7 +117,7 @@ void    CGI::getScriptName()
     if (map.find(cgi_key) != map.end())
         cgi_info = Request::getVector(map[cgi_key]);
     else
-        cgi_info = Request::getVector(_server.getCgiInfo());
+        cgi_info = Request::getVector(_server.getCgiInfoPHP());
     if (cgi_info.empty())
         return ;
     args[0] = (char *)cgi_info[1].c_str();
