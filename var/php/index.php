@@ -19,8 +19,8 @@ $_SESSION['username'] = 'john';
 
 // Output data to the browser
 echo "Hello, world!";
-echo "Hello, " . $_SESSION['username'] . "!";
-?>
+// echo "Hello, " . $_SESSION['username'] . "!";
+echo $_GET['q'];
 ?>
     
 </body>

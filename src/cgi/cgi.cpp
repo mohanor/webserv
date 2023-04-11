@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/10 02:48:28 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/11 01:50:50 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     int pipefd[2];
     int save0 = dup(0);
     int save1 = dup(1);
-    
+
     getScriptName();
     pipe(pipefd);
     pid_t pid;
@@ -28,9 +28,8 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     }
     if (pid == 0) 
     {
-        chdir(url.erase(url.find_last_of('/'),url.length()).c_str());
-        // if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) < 0)
-        //     exit(1);
+        if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) != 0)
+            exit(1);
         string body = "" + _request.getBody();
         FILE *tmp = tmpfile();
         if (!tmp)
@@ -43,6 +42,9 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
         close(pipefd[1]);
         alarm(300);
         execve(_args[0], _args, setENV());
+        cout << "args[0]: " << _args[0] << endl;
+        cout << "args[1]: " << _args[1] << endl;
+        cout << "exe error: " << strerror(errno) << endl;
         exit(1);
     }
     int status;
@@ -58,10 +60,7 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     close(save0);
     close(save1);
     if (WIFSIGNALED(status))
-    {
-       cout << "i am is here hehe!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
         _resp = "error";
-    }
 }
 
 char **CGI::_envToChar()
@@ -95,6 +94,8 @@ char **CGI::setENV()
 	_env.push_back("SCRIPT_NAME=" + _scriptName);
 	_env.push_back("CONTENT_TYPE=" + _request.getValueOf("Content-Type"));
 	_env.push_back("QUERY_STRING=" + _request.getQueryString());
+	_env.push_back("REDIRECT_STATUS=200");
+    _env.push_back("SCRIPT_FILENAME=index.php");
     return (_envToChar());
 }
 
@@ -113,15 +114,17 @@ void    CGI::getScriptName()
     vector<string> cgi_info;
     char **args = new char*[3];
     _args = NULL;
-    string cgi_key = (isPython()) ? "cgi_python" : "cgi_php";
+    string cgi_key = (isPython()) ? "cgi_info_py" : "cgi_info_php";
     if (map.find(cgi_key) != map.end())
         cgi_info = Request::getVector(map[cgi_key]);
+    else if (cgi_key == "cgi_info_py")
+        cgi_info = Request::getVector(_server.getCgiInfoPY());
     else
         cgi_info = Request::getVector(_server.getCgiInfoPHP());
     if (cgi_info.empty())
         return ;
-    args[0] = (char *)cgi_info[1].c_str();
-    args[1] = (char *)("./" +Request::getVector(_url, '/').back()).c_str();
+    args[0] = strdup(cgi_info[1].c_str());
+    args[1] = strdup((Request::getVector(_url, '/').back()).c_str());
     args[2] = NULL;
     _args = args;
 }
