@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 22:19:54 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 22:04:18 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ void Method::insetErrorPage()
         }
 }
 
-Method::Method(int status, string comment, string url, Request request, Server server) : _status(status), _comment(comment), _url(url) , _server(server), _request(request)
+Method::Method(int status, string comment, string url, Request request, Server server) : _request(request),_server(server),  _status(status), _comment(comment),  _url(url) 
 {}
+
+
 
 bool Method::getRequestedResource()
 {
@@ -128,7 +130,7 @@ string Method::getIndex()
     if(map.find("index") != map.end())
     {
         index_v = Request::getVector(map["index"]);
-        for (int i=0; i < index_v.size(); i++)
+        for (size_t i=0; i < index_v.size(); i++)
         {
             if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
                 index = join_path(_url,index_v[i]);
@@ -137,7 +139,7 @@ string Method::getIndex()
     else
     {
         index_v = Request::getVector(_server.getIndex());
-        for (int i=0; i < index_v.size(); i++)
+        for (size_t i=0; i < index_v.size(); i++)
         {
             if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
                 index = join_path(_url,index_v[i]);

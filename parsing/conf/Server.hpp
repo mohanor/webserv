@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/10 00:28:31 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 21:50:31 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 using namespace std;
 
-class Location;
+struct Location;
 
 class Server : public Http
 {

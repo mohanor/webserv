@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:11 by matef             #+#    #+#             */
-/*   Updated: 2023/04/09 21:31:38 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/11 21:56:54 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Client::Client()
 
 Client::Client(int fd)
 {
+    (void)fd;
     _status = REDING;
     _headerReceived = false;
     _isUploading = false;

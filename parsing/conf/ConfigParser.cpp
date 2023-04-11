@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConfigParser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/10 00:18:06 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 21:49:38 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ string ft_trim(std::string str)
 }
 string searchCommentInLine(string line)
 {
-    size_t i = 0;
     string comment = "";
 
     int s = line.find('#');
@@ -160,7 +159,7 @@ bool checkLineIsComment(string line)
 
 // ?? push context yo tokonez
 
-void ConfigParser::pushTokinez(int currentIndex, string context)
+void ConfigParser::pushTokinez(size_t currentIndex, string context)
 {
     int word;
     if (currentIndex != _index)
@@ -282,7 +281,7 @@ void ConfigParser::skipSpaces(string line)
 
 void ConfigParser::checkWord(string line)
 {
-    int currentIndex = _index;
+    size_t currentIndex = _index;
     string word;
 
     while (line[_index] && !strchr(" \t{};\n", line[_index]))
@@ -354,7 +353,7 @@ void ConfigParser::checkSyntackInServer(int currentIndex, int index)
         currentIndex++;
     }
 }
-void ConfigParser::lenghtServer(int index)
+void ConfigParser::lenghtServer(size_t index)
 {
     int breackts = 0;
     int currentIndex = index;
@@ -521,7 +520,7 @@ bool checkSyntaxValidHost(string host)
 }
 void ConfigParser::checkSynaxDirective()
 {
-    int i = 0;
+    size_t i = 0;
 
     while (i < _tokens.size())
     {
@@ -584,7 +583,6 @@ void ConfigParser::checkSynaxDirective()
 
 void ConfigParser::checkSyntaxCemiColom()
 {
-    bool checkCemiColom = true;
 
     for (size_t i = 0; i < _tokens.size(); i++)
     {
@@ -605,7 +603,7 @@ void ConfigParser::checkSyntaxCemiColom()
 
 void ConfigParser::checkSyntaxAfterCemiColom()
 {
-    int i = 0;
+    size_t i = 0;
 
     while (i < _tokens.size())
     {

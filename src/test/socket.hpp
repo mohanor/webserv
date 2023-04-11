@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 20:17:18 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/11 22:19:28 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,12 @@ class SocketClass
         int create();
         void bindSocket(int sockfd, SocketServer &server);
         void listenSocket(int sockfd);
-        void acceptSocket(int sockfd);
         int sendFileInPackets(struct pollfd &fds);
         int communicate(struct pollfd &fds);
         void run();
         bool isNewConnection(int listener);
 
-        string  joinRootAndPath(string root, string path, Request &httpRequest);
+
         struct  pollfd createPollfd(int sockfd);
         void    setFds();
 
@@ -91,8 +90,8 @@ class SocketClass
         
         void    closeConnection(int fd, int i);
         void    initResponse(int fd);
+        void    createNewClient(int i);
     private:
-        struct sockaddr_in      address;
         vector<Server>          servers;
         vector<SocketServer>    _s;
         vector<struct pollfd>   _fds;

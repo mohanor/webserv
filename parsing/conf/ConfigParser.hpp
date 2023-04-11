@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConfigParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/03/30 22:02:32 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/11 21:49:01 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ public:
     vector<string>::iterator  checkContext2(vector<string>::iterator it);
     void checkContext();
 
-    void pushTokinez(int currentIndex, string context);
+    void pushTokinez(size_t currentIndex, string context);
     void pushSemiCurly(string type);
     void checkDirectives(string data);
     void pushDirective(string directive);
@@ -72,7 +72,7 @@ public:
     void checkSyntaxDiplicated();
     void checkSyntaxDiplicatedLocation(size_t index,map<string, bool> &directive);
     size_t lengthDirective(size_t index);
-    void  lenghtServer(int index);
+    void  lenghtServer(size_t index);
     int getLengthServer() const;
     vector<pair<string, int> > getTokens() const;
      void checkCorrectSyntaxDirective(size_t index);
