@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/11 01:50:50 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/11 18:12:24 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,11 @@ char **CGI::setENV()
 	_env.push_back("QUERY_STRING=" + _request.getQueryString());
 	_env.push_back("REDIRECT_STATUS=200");
     _env.push_back("SCRIPT_FILENAME=index.php");
+    _env.push_back("CONTENT_LENGTH=" + to_string(_request.getBody().length()));
+    _env.push_back("DOCUMENT_ROOT=" + _server.getRoot());
+
+    
+    
     return (_envToChar());
 }
 

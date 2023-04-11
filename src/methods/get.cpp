@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/11 01:00:24 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/11 17:46:01 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 Get::Get(Request request, Server server) : Method(request, server)
 {
+   
     if (!getRequestedResource())
     {
         _status = 404;
@@ -21,6 +22,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         _resp = getFileContent(_error_page[404]);
         return ;
     }
+  
     if (isFile())
     {
         if (!hasCGI())
@@ -44,27 +46,33 @@ Get::Get(Request request, Server server) : Method(request, server)
         _comment = "OK";
         return ;
     }
+    
     if (!hasSlashInTheEnd())
     {
         _status = 301;
         _comment = "Moved Permanently";
         _resp = getFileContent(_error_page[301]);
-        _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[301])));
+        // TODO segmentation fault
+        // _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[301])));
+        _contentType = _mime.getMimeType(_mime.getExtension(_error_page[301]));
+       
         return ;
     }
     if (!hasIndexFile())
     {
-    cout << "url:hhh " << _url << endl;
+        
         string file = _url + "index.html"; 
         if(FILE *f = fopen(file.c_str(),"r"))
         {
+          
             fclose(f);
-            _resp = getFileContent("./index.html");
+            _resp = getFileContent(file);
             _contentType = _mime.getMimeType(_mime.getExtension("./index.html"));
             _status = 200;
             _comment = "OK";
             return ;
         }
+        
         if (!getAutoIndex())
         {
             _status = 403;
@@ -73,7 +81,8 @@ Get::Get(Request request, Server server) : Method(request, server)
             _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[403])));
             return ;
         }
-        Worker::listenDirectory(_url);
+        cout << "this is the url: " << _url << endl;
+        Worker::listenDirectory(_url, server.getMatchedLocation());
         _status = 200;
         _comment = "OK";
         _resp = getFileContent("./configuration/dir/index.html");
