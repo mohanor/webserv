@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 20:15:59 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 20:26:28 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Configuration::Configuration(string fileName)
         {
             if (listen_port.find(listen[i]) != listen_port.end())
             {
-                cerr << "Error : Host is already in use" << endl;
+                cerr << "Error : Port is diplicated" << endl;
                 exit(1);
             }
             else
