@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConfigParser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/11 21:49:38 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 00:19:07 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -696,10 +696,10 @@ void ConfigParser::checkSyntaxDiplicated()
             {
                 if (_tokens[index].first == "listen")
                 {
-                    if (listen.find(_tokens[index + 1].first) != listen.end())
-                        errorLogs("Error : Port is already in use");
+                    if (listen.find(_tokens[index + 2].first) != listen.end())
+                        errorLogs("Error : Host is already in use");
                     else
-                        listen.insert(make_pair(_tokens[index + 1].first, false));
+                        listen.insert(make_pair(_tokens[index + 2].first, false));
                 }
                 if (m.find(_tokens[index].first) != m.end())
                 {

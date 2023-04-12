@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/11 21:51:33 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 00:11:06 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,14 @@ Configuration::Configuration(string fileName)
               exit(1);
         }
         checkServerName[_server[i].getServerName()] = false;
+
+        // for (size_t i =0; i < _server[i].getPort().size();i++)
+        // {
+        //     cout << _server[i].getPort()[i] << endl;
+        // }
     }
+    
+    
 }
 
 Configuration::~Configuration()
@@ -117,13 +124,13 @@ void Configuration::addToServer()
         switch (_directive_server[i].second)
         {
         case LISTEN:
-            directive.listen = atoi(_directive_server[i].first.c_str());
+            directive.listen.push_back(atoi(_directive_server[i].first.c_str()));
             break;
         case SERVER_NAME:
             directive.server_name = _directive_server[i].first;
             break;
         case HOST:
-            directive.host = _directive_server[i].first;
+            directive.host.push_back(_directive_server[i].first);
             break;
         case CLIENT_MAX_BODY_SIZE:
             directive.cli_max_size = atoi(_directive_server[i].first.c_str());
