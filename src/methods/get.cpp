@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/11 17:46:01 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 00:36:13 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Get::Get(Request request, Server server) : Method(request, server)
 {
-   
+   cout << __LINE__ << " " << __FILE__ << " GET ****" << endl;
     if (!getRequestedResource())
     {
         _status = 404;

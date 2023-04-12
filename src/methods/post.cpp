@@ -12,9 +12,6 @@ Post::Post(Request request, Server server) : Method(request, server)
             _resp = getFileContent(_error_page[_status]);
             _comment = "Created";
             // UPLOAD FILE
-            cout << "------------------UPLOAD FILE" << endl;
-        cout << __LINE__<< " " << __FILE__ << " POST" << endl;
-          
             request.uploadFile();
             return ;
         }

@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/11 22:58:57 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 00:45:51 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,14 @@ Worker &Worker::operator=(const Worker &copy)
 
 bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
 {
-    map<string, Location>::iterator it = servers._locations.begin();
-
-    vector<string> uri = Request::getVector(requestUri, '/');
-     
-
-    size_t sizeLocation = uri.size();
     string location;
+    size_t sizeLocation;
+
+    map<string, Location>::iterator it = servers._locations.begin();
+    vector<string> uri = Request::getVector(requestUri, '/');
+
+    sizeLocation = uri.size();
+    if (sizeLocation == 0) return (servers.setMatchedLocation("/"), true);
     
     while (sizeLocation)
     {
@@ -121,8 +122,10 @@ Post Worker::runMethodPost(Request &req, Server &server)
 bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path)
 {
 
+   
     if (getMatchedLocationFoRequestUri(req.getRessource(), server))
     {
+       
        
         if (isLocationHaveRedirection(server, path))
             return (isRedirection = true, false);
@@ -138,13 +141,12 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
 
 Method Worker::getMethodObject(Request req, Server server)
 {
-    cout << __LINE__<< " " << __FILE__ << " POST" << endl;
     bool isRedirection = false;
     string path;
     
     if (checkLocations(req, server, isRedirection, path))
     {
-       cout << __LINE__<< " " << __FILE__ << " POST 11" << endl;
+       cout << __LINE__<< " " << __FILE__ << " GET 11" << endl;
         if (req.getMethod() == "DELETE")
             return runMethodDelete(req, server);
         else if (req.getMethod() == "GET")
