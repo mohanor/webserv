@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 22:19:28 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 07:10:59 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class SocketClass
         SocketClass();
         ~SocketClass();
         int create();
-        void bindSocket(int sockfd, SocketServer &server);
+        void bindSocket(int sockfd, SocketServer &server, short port);
         void listenSocket(int sockfd);
         int sendFileInPackets(struct pollfd &fds);
         int communicate(struct pollfd &fds);
@@ -86,11 +86,16 @@ class SocketClass
         
         string parseChunked(string body);
         Server getServer(int sockfd);
+        Server getServer2(string host);
         Request                 httpRequest;
         
         void    closeConnection(int fd, int i);
         void    initResponse(int fd);
         void    createNewClient(int i);
+
+        bool isPortBelongToServer(Server server, short port);
+        bool isHostBelongToServer(Server server, string host);
+        bool isSeverNameBelongToServer(Server server, string serverName);
     private:
         vector<Server>          servers;
         vector<SocketServer>    _s;

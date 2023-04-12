@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 22:55:24 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 07:11:12 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ int SocketClass::create()
     return listener;
 }
 
-void SocketClass::bindSocket(int listener, SocketServer &serverToBind)
+void SocketClass::bindSocket(int listener, SocketServer &serverToBind, short port)
 {
     bzero(&serverToBind.address, sizeof(serverToBind.address));
     
     serverToBind.address.sin_family = AF_INET;
     serverToBind.address.sin_addr.s_addr = INADDR_ANY;
-    serverToBind.address.sin_port = htons(serverToBind.server.getPort());
+    serverToBind.address.sin_port = htons(port);
 
     int opt = 1;
     // opt = setsockopt(listener, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
@@ -217,6 +217,33 @@ Server SocketClass::getServer(int sockfd)
     return _s[0].server; // return default server
 }
 
+Server SocketClass::getServer2(string host)
+{
+
+    short port = atoi(Request::getVector(host, ':')[1].c_str());
+    string hostName = Request::getVector(host, ':')[0];
+
+    vector<SocketServer>::iterator serverWillserve = _s.begin();
+    bool firstServer = true;
+
+    for(vector<SocketServer>::iterator it = _s.begin()  ; it != _s.end(); it++)
+    {
+        if (isPortBelongToServer(it->server, port))
+        {
+            if (firstServer)
+            {
+                firstServer = false;
+                serverWillserve = it;
+            }
+
+            if (isHostBelongToServer(it->server, hostName) || isSeverNameBelongToServer(it->server, hostName))
+                return it->server;
+        }
+    }
+    
+    return serverWillserve->server;
+}
+
 void SocketClass::uploadFile(Request request)
 {
     size_t nextLine ;
@@ -298,7 +325,6 @@ int SocketClass::communicate(struct pollfd &fds)
         {
             _clients[fds.fd]._request = Request::deserialize(_clients[fds.fd].getHeader());
 
-        cout << __LINE__<< " " << __FILE__ << " " << _clients[fds.fd]._request.getMethod() << " " << _clients[fds.fd]._request.getRessource() << endl;
             int isOk = _clients[fds.fd]._request.isReqWellFormed();
             if (isOk != 200)
             {
@@ -314,7 +340,6 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
-            cerr << "************************POST method" << endl;
             if (handlePostRequest(_clients[fds.fd]))
             {
                 _clients[fds.fd].setStatus(FILE_NOT_SET);
@@ -343,7 +368,9 @@ int SocketClass::communicate(struct pollfd &fds)
 
 bool SocketClass::isNewConnection(int listener)
 {
-    // cerr << "NewConnection" << endl;
+    // Host: 127.0.0.1:8080
+    // Host: webserver.com:8080
+
     for (size_t i = 0; i < _s.size(); i++)
     {
         if (_s[i].sockfd == listener)
@@ -360,26 +387,73 @@ struct pollfd SocketClass::createPollfd(int sockfd)
     return pfd;
 }
 
+bool SocketClass::isPortBelongToServer(Server server, short port)
+{
+    vector<short> ports = server.getPort();
+
+    for (vector<short>::iterator it = ports.begin(); it != ports.end(); it++)
+    {
+        if (*it == port)
+            return true;
+    }
+
+    return false;
+}
+
+bool SocketClass::isHostBelongToServer(Server server, string host)
+{
+    vector<string> hosts = server.getHost();
+
+    for (vector<string>::iterator it = hosts.begin(); it != hosts.end(); it++)
+    {
+        if (*it == host)
+            return true;
+    }
+
+    return false;
+}
+
+bool SocketClass::isSeverNameBelongToServer(Server server, string serverName)
+{
+    return serverName == server.getServerName();
+}
+
+
 void SocketClass::setFds()
 {
     int listener;
+
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
     {
-        listener = this->create();
         
-        _s.push_back(SocketServer(listener, *it));
 
-        this->bindSocket(listener, _s[_s.size() - 1]);
-        this->listenSocket(listener);
-        _fds.push_back(createPollfd(listener));
+        vector<short> ports = it->getPort();
+
+        for (vector<short>::iterator pt = ports.begin(); pt != ports.end(); pt++)
+        {
+            cout << "port: " << *pt << endl;
+            listener = this->create();
+
+            _s.push_back(SocketServer(listener, *it));
+            this->bindSocket(listener, _s[_s.size() - 1], *pt);
+            this->listenSocket(listener);
+            _fds.push_back(createPollfd(listener));
+        }
+        
 
     }
 
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
-        cerr << "http://localhost:" << it->getPort() << endl;
+    {
+        vector<short> ports = it->getPort();
+        
+        for(size_t i = 0; i < ports.size(); i++)
+        {
+            cerr << "http://localhost:" << ports[i] << endl;
+        }
+    }
+
     cout << "_fds: " << _fds.size() << endl;
-    for(size_t i = 0; i < _fds.size(); i++)
-        cout << _fds[i].fd << endl;
 }
 
 void    SocketClass::closeConnection(int fd, int i)
@@ -392,8 +466,9 @@ void    SocketClass::closeConnection(int fd, int i)
 void    SocketClass::initResponse(int fd)
 {
     Worker worker;
-    cout << __LINE__<< " " << __FILE__ << " POST" << endl;
-    Method method = worker.getMethodObject(_clients[fd]._request, getServer(_serverHandler[fd]));
+
+    string host = _clients[fd]._request.getValueOf("Host");
+    Method method = worker.getMethodObject(_clients[fd]._request, getServer2(host));
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
     _clients[fd].setContentLength(method.getResponse().size());
