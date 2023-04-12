@@ -6,11 +6,13 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/12 07:11:12 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 17:44:48 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "socket.hpp"
+
+MimeTypes   SocketClass::_mime;
 
 SocketClass::SocketClass()
 {
@@ -35,12 +37,12 @@ int SocketClass::create()
     return listener;
 }
 
-void SocketClass::bindSocket(int listener, SocketServer &serverToBind, short port)
+bool SocketClass::bindSocket(int listener, SocketServer &serverToBind, short port)
 {
     bzero(&serverToBind.address, sizeof(serverToBind.address));
     
     serverToBind.address.sin_family = AF_INET;
-    serverToBind.address.sin_addr.s_addr = INADDR_ANY;
+    serverToBind.address.sin_addr.s_addr = INADDR_ANY; //TODO: change to server ip address from config file (host)
     serverToBind.address.sin_port = htons(port);
 
     int opt = 1;
@@ -49,37 +51,37 @@ void SocketClass::bindSocket(int listener, SocketServer &serverToBind, short por
     if (opt < 0)
     {
         cerr << "Error setting socket options" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
+        //exit(EXIT_FAILURE);
     }
     
     int bind_result = ::bind(listener, (struct sockaddr*) &serverToBind.address, sizeof(serverToBind.address));
     if (bind_result < 0)
     {
         cerr << "Error binding socket" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
+        // exit(EXIT_FAILURE);
     }
-
+    return true;
 }
 
-void SocketClass::listenSocket(int listener)
+bool SocketClass::listenSocket(int listener)
 {
     if (listen(listener, SOMAXCONN) < 0)
     {
         cerr << "Failed to listen for incoming connections" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
+        //exit(EXIT_FAILURE);
     }
+    return true;
 }
 
 int SocketClass::sendFileInPackets(struct pollfd &fds)
 {
-    // cout << "sendFileInPacket" << endl;
-    // if (_clients[fds.fd].getStatus() == FILE_NOT_SET)
-    // {
-    //     _clients[fds.fd].setFileContent(file);
-    //     _clients[fds.fd].setStatus(READY_TO_SEND);
-    // }
+    cout << __FILE__ << " " << __LINE__ << endl;
     if (_clients[fds.fd].getStatus() == READY_TO_SEND)
     {
+        cout << __FILE__ << " " << __LINE__ << endl;
         string response;
         
         string mimeType;
@@ -92,11 +94,13 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
         
         _clients[fds.fd].setStatus(SENDING);
         send(fds.fd, response.c_str(), response.size(), 0);
-
+        cout << __FILE__ << " " << __LINE__ << endl;
         return 0;
     }
+    cout << __FILE__ << " " << __LINE__ << endl;
     string packet = _clients[fds.fd].getPacket();
     send(fds.fd, packet.c_str(), packet.size(), 0);
+    cout << __FILE__ << " " << __LINE__ << endl;
     return 0;
 }
 
@@ -422,6 +426,7 @@ bool SocketClass::isSeverNameBelongToServer(Server server, string serverName)
 void SocketClass::setFds()
 {
     int listener;
+    bool bind, listen;
 
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
     {
@@ -432,11 +437,23 @@ void SocketClass::setFds()
         for (vector<short>::iterator pt = ports.begin(); pt != ports.end(); pt++)
         {
             cout << "port: " << *pt << endl;
+
             listener = this->create();
+            if (listener < 0) continue;
 
             _s.push_back(SocketServer(listener, *it));
-            this->bindSocket(listener, _s[_s.size() - 1], *pt);
-            this->listenSocket(listener);
+
+            bind = this->bindSocket(listener, _s[_s.size() - 1], *pt);
+            if (!bind)
+            {
+                close(listener);
+                _s.pop_back();
+                continue;
+            }
+
+            listen = this->listenSocket(listener);
+            if (!listen) continue;
+
             _fds.push_back(createPollfd(listener));
         }
         
@@ -482,6 +499,7 @@ void SocketClass::createNewClient(int i)
     newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
     if (newClient < 0)
     {
+        cout << __FILE__ << " " << __LINE__ << endl;
         cerr << "fail to accept connection" << endl;
         return;
     }
@@ -498,34 +516,37 @@ void SocketClass::run()
     
     while (true)
     {
+        cout << __FILE__ << " " << __LINE__ << endl;
         // cout << "listen ..." << endl;
         if (poll(&_fds[0], _fds.size(), -1) < 0)
         {
             cerr << "poll error" << endl;
             break;
         }
-
+        cout << __FILE__ << " " << __LINE__ << endl;
         current_size = _fds.size();
         for(size_t i = 0; i < current_size; i++)
         {
             if (_fds[i].revents == 0)
                 continue;
-
+            cout << __FILE__ << " " << __LINE__ << endl;
             if (_fds[i].revents & POLLHUP)
             {
+                cout << __FILE__ << " " << __LINE__ << endl;
                 closeConnection(_fds[i].fd, i);
                 current_size--;
                 i--;
             }
             else if (_fds[i].revents & POLLIN)
             {   
+                cout << __FILE__ << " " << __LINE__ << endl;
                 if (isNewConnection(_fds[i].fd))
                 {
                         newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
                         if (newClient < 0)
                         {
                             cerr << "fail to accept connection" << endl;
-                            return;
+                            continue;
                         }
                         
                         _serverHandler.insert(make_pair(newClient, _fds[i].fd));
@@ -538,20 +559,22 @@ void SocketClass::run()
             }
             else if (_fds[i].revents & POLLOUT)
             {
+                cout << __FILE__ << " " << __LINE__ << endl;
                 if (_clients[_fds[i].fd].getStatus() == FILE_NOT_SET)
                     initResponse(_fds[i].fd);
-
+                cout << __FILE__ << " " << __LINE__ << endl;
                 sendFileInPackets(_fds[i]);
-                
+                cout << __FILE__ << " " << __LINE__ << endl;
                 if (_clients[_fds[i].fd].getStatus() == SENDED)
                 {
                     closeConnection(_fds[i].fd, i);
                     current_size--;
                     i--;
                 }
+                cout << __FILE__ << " " << __LINE__ << endl;
             }
         }
 
     }
-
+cout << __FILE__ << " " << __LINE__ << endl;
 }
