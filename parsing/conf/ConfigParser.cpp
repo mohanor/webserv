@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 04:59:29 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 20:16:46 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void ConfigParser::SetAllowedDirective(bool isInServer)
     {
         _directive_allowed.push_back("server_name");
         _directive_allowed.push_back("listen");
+        _directive_allowed.push_back("host");
     }
     else
     {
@@ -464,6 +465,7 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
                 file.open(fileName);
                 if (!file.is_open())
                     throw out_of_range("Error : file not found !");
+                file.close();
             }
             for (size_t i = 0; i < _tokens[index + 1].first.size(); i++)
                 if (!isdigit(_tokens[index + 1].first[i]))
@@ -525,8 +527,8 @@ void ConfigParser::checkSynaxDirective()
 
             if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2)
                 errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
-            if (_tokens[i].first == "listen" && lengthDirective(i + 1) != 2)
-                errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
+            // if (_tokens[i].first == "listen" && lengthDirective(i + 1) != 2)
+            //     errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
             else if (_tokens[i].first == "listen")
             { 
                 int port =   atof(_tokens[i + 1].first.c_str());
@@ -535,10 +537,14 @@ void ConfigParser::checkSynaxDirective()
                   for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
                         if (!isdigit(_tokens[i + 1].first[in]))
                             errorLogs("Error : Port size not valid");
-               if (!checkSyntaxValidHost(_tokens[i + 2].first))
-                    errorLogs("Error : Host "+ _tokens[i + 2].first + " not valid");
-            
             }
+
+            else if (_tokens[i].first == "host")
+            {
+                if (!checkSyntaxValidHost(_tokens[i + 1].first))
+                    errorLogs("Error : Host "+ _tokens[i + 1].first + " not valid");
+            }
+            
 
             else if (_tokens[i].first == "cgi_info_php" || _tokens[i].first == "cgi_info_py")
             {
@@ -546,9 +552,8 @@ void ConfigParser::checkSynaxDirective()
                     errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
                 else
                 {
-                    cout << _tokens[i + 1].first << endl;
                     if (_tokens[i + 1].first != ".py" && _tokens[i + 1].first != ".php")
-                        errorLogs("Error s: " + _tokens[i].first + " syntax does not valid");
+                        errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
                 }
             }
             else if (_tokens[i].first == "cli_max_size")
@@ -566,10 +571,10 @@ void ConfigParser::checkSynaxDirective()
                 errorLogs("error allow");
             else if (_tokens[i].first == "allow")
                 checkSyntaxMethod(i + 1);
-            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow" && _tokens[i].first != "listen" &&  _tokens[i].first != "cgi_info_php" && _tokens[i].first != "cgi_info_py" )
+            if (_tokens[i].first != "error_page" && _tokens[i].first != "index" && _tokens[i].first != "return" && _tokens[i].first != "allow" &&  _tokens[i].first != "cgi_info_php" && _tokens[i].first != "cgi_info_py" )
             {
                 if (lengthDirective(i + 1) != 1)
-                    errorLogs("Error s: Directive "+_tokens[i + 1].first+" doesn't support " );
+                    errorLogs("Error : Directive "+_tokens[i].first+" doesn't support " );
             }
             checkCorrectSyntaxDirective(i);
         }
@@ -668,7 +673,7 @@ void ConfigParser::checkSyntaxDiplicated()
 {
     size_t index = 1;
     map<string, bool> m;
-    map<string, bool> listen;
+  
     map<string, bool> directiveLocation;
 
     for (size_t i = 0; i < _lenght_server; i++)
@@ -690,13 +695,7 @@ void ConfigParser::checkSyntaxDiplicated()
             }
             if (_tokens[index].second == DIRECTIVE && !cxt)
             {
-                if (_tokens[index].first == "listen")
-                {
-                    if (listen.find(_tokens[index + 2].first) != listen.end())
-                        errorLogs("Error : Host is already in use");
-                    else
-                        listen.insert(make_pair(_tokens[index + 2].first, false));
-                }
+              
                 if (m.find(_tokens[index].first) != m.end())
                 {
                     m[_tokens[index].first] = true;
@@ -713,7 +712,6 @@ void ConfigParser::checkSyntaxDiplicated()
             if (it->second && it->first != "listen" && it->first != "cgi_info" && it->first != "error_page" )
                 errorLogs("Error : '" + it->first+ "' is diplicated");
         }
-        listen.clear();
         m.clear();
     }
 }
