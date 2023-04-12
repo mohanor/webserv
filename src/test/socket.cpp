@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
 /*   Updated: 2023/04/12 17:44:48 by matef            ###   ########.fr       */
@@ -42,6 +42,7 @@ bool SocketClass::bindSocket(int listener, SocketServer &serverToBind, short por
     bzero(&serverToBind.address, sizeof(serverToBind.address));
     
     serverToBind.address.sin_family = AF_INET;
+
     serverToBind.address.sin_addr.s_addr = INADDR_ANY; //TODO: change to server ip address from config file (host)
     serverToBind.address.sin_port = htons(port);
 

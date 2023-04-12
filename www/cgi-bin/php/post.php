@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <form  method="POST">
+    <form action="php/post.php"  method="POST">
         <input type="text" name="name" placeholder="Enter your name">
         <input type="submit" value="Submit">
     </form>

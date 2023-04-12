@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:02:56 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 18:45:48 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,19 @@
 using namespace std;
 
 struct Location;
+// struct HostInfo
+// {
+//     short port;
+//     string hostName;
+// };
+//         vector<HostInfo>	        _host_info;
 
 class Server : public Http
 {
     protected:
-        vector<short int>	                 _listen;
+        vector<short int>	             _listen;
         string		                _server_name;
-        vector<string>		                _host;
+        string	                     _host;
         string		                _cgi_info_php;
         string		                _cgi_info_py;
         string		                _length_location;
@@ -47,7 +53,7 @@ class Server : public Http
         void setMatchedLocation(string location);
 
         string	getServerName() const;
-		vector<string>	getHost() const;
+		string	getHost() const;
 		vector<short int>	getPort() const;
         string  getCGIINFO() const;
         size_t getLengthLocation() const;
