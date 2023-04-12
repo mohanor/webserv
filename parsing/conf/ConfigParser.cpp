@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:19:07 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 04:59:29 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,13 +326,13 @@ void ConfigParser::checkSynatxCurly()
         if (_tokens[i].second == OPEN_CURLY && _tokens[i - 1].second != WORD)
         {
             if (_tokens[i - 1].second != CONTEXT || _tokens[i].second == WORD)
-                errorLogs("Error : Config File does not a valid format");
+                errorLogs("Error : Config File does not a valid format " + _tokens[i].first);
         }
         if (_tokens[i].second == OPEN_CURLY || _tokens[i].second == CLOSE_CURLY)
             countCurly++;
     }
     if (countCurly % 2 != 0)
-        errorLogs("Error find closed curlys");
+        errorLogs("Error find closed curly without open curly");
 }
 
 void ConfigParser::checkSyntaxMain()
@@ -342,14 +342,14 @@ void ConfigParser::checkSyntaxMain()
         index++;
 
     if (_tokens[index].first != "server" || _tokens[index + 1].second != OPEN_CURLY || _tokens[index + 2].second == OPEN_CURLY)
-        errorLogs("error find server");
+        errorLogs("Error Server does not a valid format " + _tokens[index].first);
 }
 void ConfigParser::checkSyntackInServer(int currentIndex, int index)
 {
     while (currentIndex < index)
     {
         if (_tokens[currentIndex].second == CONTEXT && _tokens[currentIndex].first == "server")
-            errorLogs("error find server");
+            errorLogs("Error Server does not a valid format -> " + _tokens[currentIndex].first);
         currentIndex++;
     }
 }
@@ -374,7 +374,7 @@ void ConfigParser::lenghtServer(size_t index)
     while (index < _tokens.size() && _tokens[index].second != OPEN_CURLY)
     {
         if (_tokens[index].second == CONTEXT && _tokens[index].first != "server")
-            errorLogs("error file");
+            errorLogs("Error  : Server does not a valid format -> " + _tokens[index].first);
         index++;
     }
 }
@@ -410,7 +410,7 @@ bool ConfigParser::checkSyntaxDirectiveCondition(size_t index)
     {
     }
     if (_tokens[index].second != SEMI_COLON)
-        errorLogs("error word");
+        errorLogs("Error  : 'Semi colon' does not valid");
     return true;
 }
 size_t ConfigParser::lengthDirective(size_t index)
@@ -436,14 +436,14 @@ void ConfigParser::checkSyntaxMethod(size_t index)
             if (_tokens[index].first == methods[j])
             {
                 if (methodsMap.find(methods[j]) != methodsMap.end())
-                    errorLogs("error methods id duplicate !");
+                    errorLogs("Error : methods " + _tokens[index].first + " is duplicate !");
                 methodsMap[methods[j]] = 1;
                 break;
             }
             j++;
         }
         if (j == 3)
-            errorLogs("error method");
+            errorLogs("Error : Method does not valid " + _tokens[index].first);
         index++;
     }
 }
@@ -478,17 +478,6 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
         }
     }
 
-    // if (_tokens[index].first == "root" )
-    // {
-    //     ifstream file;
-
-    //     string fileName =  _tokens[index + 1].first;
-
-    //         file.open(fileName);
-    //         // if(!file.is_open())
-    //         //     errorLogs("error find location root !");
-    // }
-
     if (_tokens[index].first == "autoindex")
     {
         if (_tokens[index + 1].first != "on" && _tokens[index + 1].first != "off")
@@ -500,6 +489,13 @@ bool checkSyntaxValidHost(string host)
     vector<string> hst = Request::getVector(host, '.');
     if (hst.size() != 4)
         return false;
+
+    for (size_t i = 0; i < hst.size(); i++)
+    {
+        if (atof(hst[i].c_str()) > 255 || atof(hst[i].c_str()) < 0)
+            return false;
+    }
+    
     for (size_t i = 0; i < host.size(); i++)
     {
         if (host[i] == '.' && host[i + 1] == '.')
@@ -535,12 +531,12 @@ void ConfigParser::checkSynaxDirective()
             { 
                 int port =   atof(_tokens[i + 1].first.c_str());
                  if (port > 65535 || port < 1)
-                         errorLogs("Error : Port not valid ");
+                         errorLogs("Error : Port "+_tokens[i + 1].first+" not valid ");
                   for (size_t in = 0; in < _tokens[i + 1].first.size(); in++)
                         if (!isdigit(_tokens[i + 1].first[in]))
                             errorLogs("Error : Port size not valid");
                if (!checkSyntaxValidHost(_tokens[i + 2].first))
-                    errorLogs("Error : Host not valid");
+                    errorLogs("Error : Host "+ _tokens[i + 2].first + " not valid");
             
             }
 
@@ -591,11 +587,11 @@ void ConfigParser::checkSyntaxCemiColom()
             while (_tokens[i].second != NEWLINE && i < _tokens.size())
                 i++;
             if (_tokens[i - 1].second != SEMI_COLON)
-                errorLogs("Error : 'Semicolom' is missing");
+                errorLogs("Error : 'Semicolom' is missing " + _tokens[i - 1].first);
             else
             {
                 if (_tokens[i - 2].second == SEMI_COLON)
-                    errorLogs("Error : 'Semicolom' is missing'");
+                    errorLogs("Error : 'Semicolom' does not valid  ' " + _tokens[i - 2].first);
             }
         }
     }
@@ -610,7 +606,7 @@ void ConfigParser::checkSyntaxAfterCemiColom()
         if (_tokens[i].second == SEMI_COLON)
         {
             if (_tokens[i + 1].second != NEWLINE)
-                errorLogs("Error : 'Semicolom' is missing'");
+                errorLogs("Error : 'Semicolom' invalid' "+ _tokens[i + 1].first);
         }
         i++;
     }

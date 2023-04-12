@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:02:56 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 02:51:26 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@
 using namespace std;
 
 struct Location;
+// struct HostInfo
+// {
+//     short port;
+//     string hostName;
+// };
+//         vector<HostInfo>	        _host_info;
 
 class Server : public Http
 {

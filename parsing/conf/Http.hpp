@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:17:23 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 02:51:43 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ using namespace std;
 struct directives
 {
     size_t cli_max_size ;
+    //  vector<HostInfo> _host_info ;
     vector<short int> listen ;
     string server_name ;
     vector<string> host ;

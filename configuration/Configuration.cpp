@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:11:06 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 04:38:38 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,7 @@ Configuration::Configuration(string fileName)
     insertServer();
     checkLocation();
 
-    map<std::string, bool> checkServerName;
-    for (size_t i = 0; i < _server.size(); i++)
-    {
-        if (checkServerName.find(_server[i].getServerName()) != checkServerName.end())
-        {
-           cerr <<  "Error : ServerName already in use" << endl;
-              exit(1);
-        }
-        checkServerName[_server[i].getServerName()] = false;
-
-        // for (size_t i =0; i < _server[i].getPort().size();i++)
-        // {
-        //     cout << _server[i].getPort()[i] << endl;
-        // }
-    }
-    
-    
+    map<std::string, bool> checkServerName; 
 }
 
 Configuration::~Configuration()
@@ -147,7 +131,6 @@ void Configuration::addToServer()
             directive.error_page.push_back(make_pair(atoi(errorPage[0].c_str()), errorPage[1]));
             break;
         }
-            
         case AUTOINDEX:
             directive.autoindex = _directive_server[i].first == "on" ? true : false;
             break;

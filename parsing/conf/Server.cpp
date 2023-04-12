@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:02:44 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 03:18:23 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,3 +94,8 @@ string Server::getCgiInfoPY() const
 {
     return this->_cgi_info_py;
 }
+
+// void Server::setPort(short int port)
+// {
+//     this->_listen = port;
+// }
