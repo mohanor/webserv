@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/11 22:37:36 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 00:05:33 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ char **CGI::setENV()
 	_env.push_back("SERVER_NAME=" + _server.getServerName());
 	_env.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	_env.push_back("SERVER_PROTOCOL=HTTP/1.1");
-	_env.push_back("SERVER_PORT=" + to_string(_server.getPort()));
+	_env.push_back("SERVER_PORT=" + to_string(_server.getPort()[0]));
 	_env.push_back("REQUEST_METHOD=" + _request.getMethod());
 	_env.push_back("SCRIPT_NAME=" + _scriptName);
 	_env.push_back("CONTENT_TYPE=" + _request.getValueOf("Content-Type"));

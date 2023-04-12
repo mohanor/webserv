@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/10 17:40:29 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 00:17:23 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ using namespace std;
 struct directives
 {
     size_t cli_max_size ;
-    short int listen ;
+    vector<short int> listen ;
     string server_name ;
-    string host ;
+    vector<string> host ;
     string root ;
     string index ;
     vector<pair<int, string> > error_page;
@@ -36,9 +36,9 @@ struct directives
     directives()
     {
         cli_max_size = 1000;
-        listen = 8080;
+        // listen.push_back(8080);
         server_name = "localhost";
-        host = "127.0.0.1";
+        // host.push_back("127.0.0.1");
         root = "./www/html";
         autoindex = false;
         allow = "GET POST DELETE";
