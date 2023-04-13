@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/13 02:34:19 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/13 13:25:16 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,15 +407,13 @@ bool SocketClass::isPortBelongToServer(Server server, short port)
 
 bool SocketClass::isHostBelongToServer(Server server, string host)
 {
-    // vector<string> hosts = server.getHost();
-    (void) host;
-    (void) server;
+    vector<string> hosts = server.getHost();
 
-    // for (vector<string>::iterator it = hosts.begin(); it != hosts.end(); it++)
-    // {
-    //     if (*it == host)
-    //         return true;
-    // }
+    for (vector<string>::iterator it = host.begin(); it != hosts.end(); it++)
+    {
+        if (*it == host)
+            return true;
+    }
 
     return false;
 }
