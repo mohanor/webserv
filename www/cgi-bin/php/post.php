@@ -8,12 +8,14 @@
 </head>
 <body>
 
-    <form action="php/post.php"  method="POST">
+    <form   method="POST">
         <input type="text" name="name" placeholder="Enter your name">
         <input type="submit" value="Submit">
     </form>
 
     <?php
+    ob_start();
+      setcookie("name", "John Watkin", time()+3600, "/","", 0);
         if (isset($_POST['name'])) {
             echo "Hello " . $_POST['name'];
         }
