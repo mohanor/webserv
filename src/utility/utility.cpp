@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 21:42:58 by matef             #+#    #+#             */
-/*   Updated: 2023/04/13 16:56:24 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 01:53:59 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ std::string getFileContent(std::string file_name)
     if (!MyReadFile.is_open())
         return "";
 
-    getline (MyReadFile, line, '\0');
-    // while (getline (MyReadFile, line))
-    //     content += line + '\n';
+    //getline (MyReadFile, line, '\0');
+    while (getline (MyReadFile, line))
+        content += line + '\n';
 
     MyReadFile.close();
-    return line;
+    return content.substr(0, content.size() - 1);
 }
 
 bool hasOnlyUppercase(const string &str)

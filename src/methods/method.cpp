@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/13 18:17:20 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 01:47:13 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     
     insetErrorPage();
     
-    // _status = 404;
-    // _comment =  " Not Found";
-    // _resp =  getFileContent(_error_page[404]);
+    _status = 404;
+    _comment =  " Not Found";
+    _resp =  getFileContent(_error_page[404]);
 }
 
 void Method::insetErrorPage()
