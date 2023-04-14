@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 20:16:46 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/13 12:52:01 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -715,6 +715,9 @@ void ConfigParser::checkSyntaxDiplicated()
         m.clear();
     }
 }
+
+
+
 
 void ConfigParser::synaxError()
 {

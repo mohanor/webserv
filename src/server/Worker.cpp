@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/14 01:08:46 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 01:48:49 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,8 +206,10 @@ string Worker::listenDirectory(string pathUri, string pathDir)
         pathIndex += pathUri.length();
     }
 
+    cout << " i am here       ...."  << endl;
+
     std::ofstream out("./configuration/dir/index.html");
-    // out << str;
+    out << str;
     closedir(pdir);
     file.close();
     out.close();
