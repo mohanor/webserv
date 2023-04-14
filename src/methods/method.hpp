@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/11 22:02:03 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 16:02:01 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Method
         int     _status;
         string  _comment;
         string  _url;
-        MimeTypes _mime;
+        // MimeTypes _mime;
         string  _contentType;
 
         map<string, Header> headers;

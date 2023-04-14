@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/12 17:44:48 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 00:44:09 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "socket.hpp"
 
-MimeTypes   SocketClass::_mime;
+
 
 SocketClass::SocketClass()
 {
@@ -37,23 +37,21 @@ int SocketClass::create()
     return listener;
 }
 
-bool SocketClass::bindSocket(int listener, SocketServer &serverToBind, short port)
+bool SocketClass::bindSocket(int listener, SocketServer &serverToBind, HostAndPort hostAndPort)
 {
     bzero(&serverToBind.address, sizeof(serverToBind.address));
     
     serverToBind.address.sin_family = AF_INET;
 
-    serverToBind.address.sin_addr.s_addr = INADDR_ANY; //TODO: change to server ip address from config file (host)
-    serverToBind.address.sin_port = htons(port);
+    serverToBind.address.sin_addr.s_addr =  inet_addr(hostAndPort.host.c_str()); //TODO: change to server ip address from config file (host)
+    serverToBind.address.sin_port = htons(hostAndPort.port);
 
     int opt = 1;
-    // opt = setsockopt(listener, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
     opt = setsockopt(listener, SOL_SOCKET, SO_REUSEADDR , &opt, sizeof(opt));
     if (opt < 0)
     {
         cerr << "Error setting socket options" << std::endl;
         return false;
-        //exit(EXIT_FAILURE);
     }
     
     int bind_result = ::bind(listener, (struct sockaddr*) &serverToBind.address, sizeof(serverToBind.address));
@@ -61,14 +59,13 @@ bool SocketClass::bindSocket(int listener, SocketServer &serverToBind, short por
     {
         cerr << "Error binding socket" << std::endl;
         return false;
-        // exit(EXIT_FAILURE);
     }
     return true;
 }
 
 bool SocketClass::listenSocket(int listener)
 {
-    if (listen(listener, SOMAXCONN) < 0)
+    if (listen(listener, 1000) < 0)
     {
         cerr << "Failed to listen for incoming connections" << std::endl;
         return false;
@@ -79,29 +76,28 @@ bool SocketClass::listenSocket(int listener)
 
 int SocketClass::sendFileInPackets(struct pollfd &fds)
 {
-    cout << __FILE__ << " " << __LINE__ << endl;
+
     if (_clients[fds.fd].getStatus() == READY_TO_SEND)
     {
-        cout << __FILE__ << " " << __LINE__ << endl;
+
         string response;
         
         string mimeType;
         string comment;
         
-
         response = "HTTP/1.1 200 Ok" ENDL;
         response += "Content-Type: " + _clients[fds.fd].getMimeType() + ENDL;
         response += "Content-Length: " + to_string(_clients[fds.fd].getContentLength()) + ( ENDL ENDL );
-        
+
         _clients[fds.fd].setStatus(SENDING);
         send(fds.fd, response.c_str(), response.size(), 0);
-        cout << __FILE__ << " " << __LINE__ << endl;
         return 0;
     }
-    cout << __FILE__ << " " << __LINE__ << endl;
+
     string packet = _clients[fds.fd].getPacket();
-    send(fds.fd, packet.c_str(), packet.size(), 0);
-    cout << __FILE__ << " " << __LINE__ << endl;
+    //cout << packet << endl;
+    //printf("%p\n", &packet[0]);
+    ::send(fds.fd, packet.c_str(), packet.size(), 0);
     return 0;
 }
 
@@ -224,9 +220,11 @@ Server SocketClass::getServer(int sockfd)
 
 Server SocketClass::getServer2(string host)
 {
+    
+    vector<string> hostAndPort = Request::getVector(host, ':');
 
-    short port = atoi(Request::getVector(host, ':')[1].c_str());
-    string hostName = Request::getVector(host, ':')[0];
+    short port = atoi(hostAndPort[1].c_str());
+    string hostName = hostAndPort[0];
 
     vector<SocketServer>::iterator serverWillserve = _s.begin();
     bool firstServer = true;
@@ -247,62 +245,6 @@ Server SocketClass::getServer2(string host)
     }
     
     return serverWillserve->server;
-}
-
-void SocketClass::uploadFile(Request request)
-{
-    size_t nextLine ;
-    string boundary;
-    string endBoundary;
-    string body;
-
-    body = request.getBody();
-    vector<string> contentType = Request::getVector(request.getValueOf("Content-Type"));
-    
-    boundary = "--" + contentType[1].substr(9);
-    endBoundary = boundary + "--";
-
-
-    size_t start = body.find(boundary);
-    size_t end = body.find(endBoundary);
-
-    if (start == string::npos || end == string::npos) // return msg error : bad request
-    {
-        cerr << "bad request" << endl;
-        return;
-    }
-    
-    string tmp;
-    string bodyHead;
-    vector <string> bodyHeadVector;
-    
-    while (start != string::npos && start < end)
-    {
-        nextLine = body.find("\r\n\r\n") + 4;
-        bodyHead = body.substr(0, nextLine);
-
-        while (bodyHead.find("\r\n") != string::npos)
-            bodyHead.replace(bodyHead.find("\r\n"), 2, " ");
-
-        bodyHeadVector = Request::getVector(bodyHead);
-        while (bodyHeadVector.size() && bodyHeadVector[0].find("filename") == string::npos)
-            bodyHeadVector.erase(bodyHeadVector.begin());
-
-        if (!bodyHeadVector.size())
-            return ;
-        
-        string filename = bodyHeadVector[0].substr(bodyHeadVector[0].find("\"") + 1);
-        filename.erase(filename.find("\""));
-
-        body.erase(0, nextLine);
-        start = body.find(boundary);
-        tmp = body.substr(0, start);
-
-        ofstream file("./uploads/" + filename, ios::out | ios::trunc);
-
-        file << tmp;
-        tmp.clear();
-    }
 }
 
 int SocketClass::communicate(struct pollfd &fds)
@@ -373,9 +315,6 @@ int SocketClass::communicate(struct pollfd &fds)
 
 bool SocketClass::isNewConnection(int listener)
 {
-    // Host: 127.0.0.1:8080
-    // Host: webserver.com:8080
-
     for (size_t i = 0; i < _s.size(); i++)
     {
         if (_s[i].sockfd == listener)
@@ -407,15 +346,7 @@ bool SocketClass::isPortBelongToServer(Server server, short port)
 
 bool SocketClass::isHostBelongToServer(Server server, string host)
 {
-    vector<string> hosts = server.getHost();
-
-    for (vector<string>::iterator it = hosts.begin(); it != hosts.end(); it++)
-    {
-        if (*it == host)
-            return true;
-    }
-
-    return false;
+    return host == server.getHost();
 }
 
 bool SocketClass::isSeverNameBelongToServer(Server server, string serverName)
@@ -423,15 +354,26 @@ bool SocketClass::isSeverNameBelongToServer(Server server, string serverName)
     return serverName == server.getServerName();
 }
 
+bool isListen(vector<HostAndPort> hostsAndPorts, HostAndPort hostAndPort)
+{
+    for (vector<HostAndPort>::iterator it = hostsAndPorts.begin(); it != hostsAndPorts.end(); it++)
+    {
+        if (it->host == hostAndPort.host && it->port == hostAndPort.port)
+            return true;
+    }
+    return false;
+}
 
 void SocketClass::setFds()
 {
     int listener;
     bool bind, listen;
 
+    vector<HostAndPort> hostsAndPorts;
+    HostAndPort hostAndPort;
+
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
     {
-        
 
         vector<short> ports = it->getPort();
 
@@ -439,12 +381,16 @@ void SocketClass::setFds()
         {
             cout << "port: " << *pt << endl;
 
+            hostAndPort.host = it->getHost();
+            hostAndPort.port = *pt;
+            if (isListen(hostsAndPorts, hostAndPort))
+                continue;
             listener = this->create();
             if (listener < 0) continue;
 
             _s.push_back(SocketServer(listener, *it));
 
-            bind = this->bindSocket(listener, _s[_s.size() - 1], *pt);
+            bind = this->bindSocket(listener, _s[_s.size() - 1], hostAndPort);
             if (!bind)
             {
                 close(listener);
@@ -456,22 +402,17 @@ void SocketClass::setFds()
             if (!listen) continue;
 
             _fds.push_back(createPollfd(listener));
+            hostsAndPorts.push_back(hostAndPort);
         }
-        
 
-    }
-
-    for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
-    {
-        vector<short> ports = it->getPort();
-        
-        for(size_t i = 0; i < ports.size(); i++)
-        {
-            cerr << "http://localhost:" << ports[i] << endl;
-        }
     }
 
     cout << "_fds: " << _fds.size() << endl;
+    if (_fds.size() == 0)
+    {
+        cerr << "server (s) resource alreday in use" << endl;
+        exit (1);
+    }
 }
 
 void    SocketClass::closeConnection(int fd, int i)
@@ -487,95 +428,64 @@ void    SocketClass::initResponse(int fd)
 
     string host = _clients[fd]._request.getValueOf("Host");
     Method method = worker.getMethodObject(_clients[fd]._request, getServer2(host));
+    /*
+        map<string, string> headers = method.getHeaders();
+    */
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
     _clients[fd].setContentLength(method.getResponse().size());
     _clients[fd].setMimeType(method.getContentType());
 }
 
-void SocketClass::createNewClient(int i)
-{
-    int newClient;
-    
-    newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
-    if (newClient < 0)
-    {
-        cout << __FILE__ << " " << __LINE__ << endl;
-        cerr << "fail to accept connection" << endl;
-        return;
-    }
-    
-    _serverHandler.insert(make_pair(newClient, _fds[i].fd));
-    _fds.push_back(createPollfd(newClient));
-}
+
 
 void SocketClass::run()
 {
-    size_t     current_size;
     int       newClient;
-    setFds();
+    int       opt;
     
+    setFds();
     while (true)
     {
-        cout << __FILE__ << " " << __LINE__ << endl;
-        // cout << "listen ..." << endl;
         if (poll(&_fds[0], _fds.size(), -1) < 0)
         {
             cerr << "poll error" << endl;
             break;
         }
-        cout << __FILE__ << " " << __LINE__ << endl;
-        current_size = _fds.size();
-        for(size_t i = 0; i < current_size; i++)
+        
+        for(size_t i = 0; i < _fds.size(); i++)
         {
+    
             if (_fds[i].revents == 0)
                 continue;
-            cout << __FILE__ << " " << __LINE__ << endl;
             if (_fds[i].revents & POLLHUP)
-            {
-                cout << __FILE__ << " " << __LINE__ << endl;
                 closeConnection(_fds[i].fd, i);
-                current_size--;
-                i--;
-            }
             else if (_fds[i].revents & POLLIN)
             {   
-                cout << __FILE__ << " " << __LINE__ << endl;
+        
                 if (isNewConnection(_fds[i].fd))
                 {
-                        newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
-                        if (newClient < 0)
-                        {
-                            cerr << "fail to accept connection" << endl;
-                            continue;
-                        }
-                        
-                        _serverHandler.insert(make_pair(newClient, _fds[i].fd));
-                        _fds.push_back(createPollfd(newClient));
-                    // createNewClient(_fds[i].fd);
-                    // continue;
+                    newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
+                    if (newClient < 0) { cerr << "fail to accept connection" << endl; continue; }
+                    
+                    opt = setsockopt(newClient, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
+                    _fds.push_back(createPollfd(newClient));
                 }
                 else if ( !communicate(_fds[i]) )
+                {
                     break;
+                }
             }
             else if (_fds[i].revents & POLLOUT)
             {
-                cout << __FILE__ << " " << __LINE__ << endl;
-                if (_clients[_fds[i].fd].getStatus() == FILE_NOT_SET)
-                    initResponse(_fds[i].fd);
-                cout << __FILE__ << " " << __LINE__ << endl;
+                if (_clients[_fds[i].fd].getStatus() == FILE_NOT_SET) initResponse(_fds[i].fd);
                 sendFileInPackets(_fds[i]);
-                cout << __FILE__ << " " << __LINE__ << endl;
                 if (_clients[_fds[i].fd].getStatus() == SENDED)
-                {
+                {      
                     closeConnection(_fds[i].fd, i);
-                    current_size--;
-                    i--;
                 }
-                cout << __FILE__ << " " << __LINE__ << endl;
             }
         }
 
     }
-cout << __FILE__ << " " << __LINE__ << endl;
 }

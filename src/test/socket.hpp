@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/12 17:27:27 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 16:09:37 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,19 @@ struct SocketServer
     struct sockaddr_in address;
 };
 
+struct HostAndPort
+{
+    string host;
+    short port;
+};
+
 class SocketClass
 {
     public:
         SocketClass();
         ~SocketClass();
         int create();
-        bool bindSocket(int sockfd, SocketServer &server, short port);
+        bool bindSocket(int sockfd, SocketServer &server, HostAndPort hostAndPort);
         bool listenSocket(int sockfd);
         int sendFileInPackets(struct pollfd &fds);
         int communicate(struct pollfd &fds);
@@ -82,7 +88,6 @@ class SocketClass
         bool handlePostRequest(Client &client);
         // bool handleChunkedRequest(Client &client);
 
-        void uploadFile(Request request);
         
         string parseChunked(string body);
         Server getServer(int sockfd);
@@ -91,7 +96,6 @@ class SocketClass
         
         void    closeConnection(int fd, int i);
         void    initResponse(int fd);
-        void    createNewClient(int i);
 
         bool isPortBelongToServer(Server server, short port);
         bool isHostBelongToServer(Server server, string host);
@@ -102,11 +106,8 @@ class SocketClass
         vector<struct pollfd>   _fds;
 
         map<int, Client>        _clients;
+        MimeTypes _mime;
 
-
-        map<int, int>           _serverHandler;
-    public:
-        static MimeTypes               _mime;
 };
 
 
