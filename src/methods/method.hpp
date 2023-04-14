@@ -36,7 +36,7 @@ class Method
         int     _status;
         string  _comment;
         string  _url;
-        MimeTypes _mime;
+        // MimeTypes _mime;
         string  _contentType;
 
         map<string, Header> headers;

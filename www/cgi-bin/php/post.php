@@ -8,6 +8,7 @@
 </head>
 <body>
 
+
     <form   method="POST">
         <input type="text" name="name" placeholder="Enter your name">
         <input type="submit" value="Submit">
@@ -19,6 +20,7 @@
         if (isset($_POST['name'])) {
             echo "Hello " . $_POST['name'];
         }
+
     ?>
     
 </body>

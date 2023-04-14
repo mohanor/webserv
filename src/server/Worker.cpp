@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
 /*   Updated: 2023/04/13 01:48:49 by yoelhaim         ###   ########.fr       */
@@ -151,7 +151,7 @@ Method Worker::getMethodObject(Request req, Server server)
     else if (isRedirection)
     {
         vector<string> urlVector = Request::getVector(path);
-        return Method(301, " Moved Permanently", urlVector[1], req, server);
+        return Method(atoi(urlVector[0].c_str()), "Moved Permanently", urlVector[1], req, server);
     }
     return Method(req, server);
 }

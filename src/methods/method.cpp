@@ -26,7 +26,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
         _url = _server.getRoot();
     
     _url = join_path(_url, resource);
-    cout << "url " << _url << endl;
+    // cout << "url " << _url << endl;
     
     insetErrorPage();
     // cout << "==============================>   " << _url  << "  ===>   " << _server.getMatchedLocation() << endl;

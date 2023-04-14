@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 21:42:58 by matef             #+#    #+#             */
-/*   Updated: 2023/03/22 04:29:51 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 01:53:59 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ std::string getFileContent(std::string file_name)
     if (!MyReadFile.is_open())
         return "";
 
+    //getline (MyReadFile, line, '\0');
     while (getline (MyReadFile, line))
         content += line + '\n';
 
