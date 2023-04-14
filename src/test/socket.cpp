@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/14 00:44:09 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 01:50:38 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ bool SocketClass::bindSocket(int listener, SocketServer &serverToBind, HostAndPo
     
     serverToBind.address.sin_family = AF_INET;
 
-    serverToBind.address.sin_addr.s_addr =  inet_addr(hostAndPort.host.c_str()); //TODO: change to server ip address from config file (host)
+    serverToBind.address.sin_addr.s_addr =  inet_addr(hostAndPort.host.c_str());
     serverToBind.address.sin_port = htons(hostAndPort.port);
 
     int opt = 1;
@@ -69,7 +69,6 @@ bool SocketClass::listenSocket(int listener)
     {
         cerr << "Failed to listen for incoming connections" << std::endl;
         return false;
-        //exit(EXIT_FAILURE);
     }
     return true;
 }
@@ -81,11 +80,10 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
     {
 
         string response;
-        
         string mimeType;
         string comment;
         
-        response = "HTTP/1.1 200 Ok" ENDL;
+        response = "HTTP/1.1 " + _clients[fds.fd].getRespStatus() + " "  + _clients[fds.fd].getComment() + ENDL;
         response += "Content-Type: " + _clients[fds.fd].getMimeType() + ENDL;
         response += "Content-Length: " + to_string(_clients[fds.fd].getContentLength()) + ( ENDL ENDL );
 
@@ -95,9 +93,7 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
     }
 
     string packet = _clients[fds.fd].getPacket();
-    //cout << packet << endl;
-    //printf("%p\n", &packet[0]);
-    ::send(fds.fd, packet.c_str(), packet.size(), 0);
+    send(fds.fd, packet.c_str(), packet.size(), 0);
     return 0;
 }
 
@@ -222,6 +218,8 @@ Server SocketClass::getServer2(string host)
 {
     
     vector<string> hostAndPort = Request::getVector(host, ':');
+
+    if (hostAndPort.size() != 2) return _s[0].server;
 
     short port = atoi(hostAndPort[1].c_str());
     string hostName = hostAndPort[0];
@@ -428,13 +426,17 @@ void    SocketClass::initResponse(int fd)
 
     string host = _clients[fd]._request.getValueOf("Host");
     Method method = worker.getMethodObject(_clients[fd]._request, getServer2(host));
-    /*
-        map<string, string> headers = method.getHeaders();
-    */
+
+    cout << "status: " << method.getStatus() << endl;
+    cout << "comment: " << method.getComment() << endl;
+    cout << "mime: " << method.getContentType() << endl;
+
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
     _clients[fd].setContentLength(method.getResponse().size());
     _clients[fd].setMimeType(method.getContentType());
+    _clients[fd].setRespStatus(to_string(method.getStatus()));
+    _clients[fd].setComment(method.getComment());
 }
 
 

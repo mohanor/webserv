@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:14 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 21:56:45 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 01:34:57 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,14 @@ class Client
         string      _request_string;
         string      _requestString;
         Request     _request;
-        size_t         _request_length;
+        size_t      _request_length;
+        
+        void       setComment(string comment);
+        string     getComment();
+
+        void       setRespStatus(string status);
+        string     getRespStatus();
+
         
 
     private:
@@ -109,7 +116,11 @@ class Client
         bool                    _headerReceived;
         map<string, string>     _header_map;
         size_t                  _contentLength;
+        
+        
         string                  _mimeType;
+        string                  _respStatus;
+        string                  _respComment;
 };
 
 
