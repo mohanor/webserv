@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/12 00:05:33 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 06:04:43 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ char **CGI::setENV()
 	_env.push_back("CONTENT_TYPE=" + _request.getValueOf("Content-Type"));
 	_env.push_back("QUERY_STRING=" + _request.getQueryString());
 	_env.push_back("REDIRECT_STATUS=200");
-    _env.push_back("SCRIPT_FILENAME=post.php");
+    _env.push_back("SCRIPT_FILENAME=" + string(strdup((Request::getVector(_url, '/').back()).c_str())));
     _env.push_back("CONTENT_LENGTH=" + to_string(_request.getBody().length()));
     _env.push_back("DOCUMENT_ROOT=" + _server.getRoot());
 

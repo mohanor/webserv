@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 22:55:24 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/12 05:25:11 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void SocketClass::bindSocket(int listener, SocketServer &serverToBind)
     
     serverToBind.address.sin_family = AF_INET;
     serverToBind.address.sin_addr.s_addr = INADDR_ANY;
-    serverToBind.address.sin_port = htons(serverToBind.server.getPort());
+    serverToBind.address.sin_port = htons(serverToBind.server.getPort()[0]);
 
     int opt = 1;
     // opt = setsockopt(listener, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
@@ -376,7 +376,7 @@ void SocketClass::setFds()
     }
 
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
-        cerr << "http://localhost:" << it->getPort() << endl;
+        cerr << "http://localhost:" << it->getPort()[0] << endl;
     cout << "_fds: " << _fds.size() << endl;
     for(size_t i = 0; i < _fds.size(); i++)
         cout << _fds[i].fd << endl;
