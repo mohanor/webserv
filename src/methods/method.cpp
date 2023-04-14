@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:58:14 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 13:07:38 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     Location loc = _server._locations[_server.getMatchedLocation()];
     // cout << "fff " << _server.getMatchedLocation() << endl;
     string resource = _request.getRessource().erase(0, _server.getMatchedLocation().length());
+    // cout << "resource " << resource << endl;
 
     
     if (loc._directives.find("root") != loc._directives.end())
@@ -25,13 +26,14 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
         _url = _server.getRoot();
     
     _url = join_path(_url, resource);
-    cout << "url " << _url << endl;
+    // cout << "url " << _url << endl;
     
     insetErrorPage();
+    // cout << "==============================>   " << _url  << "  ===>   " << _server.getMatchedLocation() << endl;
     
-    // _status = 404;
-    // _comment =  " Not Found";
-    // _resp =  getFileContent(_error_page[404]);
+    _status = 404;
+    _comment =  " Not Found";
+    _resp =  getFileContent(_error_page[404]);
 }
 
 void Method::insetErrorPage()

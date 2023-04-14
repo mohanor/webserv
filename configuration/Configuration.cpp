@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:11:06 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/13 12:55:47 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,29 @@ Configuration::Configuration(string fileName)
 
     insertServer();
     checkLocation();
+    
 
-    map<std::string, bool> checkServerName;
+    map<short int, bool> listen_port;
     for (size_t i = 0; i < _server.size(); i++)
     {
-        if (checkServerName.find(_server[i].getServerName()) != checkServerName.end())
-        {
-           cerr <<  "Error : ServerName already in use" << endl;
-              exit(1);
-        }
-        checkServerName[_server[i].getServerName()] = false;
+        
+        vector<short int> listen = _server[i].getPort();
+        
+        if (listen.size() == 0)
+            _server[i].setPort(8080);
 
-        // for (size_t i =0; i < _server[i].getPort().size();i++)
-        // {
-        //     cout << _server[i].getPort()[i] << endl;
-        // }
+        for (size_t i = 0; i < listen.size(); i++)
+        {
+            if (listen_port.find(listen[i]) != listen_port.end())
+            {
+                cerr << "Error : Port is diplicated" << endl;
+                exit(1);
+            }
+            else
+                listen_port.insert(make_pair(listen[i], false));
+        }
+        listen_port.clear();
     }
-    
-    
 }
 
 Configuration::~Configuration()
@@ -59,7 +64,6 @@ Configuration &Configuration::operator=(const Configuration &copy)
         this->_length_server = copy._length_server;
         this->_server = copy._server;
         this->_directive_server = copy._directive_server;
-        
     }
     return *this;
 }
@@ -67,10 +71,9 @@ Configuration &Configuration::operator=(const Configuration &copy)
 void Configuration::checkDirective(size_t index)
 {
     if (_tokens[index].first == "listen")
-    {
         _directive_server.push_back(make_pair(_tokens[index + 1].first, LISTEN));
-        _directive_server.push_back(make_pair(_tokens[index + 2].first, HOST));       
-    }
+    if (_tokens[index].first == "host")
+        _directive_server.push_back(make_pair(_tokens[index + 1].first, HOST));
     if (_tokens[index].first == "root")
         _directive_server.push_back(make_pair(_tokens[index + 1].first, ROOT));
     if (_tokens[index].first == "index")
@@ -93,7 +96,7 @@ void Configuration::checkDirective(size_t index)
         string allow;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             allow += " " + _tokens[i].first;
-            
+
         _directive_server.push_back(make_pair(allow, ALLOWED_METHODS));
     }
     if (_tokens[index].first == "cgi_info_php")
@@ -101,18 +104,17 @@ void Configuration::checkDirective(size_t index)
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
-            
+
         _directive_server.push_back(make_pair(cgi_info, CGI_INFO_PHP));
-    }   
+    }
     if (_tokens[index].first == "cgi_info_py")
     {
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
-            
+
         _directive_server.push_back(make_pair(cgi_info, CGI_INFO_PYTHON));
-    }   
-    
+    }
 }
 
 void Configuration::addToServer()
@@ -130,7 +132,7 @@ void Configuration::addToServer()
             directive.server_name = _directive_server[i].first;
             break;
         case HOST:
-            directive.host.push_back(_directive_server[i].first);
+            directive.host = _directive_server[i].first;
             break;
         case CLIENT_MAX_BODY_SIZE:
             directive.cli_max_size = atoi(_directive_server[i].first.c_str());
@@ -147,7 +149,6 @@ void Configuration::addToServer()
             directive.error_page.push_back(make_pair(atoi(errorPage[0].c_str()), errorPage[1]));
             break;
         }
-            
         case AUTOINDEX:
             directive.autoindex = _directive_server[i].first == "on" ? true : false;
             break;
@@ -198,18 +199,18 @@ void Configuration::checkDirectiveLocation(size_t index, size_t indexServer)
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
-            
+
         _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO_PHP));
-    }   
+    }
     if (_tokens[index].first == "cgi_info_py")
     {
         string cgi_info;
         for (size_t i = index + 1; _tokens[i].second != SEMI_COLON; i++)
             cgi_info += " " + _tokens[i].first;
-            
+
         _server[indexServer]._location.push_back(make_pair(cgi_info, CGI_INFO_PYTHON));
-    }   
-   if (_tokens[index].first == "upload_store")
+    }
+    if (_tokens[index].first == "upload_store")
         _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, UPLOAD_STORE));
     if (_tokens[index].first == "upload_enable")
         _server[indexServer]._location.push_back(make_pair(_tokens[index + 1].first, UPLOAD_ENABLE));
@@ -251,14 +252,14 @@ void Configuration::pushLocation(size_t index, string nameLocation)
 
     while (i < _server[index]._location.size())
     {
-        
+
         int indexOfKey = _server[index]._location[i].second;
         string value = _server[index]._location[i].first;
 
-        if (getKey(indexOfKey) == "error_page") 
+        if (getKey(indexOfKey) == "error_page")
         {
             vector<string> errorPage = Request::getVector(value);
-            directive.error_page_location.insert(make_pair(errorPage[0], errorPage[1]));  
+            directive.error_page_location.insert(make_pair(errorPage[0], errorPage[1]));
         }
         else
             directive._directives[getKey(indexOfKey)] = value;
@@ -266,7 +267,7 @@ void Configuration::pushLocation(size_t index, string nameLocation)
     }
 
     directive.path = nameLocation;
-    _server[index].setLocation(directive.path , directive);
+    _server[index].setLocation(directive.path, directive);
 }
 
 size_t Configuration::getDirectiveLocation(size_t index, size_t indexServer)
@@ -300,7 +301,6 @@ void Configuration::checkLocation()
                 index = getDirectiveLocation(index, i);
                 pushLocation(i, nameLocation);
                 _server[i]._location.clear();
-               
             }
             index++;
         }

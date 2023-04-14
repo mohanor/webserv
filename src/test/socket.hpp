@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 22:19:28 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 16:09:37 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,20 @@ struct SocketServer
     struct sockaddr_in address;
 };
 
+struct HostAndPort
+{
+    string host;
+    short port;
+};
+
 class SocketClass
 {
     public:
         SocketClass();
         ~SocketClass();
         int create();
-        void bindSocket(int sockfd, SocketServer &server);
-        void listenSocket(int sockfd);
+        bool bindSocket(int sockfd, SocketServer &server, HostAndPort hostAndPort);
+        bool listenSocket(int sockfd);
         int sendFileInPackets(struct pollfd &fds);
         int communicate(struct pollfd &fds);
         void run();
@@ -82,25 +88,26 @@ class SocketClass
         bool handlePostRequest(Client &client);
         // bool handleChunkedRequest(Client &client);
 
-        void uploadFile(Request request);
         
         string parseChunked(string body);
         Server getServer(int sockfd);
+        Server getServer2(string host);
         Request                 httpRequest;
         
         void    closeConnection(int fd, int i);
         void    initResponse(int fd);
-        void    createNewClient(int i);
+
+        bool isPortBelongToServer(Server server, short port);
+        bool isHostBelongToServer(Server server, string host);
+        bool isSeverNameBelongToServer(Server server, string serverName);
     private:
         vector<Server>          servers;
         vector<SocketServer>    _s;
         vector<struct pollfd>   _fds;
 
         map<int, Client>        _clients;
+        MimeTypes _mime;
 
-        MimeTypes               _mimeTypes;
-
-        map<int, int>           _serverHandler;
 };
 
 

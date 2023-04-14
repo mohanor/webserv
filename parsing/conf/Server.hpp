@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:02:56 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/13 21:33:13 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,19 @@
 using namespace std;
 
 struct Location;
+// struct HostInfo
+// {
+//     short port;
+//     string hostName;
+// };
+//         vector<HostInfo>	        _host_info;
 
 class Server : public Http
 {
     protected:
-        vector<short int>	                 _listen;
+        vector<short int>	             _listen;
         string		                _server_name;
-        vector<string>		                _host;
+        string	                     _host;
         string		                _cgi_info_php;
         string		                _cgi_info_py;
         string		                _length_location;
@@ -47,12 +53,13 @@ class Server : public Http
         void setMatchedLocation(string location);
 
         string	getServerName() const;
-		vector<string>	getHost() const;
+		string	getHost() const;
 		vector<short int>	getPort() const;
         string  getCGIINFO() const;
         size_t getLengthLocation() const;
         string getMatchedLocation() const;
         string getCgiInfoPHP() const;
         string getCgiInfoPY() const;
+        void setPort(short int port);
         
 };

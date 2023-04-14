@@ -98,8 +98,8 @@ char **CGI::setENV()
     _env.push_back("SCRIPT_FILENAME=" + string(strdup((Request::getVector(_url, '/').back()).c_str())));
     _env.push_back("CONTENT_LENGTH=" + to_string(_request.getBody().length()));
     _env.push_back("DOCUMENT_ROOT=" + _server.getRoot());
+    _env.push_back("HTTP_COOKIE=" + _request.getValueOf("Cookie"));
 
-    
     
     return (_envToChar());
 }

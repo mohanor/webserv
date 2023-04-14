@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:45:51 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 01:48:49 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,19 +114,14 @@ Get Worker::runMethodGet(Request &req, Server &server)
 
 Post Worker::runMethodPost(Request &req, Server &server)
 {
-    cout << "post 11111111" << endl;
     Post post(req, server);
     return post;
 }
 
 bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path)
 {
-
-   
     if (getMatchedLocationFoRequestUri(req.getRessource(), server))
     {
-       
-       
         if (isLocationHaveRedirection(server, path))
             return (isRedirection = true, false);
 
@@ -146,7 +141,6 @@ Method Worker::getMethodObject(Request req, Server server)
     
     if (checkLocations(req, server, isRedirection, path))
     {
-       cout << __LINE__<< " " << __FILE__ << " GET 11" << endl;
         if (req.getMethod() == "DELETE")
             return runMethodDelete(req, server);
         else if (req.getMethod() == "GET")
@@ -156,11 +150,9 @@ Method Worker::getMethodObject(Request req, Server server)
     }
     else if (isRedirection)
     {
-        cout << __LINE__<< " " << __FILE__ << " POST 11" << endl;
         vector<string> urlVector = Request::getVector(path);
-        return Method(301, " Moved Permanently", urlVector[1], req, server);
+        return Method(atoi(urlVector[0].c_str()), "Moved Permanently", urlVector[1], req, server);
     }
-   cout << __LINE__<< " " << __FILE__ << " POST 222" << endl;
     return Method(req, server);
 }
 
@@ -214,9 +206,14 @@ string Worker::listenDirectory(string pathUri, string pathDir)
         pathIndex += pathUri.length();
     }
 
+    cout << " i am here       ...."  << endl;
+
     std::ofstream out("./configuration/dir/index.html");
     out << str;
     closedir(pdir);
+    file.close();
+    out.close();
+    
 
     return str;
 }

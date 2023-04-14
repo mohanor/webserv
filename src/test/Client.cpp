@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:11 by matef             #+#    #+#             */
-/*   Updated: 2023/04/11 21:56:54 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 01:36:27 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,26 @@ string Client::getHeader()
 size_t Client::getReceivedLength()
 {
     return _requestString.size() - getHeader().size() - 4;
+}
+
+void Client::setComment(string comment)
+{
+    _respComment = comment;
+}
+
+string Client::getComment()
+{
+    return _respComment;
+}
+
+void Client::setRespStatus(string status)
+{
+    _respStatus = status;
+}
+
+string Client::getRespStatus()
+{
+    return _respStatus;
 }
 
 string Client::getPacket()
@@ -200,27 +220,6 @@ double Client::getTimeout()
 {
     return _timeout;
 }
-
-
-// void    Client::setHeadAndBody()
-// {
-
-//     this->_header = "";
-//     this->_body = "";
-
-//     size_t index = _request.find("\r\n\r\n");
-
-//     if (index == string::npos)
-//         return;
-    
-//     this->_header = _request.substr(0, index);
-//     this->_body = _request.substr(index + 4);
-    
-//     this->_request.clear();
-    
-// }
-
-
 
 
 void        Client::receiveHeader()

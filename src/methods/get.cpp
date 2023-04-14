@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/12 00:36:13 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 12:55:56 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 Get::Get(Request request, Server server) : Method(request, server)
 {
-   cout << __LINE__ << " " << __FILE__ << " GET ****" << endl;
     if (!getRequestedResource())
     {
         _status = 404;
@@ -64,7 +63,6 @@ Get::Get(Request request, Server server) : Method(request, server)
         string file = _url + "index.html"; 
         if(FILE *f = fopen(file.c_str(),"r"))
         {
-          
             fclose(f);
             _resp = getFileContent(file);
             _contentType = _mime.getMimeType(_mime.getExtension("./index.html"));
@@ -81,7 +79,7 @@ Get::Get(Request request, Server server) : Method(request, server)
             _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[403])));
             return ;
         }
-        cout << "this is the url: " << _url << endl;
+        // cout << "this is the url: " << _url << endl;
         Worker::listenDirectory(_url, server.getMatchedLocation());
         _status = 200;
         _comment = "OK";

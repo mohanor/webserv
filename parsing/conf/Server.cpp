@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 00:02:44 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/13 21:33:33 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ string Server::getServerName() const
     return this->_server_name;
 }
 
-vector<string> Server::getHost() const
+string Server::getHost() const
 {
     return this->_host;
 }
@@ -93,4 +93,9 @@ string Server::getCgiInfoPHP() const
 string Server::getCgiInfoPY() const
 {
     return this->_cgi_info_py;
+}
+
+void Server::setPort(short int port)
+{
+    this->_listen.push_back(port);
 }
