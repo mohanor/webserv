@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/12 00:50:43 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/13 16:55:01 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,6 @@ bool Request::allowedChars()
 
 bool Request::isMethodAllowed()
 {
-	cout << "#" << _method << "#" << endl;
 	return (_method != "GET" && _method != "DELETE" && _method != "POST");
 }
 

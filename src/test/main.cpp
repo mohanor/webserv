@@ -20,7 +20,8 @@ using namespace std;
     
 
 
-
+//TODO for youssef => include MIMETYPES in config file
+MimeTypes _mime;
 
 int main(int ac, char **av)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/12 05:05:22 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/13 16:08:23 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ Get::Get(Request request, Server server) : Method(request, server)
         string file = _url + "index.html"; 
         if(FILE *f = fopen(file.c_str(),"r"))
         {
-          
             fclose(f);
             _resp = getFileContent(file);
             _contentType = _mime.getMimeType(_mime.getExtension("./index.html"));

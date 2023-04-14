@@ -8,15 +8,10 @@
 </head>
 <body>
 
-    <form action="php/post.php"  method="POST">
-        <input type="text" name="name" placeholder="Enter your name">
-        <input type="submit" value="Submit">
-    </form>
-
     <?php
-        if (isset($_POST['name'])) {
-            echo "Hello " . $_POST['name'];
-        }
+
+        echo "Hello World";
+    
     ?>
     
 </body>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/12 20:26:28 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/13 21:34:25 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,11 @@ Configuration::Configuration(string fileName)
     map<short int, bool> listen_port;
     for (size_t i = 0; i < _server.size(); i++)
     {
+        
         vector<short int> listen = _server[i].getPort();
+        
+        if (listen.size() == 0)
+            _server[i].setPort(8080);
 
         for (size_t i = 0; i < listen.size(); i++)
         {
@@ -38,7 +42,7 @@ Configuration::Configuration(string fileName)
             else
                 listen_port.insert(make_pair(listen[i], false));
         }
-         listen_port.clear();
+        listen_port.clear();
     }
 }
 
