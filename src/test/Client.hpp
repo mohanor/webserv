@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:14 by matef             #+#    #+#             */
-/*   Updated: 2023/04/14 01:34:57 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/15 20:48:08 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,12 @@ class Client
 
         void       setRespStatus(string status);
         string     getRespStatus();
-
         
+        void       setReturn(string ret);
+        string     getReturn();
+        
+        void      setCgiHeader(map<string, string> header);
+        map<string, string> getCgiHeader();
 
     private:
         int                     _fd;
@@ -121,6 +125,9 @@ class Client
         string                  _mimeType;
         string                  _respStatus;
         string                  _respComment;
+        string                  _return;
+
+        map<string, string>     _cgiHeader;
 };
 
 
