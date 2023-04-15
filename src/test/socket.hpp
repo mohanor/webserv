@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/13 16:09:37 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 02:57:43 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ class SocketClass
         Server getServer2(string host);
         Request                 httpRequest;
         
-        void    closeConnection(int fd, int i);
+        void    closeConnection(int i);
         void    initResponse(int fd);
 
         bool isPortBelongToServer(Server server, short port);

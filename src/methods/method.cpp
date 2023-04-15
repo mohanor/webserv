@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/14 01:47:13 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/14 18:40:28 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,10 @@ string Method::getIndex()
         for (size_t i=0; i < index_v.size(); i++)
         {
             if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
+            {
                 index = join_path(_url,index_v[i]);
+                fclose(f); //? here
+            }
         }
     }
     else
@@ -144,7 +147,10 @@ string Method::getIndex()
         for (size_t i=0; i < index_v.size(); i++)
         {
             if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
+            {
                 index = join_path(_url,index_v[i]);
+                fclose(f); //? here
+            }
         }
     }
     return index;

@@ -23,11 +23,18 @@ using namespace std;
 //TODO for youssef => include MIMETYPES in config file
 MimeTypes _mime;
 
+void handleSigPipe()
+{
+    cout << "SIGPIPE" << endl;
+    signal(SIGPIPE, SIG_IGN);
+}
+
 int main(int ac, char **av)
 {
 
     (void)ac;
     (void)av;
+    handleSigPipe();
     // SocketClass socket;
     // Worker worker;
     
