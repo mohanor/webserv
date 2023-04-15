@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/13 13:25:16 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/12 05:25:11 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ bool SocketClass::bindSocket(int listener, SocketServer &serverToBind, HostAndPo
 
     serverToBind.address.sin_addr.s_addr =  inet_addr(hostAndPort.host.c_str());
     serverToBind.address.sin_port = htons(hostAndPort.port);
-
     int opt = 1;
     opt = setsockopt(listener, SOL_SOCKET, SO_REUSEADDR , &opt, sizeof(opt));
     if (opt < 0)
