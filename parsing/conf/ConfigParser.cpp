@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 01:54:14 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 20:48:11 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -475,7 +475,7 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
             if (_tokens[index].first == "error_page" || _tokens[index].first == "root")
             {
                 ifstream file;
-                string fileName = ft_trim(_tokens[index + 2].first, "'\"");
+                string fileName = ft_trim(_tokens[ index + 2].first, "'\"");
                 _tokens[index + 2].first = fileName;
                 file.open(fileName);
                 if (!file.is_open())

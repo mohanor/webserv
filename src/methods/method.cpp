@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 01:41:36 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 20:58:25 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void Method::insetErrorPage()
         }
 }
 
-Method::Method(int status, string comment, string url, Request request, Server server) : _request(request),_server(server),  _status(status), _comment(comment),  _url(url) 
+Method::Method(int status, string comment, string redirection, Request request, Server server) : _request(request),_server(server),  _status(status), _comment(comment),  _redirection(redirection) 
 {}
 
 
@@ -186,6 +186,11 @@ string Method::getURL() const
 string Method::getResponse() const
 {
     return this->_resp;
+}
+
+string Method::getRedirection() const
+{
+    return _redirection;
 }
 
 
