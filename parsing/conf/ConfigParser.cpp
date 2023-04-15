@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/14 19:32:20 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/15 01:54:14 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ directive  value; context
  ************************************************************/
 
 //    <--------- function trim espace --------->
-string ft_trim(std::string str)
+string ft_trim(std::string str, const std::string& whitespace = " \t")
 {
-    size_t startpos = str.find_first_not_of(" \t");
+    size_t startpos = str.find_first_not_of(whitespace);
     if (startpos != std::string::npos)
         str = str.substr(startpos);
 
-    size_t endpos = str.find_last_not_of(" \t");
+    size_t endpos = str.find_last_not_of(whitespace);
     if (endpos != std::string::npos)
         str = str.substr(0, endpos + 1);
     return str;
@@ -84,6 +84,7 @@ void ConfigParser::SetAllowedDirective(bool isInServer)
     if (isInServer)
     {
         _directive_allowed.push_back("server_name");
+         _directive_allowed.push_back("include");
         _directive_allowed.push_back("listen");
         _directive_allowed.push_back("host");
     }
@@ -102,7 +103,6 @@ void ConfigParser::SetAllowedDirective(bool isInServer)
 
     _directive_allowed.push_back("cgi_info_php");
     _directive_allowed.push_back("cgi_info_py");
-    _directive_allowed.push_back("include");
 }
 
 int ConfigParser::getLengthServer() const
@@ -450,6 +450,21 @@ void ConfigParser::checkSyntaxMethod(size_t index)
 }
 
 // check if the directive is correct
+void ConfigParser::checkValidValue(size_t n)
+{
+    vector<string> valueCode =  Request::getVector(string(STATUSCODE));
+
+    size_t i = 0;
+    for (; i < valueCode.size();i++)
+    {
+        if (atof(valueCode[i].c_str()) == n)
+            break;
+    }
+
+    if (i == valueCode.size())
+        errorLogs("Error : "+ to_string(n)+" Value Error_page does not valid");
+    
+}
 
 void ConfigParser::checkCorrectSyntaxDirective(size_t index)
 {
@@ -460,11 +475,11 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
             if (_tokens[index].first == "error_page" || _tokens[index].first == "root")
             {
                 ifstream file;
-                string fileName = "./" + _tokens[index + 2].first;
-
+                string fileName = ft_trim(_tokens[index + 2].first, "'\"");
+                _tokens[index + 2].first = fileName;
                 file.open(fileName);
                 if (!file.is_open())
-                    throw out_of_range("Error : file not found !");
+                    throw out_of_range("Error :"+fileName+" file not found !");
                 file.close();
             }
             for (size_t i = 0; i < _tokens[index + 1].first.size(); i++)
@@ -472,6 +487,8 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
                     throw out_of_range("Error : Status code not a valid " + _tokens[index + 1].first);
 
             stod(_tokens[index + 1].first);
+            if (_tokens[index].first == "error_page")
+               checkValidValue(stod(_tokens[index + 1].first));
         }
         catch (const std::exception &e)
         {
@@ -516,6 +533,36 @@ bool checkSyntaxValidHost(string host)
     }
     return true;
 }
+
+void ConfigParser::checkSyntaxReturn(size_t index)
+{
+    if (_tokens[index].first == "return")
+    {
+      if (_tokens[index + 1].first != "301" && _tokens[index + 1].first != "302" && _tokens[index + 1].first != "307" && _tokens[index + 1].first != "303")
+            errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid return");
+      
+    }
+}
+
+void ConfigParser::checkSyntaxInclude(size_t index)
+{
+    if (_tokens[index].first == "include")
+    {
+        ifstream file;
+        string fileName = ft_trim(_tokens[index + 1].first, " '\"");
+        _tokens[index + 1].first = fileName;
+        file.open(fileName);
+        if (!file.is_open())
+            errorLogs("Error : "+ fileName +" file not found !");
+        file.close();
+        
+        int pos = fileName.find_last_of(".");
+        if (fileName.substr(pos) != ".types")
+            errorLogs("Error : "+ fileName.substr(pos) +" file not type  file !");
+        
+    }
+    
+}
 void ConfigParser::checkSynaxDirective()
 {
     size_t i = 0;
@@ -527,9 +574,9 @@ void ConfigParser::checkSynaxDirective()
 
             if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2)
                 errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
-            // if (_tokens[i].first == "listen" && lengthDirective(i + 1) != 2)
-            //     errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
-            else if (_tokens[i].first == "listen")
+            checkSyntaxReturn(i);
+            checkSyntaxInclude(i);
+            if (_tokens[i].first == "listen")
             { 
                 int port =   atof(_tokens[i + 1].first.c_str());
                  if (port > 65535 || port < 1)
@@ -715,6 +762,9 @@ void ConfigParser::checkSyntaxDiplicated()
         m.clear();
     }
 }
+
+
+
 
 void ConfigParser::synaxError()
 {
