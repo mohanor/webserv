@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/15 20:55:13 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/15 21:08:05 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -453,7 +453,7 @@ void    SocketClass::initResponse(int fd)
     _clients[fd].setMimeType(method.getContentType());
     _clients[fd].setRespStatus(to_string(method.getStatus()));
     _clients[fd].setComment(method.getComment());
-    _clients[fd].setReturn(method.getURL());
+    _clients[fd].setReturn(method.getRedirection());
 
     
 }
