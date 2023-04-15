@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/12 05:25:11 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/15 20:55:13 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,25 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
 
         response = "HTTP/1.1 " + _clients[fds.fd].getRespStatus() + " "  + _clients[fds.fd].getComment() + ENDL;
         response += "Content-Type: " + _clients[fds.fd].getMimeType() + ENDL;
-        response += "Content-Length: " + to_string(_clients[fds.fd].getContentLength()) + ( ENDL ENDL );
-        _clients[fds.fd].setStatus(SENDING);
-        send(fds.fd, response.c_str(), response.size(), 0);
+        response += "Content-Length: " + to_string(_clients[fds.fd].getContentLength()) + ENDL;
+        
+        if (_clients[fds.fd].getReturn().size())
+        {
+            cout << "Location: " + _clients[fds.fd].getReturn() << endl;
+            response += "Location: " + _clients[fds.fd].getReturn() + ENDL;
+        }
 
+        map<string, string> cgiHeader = _clients[fds.fd].getCgiHeader();
+        
+        for (map<string, string>::iterator it = cgiHeader.begin(); it != cgiHeader.end(); it++)
+        {
+            response += it->first + ": " + it->second + ENDL;
+        }
+         
+        response += ENDL;
+        _clients[fds.fd].setStatus(SENDING);
+        
+        send(fds.fd, response.c_str(), response.size(), 0);
         return 0;
     }
 
@@ -438,6 +453,9 @@ void    SocketClass::initResponse(int fd)
     _clients[fd].setMimeType(method.getContentType());
     _clients[fd].setRespStatus(to_string(method.getStatus()));
     _clients[fd].setComment(method.getComment());
+    _clients[fd].setReturn(method.getURL());
+
+    
 }
 
 void SocketClass::run()
