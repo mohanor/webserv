@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/13 21:33:13 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/15 20:19:34 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Server : public Http
         vector<short int>	             _listen;
         string		                _server_name;
         string	                     _host;
+        string	                     _include;
         string		                _cgi_info_php;
         string		                _cgi_info_py;
         string		                _length_location;
@@ -61,5 +62,6 @@ class Server : public Http
         string getCgiInfoPHP() const;
         string getCgiInfoPY() const;
         void setPort(short int port);
+        string getInclude() const;
         
 };

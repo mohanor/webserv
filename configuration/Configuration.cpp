@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Configuration.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/13 12:55:47 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 20:38:40 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ void Configuration::checkDirective(size_t index)
         _directive_server.push_back(make_pair(_tokens[index + 1].first, HOST));
     if (_tokens[index].first == "root")
         _directive_server.push_back(make_pair(_tokens[index + 1].first, ROOT));
+    if (_tokens[index].first == "include")
+        _directive_server.push_back(make_pair(_tokens[index + 1].first, INCLUDE));
     if (_tokens[index].first == "index")
     {
         string indexPage;
@@ -130,6 +132,9 @@ void Configuration::addToServer()
             break;
         case SERVER_NAME:
             directive.server_name = _directive_server[i].first;
+            break;
+        case INCLUDE:
+            directive.include = _directive_server[i].first;
             break;
         case HOST:
             directive.host = _directive_server[i].first;
