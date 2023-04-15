@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/15 01:41:58 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 21:00:22 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Method
         int     _status;
         string  _comment;
         string  _url;
+        string _redirection;
         // MimeTypes _mime;
         string  _contentType;
 
@@ -44,7 +45,7 @@ class Method
         map<int, string> _error_page;
     public:
         Method(Request request, Server server);
-        Method(int status, string comment, string url, Request request, Server server);
+        Method(int status, string comment, string redirection, Request request, Server server);
         bool getRequestedResource();
         bool isFile();
         bool isDir();
@@ -58,6 +59,7 @@ class Method
         string getResponse() const;
         string getIndex();
         string getContentType();
+        string getRedirection() const;
         void insetErrorPage();
 
 };
