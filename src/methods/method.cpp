@@ -137,7 +137,10 @@ string Method::getIndex()
         for (size_t i=0; i < index_v.size(); i++)
         {
             if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
+            {
                 index = join_path(_url,index_v[i]);
+                fclose(f); //? here
+            }
         }
     }
     else
@@ -146,7 +149,10 @@ string Method::getIndex()
         for (size_t i=0; i < index_v.size(); i++)
         {
             if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
+            {
                 index = join_path(_url,index_v[i]);
+                fclose(f); //? here
+            }
         }
     }
     return index;

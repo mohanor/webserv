@@ -77,17 +77,16 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
 
     if (_clients[fds.fd].getStatus() == READY_TO_SEND)
     {
-
         string response;
         string mimeType;
         string comment;
-        
+
         response = "HTTP/1.1 " + _clients[fds.fd].getRespStatus() + " "  + _clients[fds.fd].getComment() + ENDL;
         response += "Content-Type: " + _clients[fds.fd].getMimeType() + ENDL;
         response += "Content-Length: " + to_string(_clients[fds.fd].getContentLength()) + ( ENDL ENDL );
-
         _clients[fds.fd].setStatus(SENDING);
         send(fds.fd, response.c_str(), response.size(), 0);
+
         return 0;
     }
 
@@ -163,6 +162,8 @@ string SocketClass::parseChunked(string body)
         firstLine = true;
     }
 
+    
+
     return prasedBody;
 }
 
@@ -174,7 +175,6 @@ bool SocketClass::handlePostRequest(Client &client)
 
         if (contentLength == client.getReceivedLength() && client._request.isHeaderHasKey("Content-Type"))
         {
-
             vector <string> contentType = Request::getVector(client._request.getValueOf("Content-Type"));
             if (contentType[0] == "multipart/form-data;")
                 client._request.setUploadable();
@@ -193,8 +193,10 @@ bool SocketClass::handlePostRequest(Client &client)
         {
             if (client._requestString.rfind(ENDL "0" ENDL ENDL) != string::npos)
             {
+                
+                cout << client._requestString << endl;
+                exit(0);
                 client.setBody();
-                parseChunked(client.getBody());
                 return true;
             }
         }
@@ -249,7 +251,7 @@ int SocketClass::communicate(struct pollfd &fds)
     string			req;
     size_t			size;
     char			request[MAX_REQUEST_SIZE] = {0};
-
+cout << __LINE__ << " " << __FILE__ << endl;
     size = recv(fds.fd, request, MAX_REQUEST_SIZE, 0);
     if ( !recvError(size, fds.fd) ) return 0;
 
@@ -280,10 +282,10 @@ int SocketClass::communicate(struct pollfd &fds)
             _clients[fds.fd].setHeaderReceivedVar(false);
         }
 
-        // else if (_clients[fds.fd].isHeaderRecived()) _clients[fds.fd].setRequest(httpRequest); // set request without body
-
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
+            cout << "POST method" << endl;
+            
             if (handlePostRequest(_clients[fds.fd]))
             {
                 _clients[fds.fd].setStatus(FILE_NOT_SET);
@@ -312,6 +314,8 @@ int SocketClass::communicate(struct pollfd &fds)
 
 bool SocketClass::isNewConnection(int listener)
 {
+    // cout << "is new connection: " << _s.size() << endl;
+
     for (size_t i = 0; i < _s.size(); i++)
     {
         if (_s[i].sockfd == listener)
@@ -323,8 +327,10 @@ bool SocketClass::isNewConnection(int listener)
 struct pollfd SocketClass::createPollfd(int sockfd)
 {
     struct pollfd pfd;
+
     pfd.fd = sockfd;
     pfd.events = POLLIN;
+    pfd.revents = 0;
     return pfd;
 }
 
@@ -412,10 +418,10 @@ void SocketClass::setFds()
     }
 }
 
-void    SocketClass::closeConnection(int fd, int i)
+void    SocketClass::closeConnection(int i)
 {
-    close(fd);
-    _clients.erase(fd);
+    close(_fds[i].fd);
+    _clients.erase(_fds[i].fd);
     _fds.erase(_fds.begin() + i);
 }
 
@@ -426,10 +432,6 @@ void    SocketClass::initResponse(int fd)
     string host = _clients[fd]._request.getValueOf("Host");
     Method method = worker.getMethodObject(_clients[fd]._request, getServer2(host));
 
-    cout << "status: " << method.getStatus() << endl;
-    cout << "comment: " << method.getComment() << endl;
-    cout << "mime: " << method.getContentType() << endl;
-
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
     _clients[fd].setContentLength(method.getResponse().size());
@@ -438,55 +440,56 @@ void    SocketClass::initResponse(int fd)
     _clients[fd].setComment(method.getComment());
 }
 
-
-
 void SocketClass::run()
 {
     int       newClient;
     int       opt;
-    
+
     setFds();
+
+    
+    cout << __LINE__ << " " << __FILE__ << endl;
     while (true)
     {
+        cout << "listening..." << endl;
+        cout << __LINE__ << " " << __FILE__ << endl;
         if (poll(&_fds[0], _fds.size(), -1) < 0)
         {
             cerr << "poll error" << endl;
             break;
         }
-        
+        cout << __LINE__ << " " << __FILE__ << endl;
         for(size_t i = 0; i < _fds.size(); i++)
         {
-    
-            if (_fds[i].revents == 0)
-                continue;
             if (_fds[i].revents & POLLHUP)
-                closeConnection(_fds[i].fd, i);
+            {
+                closeConnection(i);
+            }
             else if (_fds[i].revents & POLLIN)
-            {   
-        
+            {
                 if (isNewConnection(_fds[i].fd))
                 {
-                    newClient = accept(_s[i].sockfd, (struct sockaddr*)&_s[i].address, (socklen_t*)&_s[i].addrlen);
+                    newClient = accept(_s[i].sockfd, NULL, NULL);
+                    cout << "new client: " << newClient << endl;
                     if (newClient < 0) { cerr << "fail to accept connection" << endl; continue; }
-                    
                     opt = setsockopt(newClient, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
-                    _fds.push_back(createPollfd(newClient));
+                    struct pollfd pfd = {newClient, POLLIN, 0};
+                    _fds.push_back(pfd);
+                    
                 }
                 else if ( !communicate(_fds[i]) )
-                {
                     break;
-                }
             }
             else if (_fds[i].revents & POLLOUT)
             {
+               
                 if (_clients[_fds[i].fd].getStatus() == FILE_NOT_SET) initResponse(_fds[i].fd);
                 sendFileInPackets(_fds[i]);
                 if (_clients[_fds[i].fd].getStatus() == SENDED)
-                {      
-                    closeConnection(_fds[i].fd, i);
+                {
+                    closeConnection(i);
                 }
             }
         }
-
     }
 }
