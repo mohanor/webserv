@@ -6,12 +6,11 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:50:32 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/09 17:55:42 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 01:41:48 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Http.hpp"
-
 Http::Http(directives dir) 
 {
     this->_cli_max_size = dir.cli_max_size;

@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/13 13:07:38 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 01:41:36 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
 
 void Method::insetErrorPage()
 {
-    string statusCode = "201 301 400 401 403 404 405 408 413 414 500 501 502 503 504 505";
+    string statusCode = string(STATUSCODE);
 
     vector<string> status = Request::getVector(statusCode);
 
@@ -57,7 +57,7 @@ void Method::insetErrorPage()
         for (size_t i = 0; i < err.size(); i++)
         {
             if (_error_page.find(err[i].first) != _error_page.end())
-                this->_error_page[err[i].first] = err[i].second;
+                this->_error_page[err[i].first] = string(err[i].second);
         }
 }
 
