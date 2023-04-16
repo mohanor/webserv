@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 05:16:01 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/16 00:37:34 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,11 @@ string Method::getRidOfHeaders()
     size_t pos_n = _resp.find("\n\n");
     size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;    
     return _resp.substr(pos);
+}
+
+map<string, string> Method::getHeaders() const
+{
+    return _headers;
 }
 
 void Method::deserialize()

@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/15 01:32:20 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/16 00:37:09 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class Method
         void insetErrorPage();
         void deserialize();
         string getRidOfHeaders();
+        map<string,string> getHeaders() const;
 };
 
 
