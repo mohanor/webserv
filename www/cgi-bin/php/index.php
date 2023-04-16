@@ -1,18 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    <title>PHP</title>
-</head>
-<body>
-
 <?php
 session_start();
-ob_start();
     if(isset($_POST['name']))
     {
         $name = $_POST['name'];
@@ -35,6 +22,19 @@ ob_start();
 
 
     ?>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <title>PHP</title>
+</head>
+<body>
+
+
 
 <div>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -54,7 +54,7 @@ ob_start();
           <a class="nav-link disabled">Disabled</a>
         </li>
       </ul>
-      <?php if ($_SESSION['is_logged']) { ?>
+      <?php if (@$_SESSION['is_logged']) { ?>
       <form class="d-flex" role="search" method="post"> 
        <p><?php echo  $_SESSION['name'];  ?></p>
         <button class="btn btn-outline-danger" type="submit" name="logout">Logout </button>
@@ -65,20 +65,31 @@ ob_start();
 </nav>
 
 <div class="container-sm h-100 d-flex align-items-center justify-content-center mt-5">
-<?php if ($_SESSION['is_logged']) { ?>
-
+<?php if (@$_SESSION['is_logged']) { ?>
+    <!-- <div >
+    <p class="text-success">حذاري حذاري أووبابا أولالا هدف قاتل (إكامبي). ____ webserv (الخادم القاتل)</p>
+    <br/>
+</div> -->
 <div>
-    <h1>Welcome <?php echo  $_SESSION['name'];  ?>      </h1>
+    <h1>Sma3 asi Kooorit ( <?php echo  @$_SESSION['name'];  ?>  )     </h1>
+
+    <img src="php/korit.jpeg"  height="500px" />
+
+    <h2 class="text-danger">Hada Rah  L WebServ</h2>
+
+  
+
+  
 </div>
 
 <?php } else { ?>
 <form method="post">
 <div class="mb-3 row">
     <div class="col-sm-10">
-      <input type="text" class="form-control" type="text" placeholder="Your name"name="name">
+      <input type="text" class="form-control" type="text" placeholder="Ach smaak llah"name="name">
     </div>
   </div>
-<input type="submit" class="btn btn-success" value="Login">
+<input type="submit" class="btn btn-success" value="wark 3la had lbotona">
 </form>
 <?php } ?>
 
