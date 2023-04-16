@@ -43,6 +43,8 @@ Post::Post(Request request, Server server) : Method(request, server)
             _comment = "Bad Gateway";
             return ;
         }
+        deserialize();
+        _resp = getRidOfHeaders();
         _status = 200;
         _comment = "OK";
         return ;
@@ -59,8 +61,8 @@ Post::Post(Request request, Server server) : Method(request, server)
         _comment = "Forbidden";
         return ;
     }
-    string index = getIndex();
-    if (index.empty())
+    _url = getIndex();
+    if (_url.empty())
     {
         _status = 403;
         _comment = "Forbidden";
@@ -75,6 +77,8 @@ Post::Post(Request request, Server server) : Method(request, server)
         _comment = "Bad Gateway";
         return ;
     }
+    deserialize();
+    _resp = getRidOfHeaders();
     _status = 200;
     _comment = "OK";
     return ;
