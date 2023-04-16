@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 05:20:49 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/07 00:32:11 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/15 01:35:30 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ Delete::Delete(Request request, Server server) : Method(request, server)
             _status = 502;
             _comment = "Bad Gateway";
         }
+        deserialize();
+        _resp = getRidOfHeaders();
         return ;
     }
     if (!hasSlashInTheEnd())
@@ -75,6 +77,8 @@ Delete::Delete(Request request, Server server) : Method(request, server)
             _comment = "Bad Gateway";
             return ;
         }
+        deserialize();
+        _resp = getRidOfHeaders();
         _status = 200;
         _comment = "OK";
         return ;

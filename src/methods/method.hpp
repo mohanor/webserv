@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/13 12:56:16 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 01:32:20 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Method
         // MimeTypes _mime;
         string  _contentType;
 
-        map<string, Header> headers;
+        map<string, string> _headers;
         map<int, string> _error_page;
     public:
         Method(Request request, Server server);
@@ -58,7 +58,8 @@ class Method
         string getIndex();
         string getContentType();
         void insetErrorPage();
-
+        void deserialize();
+        string getRidOfHeaders();
 };
 
 

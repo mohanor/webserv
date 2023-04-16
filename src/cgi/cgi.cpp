@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/12 06:04:43 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/15 05:15:34 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
         close(pipefd[1]);
         alarm(300);
         execve(_args[0], _args, setENV());
-        cout << "args[0]: " << _args[0] << endl;
-        cout << "args[1]: " << _args[1] << endl;
         cout << "exe error: " << strerror(errno) << endl;
         exit(1);
     }
@@ -126,8 +124,9 @@ void    CGI::getScriptName()
         cgi_info = Request::getVector(_server.getCgiInfoPY());
     else
         cgi_info = Request::getVector(_server.getCgiInfoPHP());
-    if (cgi_info.empty())
-        return ;
+    if (cgi_info.empty()){
+        return ;}
+
     args[0] = strdup(cgi_info[1].c_str());
     args[1] = strdup((Request::getVector(_url, '/').back()).c_str());
     args[2] = NULL;

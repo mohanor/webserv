@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/13 13:07:38 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 05:16:01 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,15 @@
 Method::Method(Request request, Server server) : _request(request) , _server(server) ,_resp(""), _contentType("text/html")
 {
     Location loc = _server._locations[_server.getMatchedLocation()];
-    // cout << "fff " << _server.getMatchedLocation() << endl;
     string resource = _request.getRessource().erase(0, _server.getMatchedLocation().length());
-    // cout << "resource " << resource << endl;
-
     
     if (loc._directives.find("root") != loc._directives.end())
         _url = loc._directives["root"];
     else
         _url = _server.getRoot();
-    
     _url = join_path(_url, resource);
-    // cout << "url " << _url << endl;
     
     insetErrorPage();
-    // cout << "==============================>   " << _url  << "  ===>   " << _server.getMatchedLocation() << endl;
     
     _status = 404;
     _comment =  " Not Found";
@@ -61,6 +55,35 @@ void Method::insetErrorPage()
         }
 }
 
+string Method::getRidOfHeaders()
+{
+    size_t pos_r = _resp.find("\r\n\r\n");
+    size_t pos_n = _resp.find("\n\n");
+    size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;    
+    return _resp.substr(pos);
+}
+
+void Method::deserialize()
+{
+    string head;
+	vector<string> 		tokens;
+	string line;
+    size_t pos_r = _resp.find("\r\n\r\n");
+    size_t pos_n = _resp.find("\n\n");
+    size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;
+    head = _resp.substr(0, pos -1);
+    head.erase(std::remove(head.begin(), head.end(), '\r'), head.end());
+	stringstream res(head);
+	while (getline(res, line))
+	{
+		tokens = Request::getVector(line);
+		string key = tokens[0];
+		string value = line.substr(key.length() + 1);
+		key.pop_back();
+		_headers.insert(make_pair(key, value));
+	}
+}
+
 Method::Method(int status, string comment, string url, Request request, Server server) : _request(request),_server(server),  _status(status), _comment(comment),  _url(url) 
 {}
 
@@ -75,10 +98,10 @@ bool Method::isFile()
 {
     if (isDir())
         return false;
-    FILE *fp = fopen(_url.c_str(), "r");
-    if (fp)
+    ifstream f(_url);
+    if (f.is_open())
     {
-        fclose(fp);
+        f.close();
         return true;
     }
     return false;
@@ -136,8 +159,12 @@ string Method::getIndex()
         index_v = Request::getVector(map["index"]);
         for (size_t i=0; i < index_v.size(); i++)
         {
-            if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
+            ifstream f(join_path(_url,index_v[i]));
+            if (f.is_open())
+            {
                 index = join_path(_url,index_v[i]);
+                f.close();
+            }
         }
     }
     else
@@ -145,8 +172,12 @@ string Method::getIndex()
         index_v = Request::getVector(_server.getIndex());
         for (size_t i=0; i < index_v.size(); i++)
         {
-            if (FILE *f = fopen(join_path(_url,index_v[i]).c_str(), "r"))
+            ifstream f(join_path(_url,index_v[i]));
+            if (f.is_open())
+            {
                 index = join_path(_url,index_v[i]);
+                f.close();
+            }
         }
     }
     return index;

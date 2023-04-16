@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/13 12:55:56 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 05:15:41 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ Get::Get(Request request, Server server) : Method(request, server)
             _comment = "Bad Gateway";
             return ;
         }
+        deserialize();
+        _resp = getRidOfHeaders();
         _status = 200;
         _comment = "OK";
         return ;
@@ -60,10 +62,11 @@ Get::Get(Request request, Server server) : Method(request, server)
     if (!hasIndexFile())
     {
         
-        string file = _url + "index.html"; 
-        if(FILE *f = fopen(file.c_str(),"r"))
+        string file = _url + "index.html";
+        ifstream f(file);
+        if(f.is_open())
         {
-            fclose(f);
+            f.close();
             _resp = getFileContent(file);
             _contentType = _mime.getMimeType(_mime.getExtension("./index.html"));
             _status = 200;
@@ -79,7 +82,6 @@ Get::Get(Request request, Server server) : Method(request, server)
             _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[403])));
             return ;
         }
-        // cout << "this is the url: " << _url << endl;
         Worker::listenDirectory(_url, server.getMatchedLocation());
         _status = 200;
         _comment = "OK";
@@ -115,6 +117,8 @@ Get::Get(Request request, Server server) : Method(request, server)
         _comment = "Bad Gateway";
         return ;
     }
+    deserialize();
+    _resp = getRidOfHeaders();
     _status = 200;
     _comment = "OK";
     return ;
