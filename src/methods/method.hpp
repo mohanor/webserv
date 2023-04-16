@@ -22,6 +22,7 @@
 # include "../utility/utility.hpp"
 # include "../cgi/cgi.hpp"
 # include "../../parsing/mime/MimeTypes.hpp" 
+#define STATUSCODE "201 301 400 401 403 404 405 408 413 414 500 501 502 503 504 505"
 
 
 
@@ -36,6 +37,7 @@ class Method
         int     _status;
         string  _comment;
         string  _url;
+        string _redirection;
         // MimeTypes _mime;
         string  _contentType;
 
@@ -43,7 +45,7 @@ class Method
         map<int, string> _error_page;
     public:
         Method(Request request, Server server);
-        Method(int status, string comment, string url, Request request, Server server);
+        Method(int status, string comment, string redirection, Request request, Server server);
         bool getRequestedResource();
         bool isFile();
         bool isDir();
@@ -57,6 +59,7 @@ class Method
         string getResponse() const;
         string getIndex();
         string getContentType();
+        string getRedirection() const;
         void insetErrorPage();
         void deserialize();
         string getRidOfHeaders();

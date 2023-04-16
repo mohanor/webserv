@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:11 by matef             #+#    #+#             */
-/*   Updated: 2023/04/14 01:36:27 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/15 20:48:34 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,26 @@ void Client::setRespStatus(string status)
 string Client::getRespStatus()
 {
     return _respStatus;
+}
+
+void Client::setReturn(string ret)
+{
+    _return = ret;
+}
+
+string Client::getReturn()
+{
+    return _return;
+}
+
+void Client::setCgiHeader(map<string, string> header)
+{
+    _cgiHeader = header;
+}
+
+map<string, string> Client::getCgiHeader()
+{
+    return _cgiHeader;
 }
 
 string Client::getPacket()

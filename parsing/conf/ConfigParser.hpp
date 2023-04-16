@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/13 12:54:13 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/15 01:49:57 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include "Server.hpp"
 #include "Http.hpp"
 #include <fstream>
+#define STATUSCODE "201 301 400 401 403 404 405 408 413 414 500 501 502 503 504 505"
+
 using namespace std;
 
 class ConfigParser
@@ -68,6 +70,9 @@ public:
     void checkSyntackInServer(int currentIndex,int index);
     void checkSynaxDirective();
     void checkSyntaxMethod(size_t index);
+    void checkSyntaxReturn(size_t index);
+    void checkSyntaxInclude(size_t i);
+    void checkValidValue(size_t n);
 
     void checkSyntaxDiplicated();
     void checkSyntaxDiplicatedLocation(size_t index,map<string, bool> &directive);
