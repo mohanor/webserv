@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/13 01:48:49 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/16 10:07:34 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../methods/get.hpp"
 
 Worker::Worker()
-{  
+{
 }
 
 Worker::~Worker()
@@ -44,11 +44,12 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
     vector<string> uri = Request::getVector(requestUri, '/');
 
     sizeLocation = uri.size();
-    if (sizeLocation == 0) return (servers.setMatchedLocation("/"), true);
-    
+    if (sizeLocation == 0)
+        return (servers.setMatchedLocation("/"), true);
+
     while (sizeLocation)
     {
-      
+
         for (size_t i = 0; i < uri.size(); i++)
             location += "/" + uri[i];
 
@@ -63,7 +64,7 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
         location.clear();
         sizeLocation--;
     }
- 
+
     return (false);
 }
 
@@ -127,10 +128,10 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
 
         else if (!isMethodAllowdedInLocation(req.getMethod(), server))
             return (Method(405, "Method Not Allowed ", getFileContent("./error_pages/405.html"), req, server), false);
-             
+
         return true;
     }
-    
+
     return false;
 }
 
@@ -138,7 +139,7 @@ Method Worker::getMethodObject(Request req, Server server)
 {
     bool isRedirection = false;
     string path;
-    
+
     if (checkLocations(req, server, isRedirection, path))
     {
         if (req.getMethod() == "DELETE")
@@ -151,7 +152,26 @@ Method Worker::getMethodObject(Request req, Server server)
     else if (isRedirection)
     {
         vector<string> urlVector = Request::getVector(path);
-        return Method(atoi(urlVector[0].c_str()), "Moved Permanently", urlVector[1], req, server);
+        string messageRedirect;
+        switch (atoi(urlVector[0].c_str()))
+        {
+        case 301:
+            messageRedirect = "Moved Permanently";
+            break;
+        case 302:
+            messageRedirect = "Found";
+            break;
+        case 303:
+            messageRedirect = "See Other";
+            break;
+        case 307:
+            messageRedirect = "Temporary Redirect";
+            break;
+        default:
+            break;
+        }
+
+        return Method(atoi(urlVector[0].c_str()), messageRedirect, urlVector[1], req, server);
     }
     return Method(req, server);
 }
@@ -185,7 +205,7 @@ string Worker::listenDirectory(string pathUri, string pathDir)
 
         // cout << "ttttttttt => " << pathDir << endl;
 
-        std::string htmlContent = "<tr><td>"+ typePath + "<a href='"+pathDir +"/"+ pdirent->d_name + "'>" + pdirent->d_name + "</a></td></tr>\n";
+        std::string htmlContent = "<tr><td>" + typePath + "<a href='" + pathDir + "/" + pdirent->d_name + "'>" + pdirent->d_name + "</a></td></tr>\n";
         path.append(htmlContent);
     }
 
@@ -206,14 +226,13 @@ string Worker::listenDirectory(string pathUri, string pathDir)
         pathIndex += pathUri.length();
     }
 
-    cout << " i am here       ...."  << endl;
+    cout << " i am here       ...." << endl;
 
     std::ofstream out("./configuration/dir/index.html");
     out << str;
     closedir(pdir);
     file.close();
     out.close();
-    
 
     return str;
 }

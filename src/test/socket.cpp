@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/15 21:08:05 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/16 08:18:09 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -454,6 +454,7 @@ void    SocketClass::initResponse(int fd)
     _clients[fd].setRespStatus(to_string(method.getStatus()));
     _clients[fd].setComment(method.getComment());
     _clients[fd].setReturn(method.getRedirection());
+    _clients[fd].setCgiHeader(method.getHeaders());
 
     
 }
