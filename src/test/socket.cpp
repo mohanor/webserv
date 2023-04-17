@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 00:25:01 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 06:13:53 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,8 +317,10 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == DELETE)
         {
-            cerr << "************************DELETE method" << endl;
-            exit(0);
+            cout << __LINE__ << " " << __FILE__ << '\n';
+            _clients[fds.fd].setStatus(FILE_NOT_SET);
+            fds.events = POLLOUT;
+            return (true);
         }
     }
 
@@ -442,10 +444,10 @@ void    SocketClass::closeConnection(int i)
 void    SocketClass::initResponse(int fd)
 {
     Worker worker;
-
+    cout << __LINE__ << " " << __FILE__ << '\n';
     string host = _clients[fd]._request.getValueOf("Host");
     Method method = worker.getMethodObject(_clients[fd]._request, getServer2(host));
-
+cout << __LINE__ << " " << __FILE__ << '\n';
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
     _clients[fd].setContentLength(method.getResponse().size());

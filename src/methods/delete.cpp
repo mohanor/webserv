@@ -6,14 +6,14 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 05:20:49 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/15 01:35:30 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 07:11:19 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "delete.hpp"
 
 Delete::Delete(Request request, Server server) : Method(request, server)
-{  
+{
     if (!getRequestedResource())
     {
         _status = 404;
@@ -26,35 +26,41 @@ Delete::Delete(Request request, Server server) : Method(request, server)
         {
             if (!remove(_url.c_str()))
             {
-                _status = 403;
-                _comment = "Forbidden";
+                _status = 204;
+                _comment = "No Content";
+                _resp = getFileContent(_error_page[204]);
                 return ;
             }
-            _status = 204;
-            _comment = "No Content";
+            _status = 403;
+            _resp = getFileContent(_error_page[_status]);
+            _comment = "Forbidden";
             return ;
         }
         CGI cgi(request, server, _url, "DELETE");
         _resp = cgi.getResp();
         if (_resp == "error")
         {
-            _resp = "";
             _status = 502;
+            _resp = getFileContent(_error_page[_status]);
             _comment = "Bad Gateway";
         }
         deserialize();
         _resp = getRidOfHeaders();
+        _status = 204;
+        _comment = "No Content";
         return ;
     }
     if (!hasSlashInTheEnd())
     {
         _status = 301;
+        _resp = getFileContent(_error_page[_status]);
         _comment = "Moved Permanently";
         return ;
     }
     if (!hasIndexFile())
     {
         _status = 403;
+        _resp = getFileContent(_error_page[_status]);
         _comment = "Forbidden";
         return ;
     }
@@ -63,6 +69,7 @@ Delete::Delete(Request request, Server server) : Method(request, server)
     if (_url.empty())
     {
         _status = 403;
+        _resp = getFileContent(_error_page[_status]);
         _comment = "Forbidden";
         return ;
     }
@@ -72,8 +79,8 @@ Delete::Delete(Request request, Server server) : Method(request, server)
         _resp = cgi.getResp();
         if (_resp == "error")
         {
-            _resp = "";
             _status = 502;
+            _resp = getFileContent(_error_page[_status]);
             _comment = "Bad Gateway";
             return ;
         }
