@@ -2,15 +2,17 @@
 session_start();
     if(isset($_POST['name']))
     {
-        $name = $_POST['name'];
-        if (empty($name)) {
-            echo "Please enter your name";
-        }
-        else
-        {
+      $name = $_POST['name'];
+      if (empty($name))
+      {
+          echo "Please enter your name";
+      }
+      else
+      {
         setcookie('name', $name, time()+3600);
         $_SESSION['is_logged'] = true;
-        $_SESSION['name'] = $name;}
+        $_SESSION['name'] = $name;
+      }
     }
     if (isset($_POST['logout'])) {
         session_destroy();
@@ -19,8 +21,6 @@ session_start();
         
     }
     
-
-
     ?>
     <!DOCTYPE html>
 <html lang="en">
@@ -65,33 +65,20 @@ session_start();
 </nav>
 
 <div class="container-sm h-100 d-flex align-items-center justify-content-center mt-5">
-<?php if (@$_SESSION['is_logged']) { ?>
-    <!-- <div >
-    <p class="text-success">حذاري حذاري أووبابا أولالا هدف قاتل (إكامبي). ____ webserv (الخادم القاتل)</p>
-    <br/>
-</div> -->
-<div>
-    <h1>Sma3 asi Kooorit ( <?php echo  @$_SESSION['name'];  ?>  )     </h1>
 
-    <img src="php/korit.jpeg"  height="500px" />
 
-    <h2 class="text-danger">Hada Rah  L WebServ</h2>
+<form method="post" action="/profile">
 
-  
-
-  
-</div>
-
-<?php } else { ?>
-<form method="post">
-<div class="mb-3 row">
+  <div class="mb-3 row">
     <div class="col-sm-10">
-      <input type="text" class="form-control" type="text" placeholder="Ach smaak llah"name="name">
+      <input type="text" class="form-control" type="text" placeholder="Entre your name here"name="name">
     </div>
   </div>
-<input type="submit" class="btn btn-success" value="wark 3la had lbotona">
+
+  <input type="submit" class="btn btn-success" value="what's your name ?" name="submit">
+
 </form>
-<?php } ?>
+
 
 </div>
     

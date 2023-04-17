@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/13 16:55:01 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/17 04:53:36 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,53 +66,103 @@ vector<string> Request::getVector(string line, char delimiter)
 
 Request Request::deserialize(string request)
 {
-	string head;
-	string body;
-	
 	map<string, string> headers;
-	map<string, Header>::iterator it;
-	
-	vector<string> 		tokens;
 	vector<string> 		headerFirstLine;
 
+	string head;
+	vector<string> 		tokens;
 	string line;
+	
+    request.erase(std::remove(request.begin(), request.end(), '\r'), request.end());
+	
+	stringstream res(request);
 
+	getline(res, line);
 	
-	stringstream ss(request);
-	
-	while (getline(ss, line))
-	{
-		if (line == "\r")
-			break;
-		line.pop_back();
-		head += line + "\n";
-	}
-
-	stringstream req(head);
-	
-	getline(req, line);
 	headerFirstLine = Request::getVector(line);
+
+	cout << headerFirstLine.size() << endl;
 
 	if (headerFirstLine.size() != 3)
 		goto error;
-
-	while (getline(req, line))
+	
+	while (getline(res, line))
 	{
-		tokens = getVector(line);
-
+		
+		tokens = Request::getVector(line);
+		
 		string key = tokens[0];
 		string value = line.substr(key.length() + 1);
-
+        
 		key.pop_back();
 		headers.insert(make_pair(key, value));
 	}
 
-	// headerFirstLine[2].pop_back();
 	return Request(headerFirstLine[0], headerFirstLine[1], headerFirstLine[2], headers);
 
 	error:
+		
 		cerr << request << "\n" << request.size() << " " << request.length() << '\n';
 		return Request("", "", "");
+	
+// 	string head;
+// 	string body;
+	
+// 	map<string, string> headers;
+// 	map<string, Header>::iterator it;
+	
+// 	vector<string> 		tokens;
+// 	vector<string> 		headerFirstLine;
+
+// 	string line;
+
+	
+// 	stringstream ss(request);
+// 	/*
+	
+	
+// 	hhhh: bvfjbfdj
+// 	\r\n
+
+// 	get / http/1.1\r
+// 	*/
+// 	while (getline(ss, line))
+// 	{
+// 		if (line == "\r")
+// 			break;
+// 		// if (line[line.size() - 1] == '\r')
+// 			line.pop_back();
+// 		head += line + "\n";
+// 	}
+
+// 	cout << head << endl;
+// 	exit (0);
+
+// 	stringstream req(head);
+	
+// 	getline(req, line);
+// 	headerFirstLine = Request::getVector(line);
+
+// 	if (headerFirstLine.size() != 3)
+// 		goto error;
+
+// 	while (getline(req, line))
+// 	{
+// 		tokens = getVector(line);
+
+// 		string key = tokens[0];
+// 		string value = line.substr(key.length() + 1);
+// 		key.pop_back();
+// 		headers.insert(make_pair(key, value));
+// 	}
+
+// 	headerFirstLine[2].pop_back();
+// 	for(map<string,string >::const_iterator it = headers.begin();
+//     it != headers.end(); ++it)
+// {
+//     std::cout << it->first << " " << it->first << " " << it->second << "\n";
+// }
+
 }
 
 bool Request::syntaxError()
@@ -212,7 +262,7 @@ int Request::isReqWellFormed()
 	resource();
 
 	// if ( syntaxError() ) 		return BAD_REQUEST;
-	
+	cout << "method #" << getMethod() << "#" << endl;
 	if (isMethodAllowed()) return METHOD_NOT_ALLOWED;
 	
 	if ( transferEncoding() )

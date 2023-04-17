@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 03:41:11 by matef             #+#    #+#             */
-/*   Updated: 2023/04/15 20:48:34 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/17 04:44:52 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ double Client::getTimeout()
 
 void        Client::receiveHeader()
 {
-    if (getStatus() == REDING && _requestString.find(ENDL ENDL) != string::npos)
+    if (getStatus() == REDING && _requestString.find("\r\n\r\n") != string::npos)
     {
         this->setStatus(HEADER_RECEIVED);
         setHeaderReceivedVar(true);

@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/15 05:15:34 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 03:11:12 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     int save0 = dup(0);
     int save1 = dup(1);
 
+    cout << "#" << _request.getValueOf("Cookie") << "#" << endl;
     getScriptName();
     pipe(pipefd);
     pid_t pid;
@@ -31,11 +32,11 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
         if (chdir(url.erase(url.find_last_of('/'),url.length()).c_str()) != 0)
             exit(1);
         string body = "" + _request.getBody();
-        FILE *tmp = tmpfile();
+        FILE *tmp = std::tmpfile();
         if (!tmp)
             exit(1);
-        fputs(body.c_str(), tmp);
-        rewind(tmp);
+        std::fputs(body.c_str(), tmp);
+        std::rewind(tmp);
         dup2(fileno(tmp), 0);
         close(fileno(tmp));
         dup2(pipefd[1], STDOUT_FILENO);
@@ -57,7 +58,7 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     dup2(save1, STDOUT_FILENO);
     close(save0);
     close(save1);
-    if (WIFSIGNALED(status))
+    if (WIFSIGNALED(status) || status != 0)
         _resp = "error";
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/16 08:18:09 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 00:25:01 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,6 @@ int SocketClass::communicate(struct pollfd &fds)
     string			req;
     size_t			size;
     char			request[MAX_REQUEST_SIZE] = {0};
-cout << __LINE__ << " " << __FILE__ << endl;
     size = recv(fds.fd, request, MAX_REQUEST_SIZE, 0);
     if ( !recvError(size, fds.fd) ) return 0;
 
@@ -467,17 +466,14 @@ void SocketClass::run()
     setFds();
 
     
-    cout << __LINE__ << " " << __FILE__ << endl;
     while (true)
     {
-        cout << "listening..." << endl;
-        cout << __LINE__ << " " << __FILE__ << endl;
+        // cout << "listening..." << endl;
         if (poll(&_fds[0], _fds.size(), -1) < 0)
         {
             cerr << "poll error" << endl;
             break;
         }
-        cout << __LINE__ << " " << __FILE__ << endl;
         for(size_t i = 0; i < _fds.size(); i++)
         {
             if (_fds[i].revents & POLLHUP)

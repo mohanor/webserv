@@ -11,7 +11,6 @@ Post::Post(Request request, Server server) : Method(request, server)
             _status = 201;
             _resp = getFileContent(_error_page[_status]);
             _comment = "Created";
-            // UPLOAD FILE
             request.uploadFile();
             return ;
         }
@@ -78,6 +77,11 @@ Post::Post(Request request, Server server) : Method(request, server)
         return ;
     }
     deserialize();
+//     for(map<string,string >::const_iterator it = _headers.begin();
+//     it != _headers.end(); ++it)
+// {
+//     std::cout << it->first << " " << it->first << " " << it->second << "\n";
+// }
     _resp = getRidOfHeaders();
     _status = 200;
     _comment = "OK";
