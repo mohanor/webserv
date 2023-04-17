@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/16 21:19:00 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 23:06:55 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ void Method::insetErrorPage()
             maps++;
          }
     
-        vector<pair<int, string> > err = _server.getErrorPage();
-        for (size_t i = 0; i < err.size(); i++)
+        map<int, string>::iterator err = _server.getErrorPage().begin();
+
+        for (;err != _server.getErrorPage().end(); err++)
         {
-            if (_error_page.find(err[i].first) != _error_page.end())
-            {
-                cout << "error page already exist";
-                this->_error_page[err[i].first] = string(err[i].second);
-            }
+
+            if (_error_page.find(err->first) != _error_page.end())
+                this->_error_page[err->first] = err->second;
+            // this->_error_page[err->first] = err->second;
         }
 }
 
