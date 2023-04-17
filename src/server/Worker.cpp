@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
 /*   Updated: 2023/04/17 19:49:29 by yoelhaim         ###   ########.fr       */
@@ -50,7 +50,6 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
 
     while (sizeLocation)
     {
-
         for (size_t i = 0; i < uri.size(); i++)
             location += "/" + uri[i];
 
@@ -176,6 +175,7 @@ Method Worker::getMethodObject(Request req, Server server)
 
         return Method(atoi(urlVector[0].c_str()), messageRedirect, urlVector[1], req, server);
     }
+    cout << __LINE__ << " " << __FILE__ << '\n';
     return Method(req, server);
 }
 

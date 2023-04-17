@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:25:16 by yel-khad          #+#    #+#             */
 /*   Updated: 2023/04/16 21:16:21 by yoelhaim         ###   ########.fr       */
@@ -22,7 +22,7 @@
 # include "../utility/utility.hpp"
 # include "../cgi/cgi.hpp"
 # include "../../parsing/mime/MimeTypes.hpp" 
-#define STATUSCODE "201 301 400 401 403 404 405 408 413 414 500 501 502 503 504 505"
+#define STATUSCODE "201 204 301 400 401 403 404 405 408 413 414 500 501 502 503 504 505"
 
 
 
