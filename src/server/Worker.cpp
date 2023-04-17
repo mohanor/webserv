@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 06:31:56 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 17:40:27 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,25 +139,25 @@ Method Worker::getMethodObject(Request req, Server server)
 {
     bool isRedirection = false;
     string path;
-cout << __LINE__ << " " << __FILE__ << '\n';
-        cout << "#" << req.getMethod() << "#\n";
+
+
     if (checkLocations(req, server, isRedirection, path))
     {
-        cout << __LINE__ << " " << __FILE__ << '\n';
+
         if (req.getMethod() == "DELETE")
         {
-            cout << __LINE__ << " " << __FILE__ << '\n';
+
             return runMethodDelete(req, server);
         }
         else if (req.getMethod() == "GET")
             return runMethodGet(req, server);
         else
             return runMethodPost(req, server);
-        cout << __LINE__ << " " << __FILE__ << '\n';
+
     }
     else if (isRedirection)
     {
-        cout << __LINE__ << " " << __FILE__ << '\n';
+
         vector<string> urlVector = Request::getVector(path);
         string messageRedirect;
         switch (atoi(urlVector[0].c_str()))
@@ -180,7 +180,7 @@ cout << __LINE__ << " " << __FILE__ << '\n';
 
         return Method(atoi(urlVector[0].c_str()), messageRedirect, urlVector[1], req, server);
     }
-    cout << __LINE__ << " " << __FILE__ << '\n';
+
     return Method(req, server);
 }
 

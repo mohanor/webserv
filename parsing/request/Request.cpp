@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 04:53:36 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 18:03:22 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ Request Request::deserialize(string request)
 	string head;
 	vector<string> 		tokens;
 	string line;
-	
+	cout << request << endl;
+	// exit (0);
     request.erase(std::remove(request.begin(), request.end(), '\r'), request.end());
 	
 	stringstream res(request);
@@ -360,20 +361,30 @@ void Request::uploadFile()
     string bodyHead;
     vector <string> bodyHeadVector;
     
+
     while (start != string::npos && start < end)
     {
+		
         nextLine = _body.find("\r\n\r\n") + 4;
         bodyHead = _body.substr(0, nextLine);
 
         while (bodyHead.find("\r\n") != string::npos)
+		{
+			
             bodyHead.replace(bodyHead.find("\r\n"), 2, " ");
+		}
 
         bodyHeadVector = Request::getVector(bodyHead);
+
+
+
         while (bodyHeadVector.size() && bodyHeadVector[0].find("filename") == string::npos)
             bodyHeadVector.erase(bodyHeadVector.begin());
-
+		
         if (!bodyHeadVector.size())
-            return ;
+		{
+            break ;
+		}
         
         string filename = bodyHeadVector[0].substr(bodyHeadVector[0].find("\"") + 1);
         filename.erase(filename.find("\""));
@@ -383,10 +394,11 @@ void Request::uploadFile()
         tmp = _body.substr(0, start);
 
         ofstream file("./uploads/" + filename, ios::out | ios::trunc);
-
+		_body.erase(0, start);
         file << tmp;
         tmp.clear();
     }
+	cout << "end of uploadFile" << '\n';
 }
 
 

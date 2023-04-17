@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 06:13:53 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 17:40:02 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,25 @@ string SocketClass::parseChunked(string body)
     return prasedBody;
 }
 
+bool SocketClass::handleDeleteRequest(Client &client)
+{
+    if (client._request.isHeaderHasKey("Content-Length"))
+    {
+        size_t contentLength = (size_t)atof( client._request.getValueOf("Content-Length").c_str() );
+
+        if (contentLength == client.getReceivedLength() && client._request.isHeaderHasKey("Content-Type"))
+        {
+            client._request.setBody(client.getBody());
+            client._requestString.clear();
+            return true;
+        }
+    }
+
+    // chunked case
+    
+    return false;
+}
+
 bool SocketClass::handlePostRequest(Client &client)
 {
     if (client._request.isHeaderHasKey("Content-Length"))
@@ -298,7 +317,7 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
-            cout << "POST method" << endl;
+            // cout << "POST method" << endl;
             
             if (handlePostRequest(_clients[fds.fd]))
             {
@@ -317,9 +336,11 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == DELETE)
         {
-            cout << __LINE__ << " " << __FILE__ << '\n';
-            _clients[fds.fd].setStatus(FILE_NOT_SET);
-            fds.events = POLLOUT;
+            if (handleDeleteRequest(_clients[fds.fd]))
+            {
+                _clients[fds.fd].setStatus(FILE_NOT_SET);
+                fds.events = POLLOUT;
+            }
             return (true);
         }
     }
