@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 19:49:29 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 22:33:00 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Worker &Worker::operator=(const Worker &copy)
 {
     if (this != &copy)
     {
-        /* data */
+        
     }
     return *this;
 }
@@ -45,7 +45,7 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
 
     sizeLocation = uri.size();
     
-    if (sizeLocation <= 1)
+    if (sizeLocation == 0)
         return (servers.setMatchedLocation("/"), true);
 
     while (sizeLocation)
@@ -63,6 +63,9 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
         uri.pop_back();
         location.clear();
         sizeLocation--;
+        if (sizeLocation == 0)
+            return (servers.setMatchedLocation("/"), true);
+       
     }
     return (false);
 }
@@ -175,7 +178,7 @@ Method Worker::getMethodObject(Request req, Server server)
 
         return Method(atoi(urlVector[0].c_str()), messageRedirect, urlVector[1], req, server);
     }
-    cout << __LINE__ << " " << __FILE__ << '\n';
+       //cout << __LINE__ << " " << __FILE__ << '\n';
     return Method(req, server);
 }
 
