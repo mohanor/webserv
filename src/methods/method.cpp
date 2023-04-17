@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/16 08:19:43 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/16 21:19:00 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,10 @@ void Method::insetErrorPage()
         for (size_t i = 0; i < err.size(); i++)
         {
             if (_error_page.find(err[i].first) != _error_page.end())
+            {
+                cout << "error page already exist";
                 this->_error_page[err[i].first] = string(err[i].second);
+            }
         }
 }
 
@@ -89,8 +92,12 @@ void Method::deserialize()
 	}
 }
 
-Method::Method(int status, string comment, string redirection, Request request, Server server) : _request(request),_server(server),  _status(status), _comment(comment),  _redirection(redirection) 
-{}
+Method::Method(int status, string comment, string redirection ,Request request, Server server) : _request(request),_server(server), _status(status), _comment(comment),  _redirection(redirection)
+{
+    insetErrorPage();
+    if (_status == 405)
+        _resp = getFileContent(_error_page[405]);
+}
 
 
 

@@ -4,10 +4,15 @@ import requests
 session = requests.Session()
 
 # perform a GET request
-response = session.get('https://example.com')
+response = session.get('/')
+
+print(response.text)
+
+
+print('------')
 
 # perform a POST request with data
 data = {'key': 'value'}
-response = session.post('https://example.com/login', data=data)
+response = session.post('/', data=data)
 
 print(response.text)

@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/16 10:05:34 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/16 20:25:22 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -540,7 +540,8 @@ void ConfigParser::checkSyntaxReturn(size_t index)
     {
       if (_tokens[index + 1].first != "301" && _tokens[index + 1].first != "302" && _tokens[index + 1].first != "307" && _tokens[index + 1].first != "303")
             errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid return");
-      
+        
+        _tokens[index + 2].first = ft_trim(_tokens[index + 2].first, " '\"");
     }
 }
 

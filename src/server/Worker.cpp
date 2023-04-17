@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/16 10:07:34 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 19:49:29 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
     vector<string> uri = Request::getVector(requestUri, '/');
 
     sizeLocation = uri.size();
-    if (sizeLocation == 0)
+    
+    if (sizeLocation <= 1)
         return (servers.setMatchedLocation("/"), true);
 
     while (sizeLocation)
@@ -64,7 +65,6 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
         location.clear();
         sizeLocation--;
     }
-
     return (false);
 }
 
@@ -119,7 +119,7 @@ Post Worker::runMethodPost(Request &req, Server &server)
     return post;
 }
 
-bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path)
+bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path, bool &method)
 {
     if (getMatchedLocationFoRequestUri(req.getRessource(), server))
     {
@@ -127,7 +127,7 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
             return (isRedirection = true, false);
 
         else if (!isMethodAllowdedInLocation(req.getMethod(), server))
-            return (Method(405, "Method Not Allowed ", getFileContent("./error_pages/405.html"), req, server), false);
+            return (method = true, false);
 
         return true;
     }
@@ -138,9 +138,10 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
 Method Worker::getMethodObject(Request req, Server server)
 {
     bool isRedirection = false;
+    bool methods = false;
     string path;
 
-    if (checkLocations(req, server, isRedirection, path))
+    if (checkLocations(req, server, isRedirection, path, methods))
     {
         if (req.getMethod() == "DELETE")
             return runMethodDelete(req, server);
@@ -149,6 +150,8 @@ Method Worker::getMethodObject(Request req, Server server)
         else
             return runMethodPost(req, server);
     }
+    else if (methods)
+        return Method(405, "Method Not Allowed ", "", req, server);
     else if (isRedirection)
     {
         vector<string> urlVector = Request::getVector(path);
@@ -203,8 +206,6 @@ string Worker::listenDirectory(string pathUri, string pathDir)
         std::string folder = "<i class='fa fa-folder' style='padding:3px;color:#F5E588'></i>";
         std::string typePath = pdirent->d_type != 4 ? file : folder;
 
-        // cout << "ttttttttt => " << pathDir << endl;
-
         std::string htmlContent = "<tr><td>" + typePath + "<a href='" + pathDir + "/" + pdirent->d_name + "'>" + pdirent->d_name + "</a></td></tr>\n";
         path.append(htmlContent);
     }
@@ -225,9 +226,6 @@ string Worker::listenDirectory(string pathUri, string pathDir)
         str.replace(pathIndex, 8, pathUri);
         pathIndex += pathUri.length();
     }
-
-    cout << " i am here       ...." << endl;
-
     std::ofstream out("./configuration/dir/index.html");
     out << str;
     closedir(pdir);
