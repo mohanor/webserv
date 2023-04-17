@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/16 08:19:43 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 03:46:58 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ void Method::deserialize()
     size_t pos_r = _resp.find("\r\n\r\n");
     size_t pos_n = _resp.find("\n\n");
     size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;
-    head = _resp.substr(0, pos -1);
+    
+    head = _resp.substr(0, pos - 1);
     head.erase(std::remove(head.begin(), head.end(), '\r'), head.end());
 	stringstream res(head);
 	while (getline(res, line))
@@ -84,6 +85,7 @@ void Method::deserialize()
 		tokens = Request::getVector(line);
 		string key = tokens[0];
 		string value = line.substr(key.length() + 1);
+        // cout << "value: " << value << endl;
 		key.pop_back();
 		_headers.insert(make_pair(key, value));
 	}
