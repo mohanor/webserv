@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:50:32 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 01:41:48 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 22:58:54 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ string Http::getIndex() const
     return this->_index;
 }
 
-vector<pair<int, string> > Http::getErrorPage() const
+map<int, string > Http::getErrorPage() const
 {
     return this->_error_page;
 }
