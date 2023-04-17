@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 20:38:40 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/16 22:08:01 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ Configuration::Configuration(string fileName)
 
     insertServer();
     checkLocation();
-    
 
+    
     map<short int, bool> listen_port;
     for (size_t i = 0; i < _server.size(); i++)
     {

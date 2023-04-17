@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 06:31:56 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 19:49:29 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
     vector<string> uri = Request::getVector(requestUri, '/');
 
     sizeLocation = uri.size();
-    if (sizeLocation == 0)
+    
+    if (sizeLocation <= 1)
         return (servers.setMatchedLocation("/"), true);
 
     while (sizeLocation)
@@ -63,7 +64,6 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
         location.clear();
         sizeLocation--;
     }
-
     return (false);
 }
 
@@ -101,7 +101,6 @@ bool Worker::isMethodAllowdedInLocation(string Method, Server &servers)
 
 Delete Worker::runMethodDelete(Request &req, Server &server)
 {
-    cout << __LINE__ << " " << __FILE__ << '\n';
     Delete del(req, server);
 
     return del;
@@ -119,7 +118,7 @@ Post Worker::runMethodPost(Request &req, Server &server)
     return post;
 }
 
-bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path)
+bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path, bool &method)
 {
     if (getMatchedLocationFoRequestUri(req.getRessource(), server))
     {
@@ -127,7 +126,7 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
             return (isRedirection = true, false);
 
         else if (!isMethodAllowdedInLocation(req.getMethod(), server))
-            return (Method(405, "Method Not Allowed ", getFileContent("./error_pages/405.html"), req, server), false);
+            return (method = true, false);
 
         return true;
     }
@@ -138,26 +137,22 @@ bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, s
 Method Worker::getMethodObject(Request req, Server server)
 {
     bool isRedirection = false;
+    bool methods = false;
     string path;
-cout << __LINE__ << " " << __FILE__ << '\n';
-        cout << "#" << req.getMethod() << "#\n";
-    if (checkLocations(req, server, isRedirection, path))
+
+    if (checkLocations(req, server, isRedirection, path, methods))
     {
-        cout << __LINE__ << " " << __FILE__ << '\n';
         if (req.getMethod() == "DELETE")
-        {
-            cout << __LINE__ << " " << __FILE__ << '\n';
             return runMethodDelete(req, server);
-        }
         else if (req.getMethod() == "GET")
             return runMethodGet(req, server);
         else
             return runMethodPost(req, server);
-        cout << __LINE__ << " " << __FILE__ << '\n';
     }
+    else if (methods)
+        return Method(405, "Method Not Allowed ", "", req, server);
     else if (isRedirection)
     {
-        cout << __LINE__ << " " << __FILE__ << '\n';
         vector<string> urlVector = Request::getVector(path);
         string messageRedirect;
         switch (atoi(urlVector[0].c_str()))
@@ -211,8 +206,6 @@ string Worker::listenDirectory(string pathUri, string pathDir)
         std::string folder = "<i class='fa fa-folder' style='padding:3px;color:#F5E588'></i>";
         std::string typePath = pdirent->d_type != 4 ? file : folder;
 
-        // cout << "ttttttttt => " << pathDir << endl;
-
         std::string htmlContent = "<tr><td>" + typePath + "<a href='" + pathDir + "/" + pdirent->d_name + "'>" + pdirent->d_name + "</a></td></tr>\n";
         path.append(htmlContent);
     }
@@ -233,9 +226,6 @@ string Worker::listenDirectory(string pathUri, string pathDir)
         str.replace(pathIndex, 8, pathUri);
         pathIndex += pathUri.length();
     }
-
-    cout << " i am here       ...." << endl;
-
     std::ofstream out("./configuration/dir/index.html");
     out << str;
     closedir(pdir);
