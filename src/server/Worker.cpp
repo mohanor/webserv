@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/16 10:07:34 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 06:31:56 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ bool Worker::getMatchedLocationFoRequestUri(string requestUri, Server &servers)
 
     while (sizeLocation)
     {
-
         for (size_t i = 0; i < uri.size(); i++)
             location += "/" + uri[i];
 
@@ -102,6 +101,7 @@ bool Worker::isMethodAllowdedInLocation(string Method, Server &servers)
 
 Delete Worker::runMethodDelete(Request &req, Server &server)
 {
+    cout << __LINE__ << " " << __FILE__ << '\n';
     Delete del(req, server);
 
     return del;
@@ -139,18 +139,25 @@ Method Worker::getMethodObject(Request req, Server server)
 {
     bool isRedirection = false;
     string path;
-
+cout << __LINE__ << " " << __FILE__ << '\n';
+        cout << "#" << req.getMethod() << "#\n";
     if (checkLocations(req, server, isRedirection, path))
     {
+        cout << __LINE__ << " " << __FILE__ << '\n';
         if (req.getMethod() == "DELETE")
+        {
+            cout << __LINE__ << " " << __FILE__ << '\n';
             return runMethodDelete(req, server);
+        }
         else if (req.getMethod() == "GET")
             return runMethodGet(req, server);
         else
             return runMethodPost(req, server);
+        cout << __LINE__ << " " << __FILE__ << '\n';
     }
     else if (isRedirection)
     {
+        cout << __LINE__ << " " << __FILE__ << '\n';
         vector<string> urlVector = Request::getVector(path);
         string messageRedirect;
         switch (atoi(urlVector[0].c_str()))
@@ -173,6 +180,7 @@ Method Worker::getMethodObject(Request req, Server server)
 
         return Method(atoi(urlVector[0].c_str()), messageRedirect, urlVector[1], req, server);
     }
+    cout << __LINE__ << " " << __FILE__ << '\n';
     return Method(req, server);
 }
 
