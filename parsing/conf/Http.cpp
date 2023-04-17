@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:50:32 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 22:58:54 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 23:23:22 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,13 @@ map<int, string > Http::getErrorPage() const
     return this->_error_page;
 }
 
+ string Http::getErrorPageByIndex(size_t index) const
+ {
+    if (this->_error_page.find(index) != this->_error_page.end())
+        return this->_error_page.at(index);
+    return "";
+ }
+
 string Http::getAllowedMethods(int) const
 {
     return this->_allowed_methods;
@@ -71,4 +78,6 @@ bool Http::getAutoIndex() const
 {
     return this->_autoindex;
 }
+
+
 
