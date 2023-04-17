@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 23:00:45 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 23:22:15 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ public:
     string getRoot() const;
     string getIndex() const;
     map<int, string > getErrorPage() const;
+    string getErrorPageByIndex(size_t index) const;
     string getAllowedMethods(int index) const;
     bool getAutoIndex() const;
 

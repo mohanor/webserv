@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 23:06:55 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 23:24:45 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void Method::insetErrorPage()
 
             if (_error_page.find(err->first) != _error_page.end())
                 this->_error_page[err->first] = err->second;
-            // this->_error_page[err->first] = err->second;
         }
 }
 
