@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/16 10:05:34 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:02:38 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ void ConfigParser::SetAllowedDirective(bool isInServer)
     if (isInServer)
     {
         _directive_allowed.push_back("server_name");
-         _directive_allowed.push_back("include");
         _directive_allowed.push_back("listen");
         _directive_allowed.push_back("host");
     }
@@ -540,29 +539,28 @@ void ConfigParser::checkSyntaxReturn(size_t index)
     {
       if (_tokens[index + 1].first != "301" && _tokens[index + 1].first != "302" && _tokens[index + 1].first != "307" && _tokens[index + 1].first != "303")
             errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid return");
-      
+        
+        _tokens[index + 2].first = ft_trim(_tokens[index + 2].first, " '\"");
     }
 }
 
-void ConfigParser::checkSyntaxInclude(size_t index)
+void ConfigParser::checkUploadStore(size_t index)
 {
-    if (_tokens[index].first == "include")
+    if (_tokens[index].first == "upload_store")
     {
         ifstream file;
-        string fileName = ft_trim(_tokens[index + 1].first, " '\"");
+        string fileName = ft_trim(_tokens[ index + 1].first, "'\"");
         _tokens[index + 1].first = fileName;
+        cout << fileName << endl;
         file.open(fileName);
         if (!file.is_open())
-            errorLogs("Error : "+ fileName +" file not found !");
+            errorLogs("Error :"+fileName+" file not found !");
         file.close();
-        
-        int pos = fileName.find_last_of(".");
-        if (fileName.substr(pos) != ".types")
-            errorLogs("Error : "+ fileName.substr(pos) +" file not type  file !");
-        
     }
     
 }
+
+
 void ConfigParser::checkSynaxDirective()
 {
     size_t i = 0;
@@ -575,7 +573,7 @@ void ConfigParser::checkSynaxDirective()
             if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2)
                 errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
             checkSyntaxReturn(i);
-            checkSyntaxInclude(i);
+            checkUploadStore(i);
             if (_tokens[i].first == "listen")
             { 
                 int port =   atof(_tokens[i + 1].first.c_str());

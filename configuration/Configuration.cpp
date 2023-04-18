@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 20:38:40 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:03:37 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ Configuration::Configuration(string fileName)
     insertServer();
     checkLocation();
     
-
     map<short int, bool> listen_port;
     for (size_t i = 0; i < _server.size(); i++)
     {
@@ -76,8 +75,6 @@ void Configuration::checkDirective(size_t index)
         _directive_server.push_back(make_pair(_tokens[index + 1].first, HOST));
     if (_tokens[index].first == "root")
         _directive_server.push_back(make_pair(_tokens[index + 1].first, ROOT));
-    if (_tokens[index].first == "include")
-        _directive_server.push_back(make_pair(_tokens[index + 1].first, INCLUDE));
     if (_tokens[index].first == "index")
     {
         string indexPage;
@@ -133,9 +130,6 @@ void Configuration::addToServer()
         case SERVER_NAME:
             directive.server_name = _directive_server[i].first;
             break;
-        case INCLUDE:
-            directive.include = _directive_server[i].first;
-            break;
         case HOST:
             directive.host = _directive_server[i].first;
             break;
@@ -151,7 +145,7 @@ void Configuration::addToServer()
         case ERROR_PAGE:
         {
             vector<string> errorPage = Request::getVector(_directive_server[i].first);
-            directive.error_page.push_back(make_pair(atoi(errorPage[0].c_str()), errorPage[1]));
+            directive.error_page[atoi(errorPage[0].c_str())] = errorPage[1];
             break;
         }
         case AUTOINDEX:

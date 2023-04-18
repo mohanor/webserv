@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:07:11 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 20:19:34 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 06:48:34 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,7 @@
 using namespace std;
 
 struct Location;
-// struct HostInfo
-// {
-//     short port;
-//     string hostName;
-// };
-//         vector<HostInfo>	        _host_info;
+
 
 class Server : public Http
 {
@@ -36,7 +31,6 @@ class Server : public Http
         vector<short int>	             _listen;
         string		                _server_name;
         string	                     _host;
-        string	                     _include;
         string		                _cgi_info_php;
         string		                _cgi_info_py;
         string		                _length_location;
@@ -62,6 +56,6 @@ class Server : public Http
         string getCgiInfoPHP() const;
         string getCgiInfoPY() const;
         void setPort(short int port);
-        string getInclude() const;
+        string getUploadPath(string matchLocation);
         
 };

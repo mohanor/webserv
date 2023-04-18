@@ -6,13 +6,14 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 20:34:15 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 23:22:15 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
+#include <map>
 #include <vector>
 using namespace std;
 
@@ -27,7 +28,7 @@ struct directives
     string include ;
     string root ;
     string index ;
-    vector<pair<int, string> > error_page;
+    map<int, string > error_page;
     bool autoindex;
     string allow;
     string cgi_info_php;
@@ -66,7 +67,7 @@ protected:
     size_t _cli_max_size;
     string _root;
     string _index;
-    vector<pair<int, string> > _error_page;
+    map<int, string > _error_page;
     string _allowed_methods;
     bool _autoindex;
 
@@ -79,7 +80,8 @@ public:
     size_t getMaxSize() const;
     string getRoot() const;
     string getIndex() const;
-    vector<pair<int, string> > getErrorPage() const;
+    map<int, string > getErrorPage() const;
+    string getErrorPageByIndex(size_t index) const;
     string getAllowedMethods(int index) const;
     bool getAutoIndex() const;
 

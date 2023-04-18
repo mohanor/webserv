@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 20:35:32 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 06:56:09 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Server::Server(directives dir) : Http(dir)
     this->_matched_location = "/";
     this->_cgi_info_php = dir.cgi_info_php;
     this->_cgi_info_py = dir.cgi_info_py;
-    this->_include = dir.include;
+    
 }
 
 Server::~Server() {}
@@ -44,7 +44,6 @@ Server &Server::operator=(const Server &copy)
         this->_cgi_info_php = copy._cgi_info_php;
         this->_cgi_info_py = copy._cgi_info_py;
         _locations = copy._locations;
-        this->_include = copy._include;
     }
 
     return *this;
@@ -102,7 +101,12 @@ void Server::setPort(short int port)
     this->_listen.push_back(port);
 }
 
-string Server::getInclude() const
+
+string Server::getUploadPath(string matchLocation) 
 {
-    return this->_include;
+    map<string, string> map = _locations[matchLocation]._directives;
+    if (map.find("upload_store") != map.end())
+        return map["upload_store"];
+      
+    return "./uploads";
 }

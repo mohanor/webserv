@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:36:44 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/11 16:33:22 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/16 20:47:06 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ public:
     //void  runMethodPost(Request &req, Server &server);
     Delete  runMethodDelete(Request &req, Server &server);
     static string listenDirectory(string RequestUri, string pathDir);
-    bool checkLocations(Request &req, Server &server,bool &isRedirection, string &path);
+    bool checkLocations(Request &req, Server &server,bool &isRedirection, string &path, bool &method);
     Post runMethodPost(Request &req, Server &server);
     
 };

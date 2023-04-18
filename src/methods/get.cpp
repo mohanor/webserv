@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/15 05:15:41 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/18 06:45:22 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 Get::Get(Request request, Server server) : Method(request, server)
 {
+    cout << __LINE__ << " " << __FILE__ << endl;
     if (!getRequestedResource())
     {
         _status = 404;
@@ -21,7 +22,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         _resp = getFileContent(_error_page[404]);
         return ;
     }
-  
+  cout << __LINE__ << " " << __FILE__ << endl;
     if (isFile())
     {
         if (!hasCGI())
@@ -53,8 +54,6 @@ Get::Get(Request request, Server server) : Method(request, server)
         _status = 301;
         _comment = "Moved Permanently";
         _resp = getFileContent(_error_page[301]);
-        // TODO segmentation fault
-        // _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[301])));
         _contentType = _mime.getMimeType(_mime.getExtension(_error_page[301]));
        
         return ;
