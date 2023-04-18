@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 20:22:47 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 06:44:22 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ enum directive
     UPLOAD_STORE,
     UPLOAD_ENABLE,
      CGI_INFO_PHP,
-     INCLUDE,
     CGI_INFO_PYTHON,
     };
 
