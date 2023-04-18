@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 18:03:22 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/17 21:12:47 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,8 +376,6 @@ void Request::uploadFile()
 
         bodyHeadVector = Request::getVector(bodyHead);
 
-
-
         while (bodyHeadVector.size() && bodyHeadVector[0].find("filename") == string::npos)
             bodyHeadVector.erase(bodyHeadVector.begin());
 		
@@ -393,6 +391,7 @@ void Request::uploadFile()
         start = _body.find(boundary);
         tmp = _body.substr(0, start);
 
+		//TODO: get file path from config file
         ofstream file("./uploads/" + filename, ios::out | ios::trunc);
 		_body.erase(0, start);
         file << tmp;
