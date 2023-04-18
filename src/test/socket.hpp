@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 22:10:06 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/18 20:47:17 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ struct HostAndPort
 class SocketClass
 {
     public:
-        SocketClass();
+        SocketClass(string config_file = "./config/webserv.conf");
         ~SocketClass();
         int create();
         bool bindSocket(int sockfd, SocketServer &server, HostAndPort hostAndPort);
@@ -102,6 +102,9 @@ class SocketClass
         bool isPortBelongToServer(Server server, short port);
         bool isHostBelongToServer(Server server, string host);
         bool isSeverNameBelongToServer(Server server, string serverName);
+
+        bool isAllPortDiffrents(Server s1, Server s2);
+        void isAllServersCanRunning();
     private:
         vector<Server>          servers;
         vector<SocketServer>    _s;

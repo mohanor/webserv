@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 21:12:47 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/18 07:22:39 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,7 +337,7 @@ void Request::setUploadable()
 	_isUploadable = true;
 }
 
-void Request::uploadFile()
+void Request::uploadFile(string path)
 {
     size_t nextLine ;
     string boundary;
@@ -391,13 +391,12 @@ void Request::uploadFile()
         start = _body.find(boundary);
         tmp = _body.substr(0, start);
 
-		//TODO: get file path from config file
-        ofstream file("./uploads/" + filename, ios::out | ios::trunc);
+		if (path[path.length() - 1] != '/') path += "/";
+        ofstream file(path + filename, ios::out | ios::trunc);
 		_body.erase(0, start);
         file << tmp;
         tmp.clear();
     }
-	cout << "end of uploadFile" << '\n';
 }
 
 
