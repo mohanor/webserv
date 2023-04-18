@@ -1,63 +1,56 @@
-import cgi
 import os
-import sys
+import uuid
+import http.cookies
 
-# Start the session
-from http.cookies import SimpleCookie
-from urllib.parse import urlencode
-
-session_key = 'sessionid'
-
-cookie = SimpleCookie(os.environ.get('HTTP_COOKIE'))
-session_id = cookie.get(session_key)
-
-if not session_id:
-    session_id = os.urandom(16).hex()
-else:
+cookie = http.cookies.SimpleCookie(os.environ.get("HTTP_COOKIE"))
+session_id = cookie.get("sessionid")
+if session_id:
     session_id = session_id.value
-
-session_file = 'session_' + session_id
-try:
-    with open(session_file, 'r') as f:
-        session = dict(line.strip().split('=', 1) for line in f.readlines())
-except FileNotFoundError:
-    session = {}
-
-def save_session():
-    with open(session_file, 'w') as f:
-        for k, v in session.items():
-            f.write(f"{k}={v}\n")
-
-# Handle the logout request
-if 'logout' in cgi.FieldStorage():
-    session.clear()
-    save_session()
-    sys.stdout.write("Set-Cookie: sessionid=; Max-Age=0\r\n")
-    sys.stdout.write("Content-Type: text/html\r\n\r\n")
-    sys.stdout.write("Logout successfuly <a href='/php'>go HOME</a>")
-    sys.exit()
-
-# Save the session
-save_session()
-
-# Send the response
-sys.stdout.write("Content-Type: text/html\r\n\r\n")
-sys.stdout.write("<html>")
-sys.stdout.write("<head>")
-sys.stdout.write("<title>Session Example</title>")
-sys.stdout.write("</head>")
-sys.stdout.write("<body>")
-if 'name' in session:
-    sys.stdout.write(f"<p>Hello, {session['name']}!</p>")
-    sys.stdout.write("<form method='post'>")
-    sys.stdout.write("<input type='hidden' name='logout' value='1'>")
-    sys.stdout.write("<input type='submit' value='Logout'>")
-    sys.stdout.write("</form>")
+    cookie = http.cookies.SimpleCookie()
+    cookie["sessionid"] = session_id
+    print(cookie.output())
 else:
-    sys.stdout.write("<p>Please enter your name:</p>")
-    sys.stdout.write("<form method='post'>")
-    sys.stdout.write("<input type='text' name='name'>")
-    sys.stdout.write("<input type='submit' value='Submit'>")
-    sys.stdout.write("</form>")
-sys.stdout.write("</body>")
-sys.stdout.write("</html>")
+    session_id = str(uuid.uuid4())
+    cookie = http.cookies.SimpleCookie()
+    cookie["sessionid"] = session_id
+    print(cookie.output())
+print()
+session_file = './sessions/session_' + session_id 
+
+def read_variables(filename):
+    variables = {}
+    with open(filename, 'r') as f:
+        for line in f:
+            line = line.strip()
+            key, value = line.split('=', 1)
+            variables[key.strip()] = value.strip()
+    return variables
+
+if os.path.exists(session_file): 
+    session_data = read_variables(session_file)
+else :
+    session_data = {}
+
+if __name__ == "__main__":
+    if 'username' not in session_data:
+        print("<html>")
+        print("<head>")
+        print("<title>Cookie Example</title>")
+        print("</head>")
+        print("<body>")
+        print("<p>Please enter your name:</p>")
+        print('<form method="POST" action="./script.py">')
+        print('<input type="text" name="username">')
+        print('<input type="submit" value="Submit">')
+        print("</form>")
+        print("</body>")
+        print("</html>")
+    else :
+        print("<html>")
+        print("<head>")
+        print("<title>Session Example</title>")
+        print("</head>")
+        print("<body>")
+        print("<p>Hello, {}</p>".format(session_data["username"]))
+        print("</body>")
+        print("</html>")

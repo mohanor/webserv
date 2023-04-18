@@ -42,6 +42,7 @@ Post::Post(Request request, Server server) : Method(request, server)
             _comment = "Bad Gateway";
             return ;
         }
+        cout << __LINE__ << " " << __FILE__ << endl;
         deserialize();
         _resp = getRidOfHeaders();
         _status = 200;

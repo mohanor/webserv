@@ -6,7 +6,7 @@
 /*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/17 03:11:12 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 22:31:59 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,12 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
             exit(1);
         std::fputs(body.c_str(), tmp);
         std::rewind(tmp);
-        dup2(fileno(tmp), 0);
-        close(fileno(tmp));
+        dup2(::fileno(tmp), 0);
+        close(::fileno(tmp));
         dup2(pipefd[1], STDOUT_FILENO);
         close(pipefd[1]);
         alarm(300);
         execve(_args[0], _args, setENV());
-        cout << "exe error: " << strerror(errno) << endl;
         exit(1);
     }
     int status;
