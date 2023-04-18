@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 03:46:58 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/17 23:24:45 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,13 @@ void Method::insetErrorPage()
             maps++;
          }
     
-        vector<pair<int, string> > err = _server.getErrorPage();
-        for (size_t i = 0; i < err.size(); i++)
+        map<int, string>::iterator err = _server.getErrorPage().begin();
+
+        for (;err != _server.getErrorPage().end(); err++)
         {
-            if (_error_page.find(err[i].first) != _error_page.end())
-                this->_error_page[err[i].first] = string(err[i].second);
+
+            if (_error_page.find(err->first) != _error_page.end())
+                this->_error_page[err->first] = err->second;
         }
 }
 
@@ -91,8 +93,12 @@ void Method::deserialize()
 	}
 }
 
-Method::Method(int status, string comment, string redirection, Request request, Server server) : _request(request),_server(server),  _status(status), _comment(comment),  _redirection(redirection) 
-{}
+Method::Method(int status, string comment, string redirection ,Request request, Server server) : _request(request),_server(server), _status(status), _comment(comment),  _redirection(redirection)
+{
+    insetErrorPage();
+    if (_status == 405)
+        _resp = getFileContent(_error_page[405]);
+}
 
 
 

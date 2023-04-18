@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/15 20:38:40 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/17 23:24:28 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ Configuration::Configuration(string fileName)
 
     insertServer();
     checkLocation();
-    
 
+    
     map<short int, bool> listen_port;
     for (size_t i = 0; i < _server.size(); i++)
     {
@@ -151,7 +151,7 @@ void Configuration::addToServer()
         case ERROR_PAGE:
         {
             vector<string> errorPage = Request::getVector(_directive_server[i].first);
-            directive.error_page.push_back(make_pair(atoi(errorPage[0].c_str()), errorPage[1]));
+            directive.error_page[atoi(errorPage[0].c_str())] = errorPage[1];
             break;
         }
         case AUTOINDEX:
