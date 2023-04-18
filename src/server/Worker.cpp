@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Worker.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 22:37:31 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 22:33:00 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 01:18:57 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,9 @@ Delete Worker::runMethodDelete(Request &req, Server &server)
 
 Get Worker::runMethodGet(Request &req, Server &server)
 {
+    cout << __LINE__ << " " << __FILE__ << endl;
     Get get(req, server);
+    cout << __LINE__ << " " << __FILE__ << endl;
     return get;
 }
 
@@ -123,6 +125,7 @@ Post Worker::runMethodPost(Request &req, Server &server)
 
 bool Worker::checkLocations(Request &req, Server &server, bool &isRedirection, string &path, bool &method)
 {
+    cout << __LINE__ << " " << __FILE__ << endl;
     if (getMatchedLocationFoRequestUri(req.getRessource(), server))
     {
         if (isLocationHaveRedirection(server, path))
@@ -143,16 +146,26 @@ Method Worker::getMethodObject(Request req, Server server)
     bool methods = false;
     string path;
 
-
+    cout << __LINE__ << " " << __FILE__ << endl;
     if (checkLocations(req, server, isRedirection, path, methods))
     {
+        cout << __LINE__ << " " << __FILE__ << endl;
         if (req.getMethod() == "DELETE")
+        {
+            cout << __LINE__ << " " << __FILE__ << endl;
             return runMethodDelete(req, server);
+        }
         else if (req.getMethod() == "GET")
+        {
+            cout << __LINE__ << " " << __FILE__ << endl;
             return runMethodGet(req, server);
+        }
         else
+        {
+            cout << __LINE__ << " " << __FILE__ << endl;
             return runMethodPost(req, server);
-
+        }
+cout << __LINE__ << " " << __FILE__ << endl;
     }
     else if (methods)
         return Method(405, "Method Not Allowed ", "", req, server);

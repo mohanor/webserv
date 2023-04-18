@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/15 05:15:41 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/18 01:18:18 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 Get::Get(Request request, Server server) : Method(request, server)
 {
+    cout << __LINE__ << " " << __FILE__ << endl;
     if (!getRequestedResource())
     {
         _status = 404;
@@ -21,7 +22,7 @@ Get::Get(Request request, Server server) : Method(request, server)
         _resp = getFileContent(_error_page[404]);
         return ;
     }
-  
+  cout << __LINE__ << " " << __FILE__ << endl;
     if (isFile())
     {
         if (!hasCGI())
