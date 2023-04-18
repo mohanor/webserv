@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 06:13:53 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/18 00:39:37 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,25 @@ string SocketClass::parseChunked(string body)
     return prasedBody;
 }
 
+bool SocketClass::handleDeleteRequest(Client &client)
+{
+    if (client._request.isHeaderHasKey("Content-Length"))
+    {
+        size_t contentLength = (size_t)atof( client._request.getValueOf("Content-Length").c_str() );
+
+        if (contentLength == client.getReceivedLength() && client._request.isHeaderHasKey("Content-Type"))
+        {
+            client._request.setBody(client.getBody());
+            client._requestString.clear();
+            return true;
+        }
+    }
+
+    // chunked case
+    
+    return false;
+}
+
 bool SocketClass::handlePostRequest(Client &client)
 {
     if (client._request.isHeaderHasKey("Content-Length"))
@@ -288,9 +307,9 @@ int SocketClass::communicate(struct pollfd &fds)
             int isOk = _clients[fds.fd]._request.isReqWellFormed();
             if (isOk != 200)
             {
-                cout << "Request not well formed >> " << _clients[fds.fd]._request.getMethod() << " <<" << endl;
-                cerr << "Request not well formed >> " << isOk << " <<" << endl;
-                return (true);
+                _clients[fds.fd].setRespStatus(to_string(isOk));
+                _clients[fds.fd].setComment("hello");
+                return (false);
             }
 
             _clients[fds.fd].setHeaderReceivedVar(false);
@@ -298,7 +317,7 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
-            cout << "POST method" << endl;
+            // cout << "POST method" << endl;
             
             if (handlePostRequest(_clients[fds.fd]))
             {
@@ -317,9 +336,11 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == DELETE)
         {
-            cout << __LINE__ << " " << __FILE__ << '\n';
-            _clients[fds.fd].setStatus(FILE_NOT_SET);
-            fds.events = POLLOUT;
+            if (handleDeleteRequest(_clients[fds.fd]))
+            {
+                _clients[fds.fd].setStatus(FILE_NOT_SET);
+                fds.events = POLLOUT;
+            }
             return (true);
         }
     }
@@ -444,10 +465,10 @@ void    SocketClass::closeConnection(int i)
 void    SocketClass::initResponse(int fd)
 {
     Worker worker;
-    cout << __LINE__ << " " << __FILE__ << '\n';
+
     string host = _clients[fd]._request.getValueOf("Host");
     Method method = worker.getMethodObject(_clients[fd]._request, getServer2(host));
-cout << __LINE__ << " " << __FILE__ << '\n';
+
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
     _clients[fd].setContentLength(method.getResponse().size());
@@ -458,6 +479,17 @@ cout << __LINE__ << " " << __FILE__ << '\n';
     _clients[fd].setCgiHeader(method.getHeaders());
 
     
+}
+
+void SocketClass::sendErrorReply(int i)
+{
+    string error = "HTTP/1.1 " + _clients[_fds[i].fd].getRespStatus() + " " + getComment((int)atof(_clients[_fds[i].fd].getRespStatus().c_str())) + "\r\n\r\n";
+
+    Server server = getServer(_fds[i].fd);
+
+    
+    error += "<html><head><title> </title></head><body><h1>bjfbjkdjk Bad Request</h1></body></html>";
+    send(_fds[i].fd, error.c_str(), error.size(), 0);
 }
 
 void SocketClass::run()
@@ -495,7 +527,15 @@ void SocketClass::run()
                     
                 }
                 else if ( !communicate(_fds[i]) )
-                    break;
+                {
+                    // _clients[_fds[i].fd].getRespStatus();
+                    // _clients[_fds[i].fd].getComment();
+                    
+                    
+                    sendErrorReply(i);
+                    closeConnection(i);
+                    continue;
+                }
             }
             else if (_fds[i].revents & POLLOUT)
             {

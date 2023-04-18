@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/14 02:57:43 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/17 22:10:06 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,9 @@ class SocketClass
         unsigned long hex2dec(string hex);
 
         bool handlePostRequest(Client &client);
+        bool handleDeleteRequest(Client &client);
         // bool handleChunkedRequest(Client &client);
+        void sendErrorReply(int i);
 
         
         string parseChunked(string body);

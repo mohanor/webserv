@@ -143,6 +143,7 @@ Method Worker::getMethodObject(Request req, Server server)
     bool methods = false;
     string path;
 
+
     if (checkLocations(req, server, isRedirection, path, methods))
     {
         if (req.getMethod() == "DELETE")
@@ -151,11 +152,13 @@ Method Worker::getMethodObject(Request req, Server server)
             return runMethodGet(req, server);
         else
             return runMethodPost(req, server);
+
     }
     else if (methods)
         return Method(405, "Method Not Allowed ", "", req, server);
     else if (isRedirection)
     {
+
         vector<string> urlVector = Request::getVector(path);
         string messageRedirect;
         switch (atoi(urlVector[0].c_str()))
@@ -178,7 +181,7 @@ Method Worker::getMethodObject(Request req, Server server)
 
         return Method(atoi(urlVector[0].c_str()), messageRedirect, urlVector[1], req, server);
     }
-       //cout << __LINE__ << " " << __FILE__ << '\n';
+
     return Method(req, server);
 }
 
