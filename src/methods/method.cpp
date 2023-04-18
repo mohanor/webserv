@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/18 01:48:13 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 01:26:50 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ string Method::getRidOfHeaders()
 {
     size_t pos_r = _resp.find("\r\n\r\n");
     size_t pos_n = _resp.find("\n\n");
-    size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;    
+    size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;
+    cout << "pos:"+ to_string(pos_r) << endl;  
+    cout << "pos:"+ to_string(pos_n) << endl;  
+    cout << "pos:"+ to_string(pos) << endl;  
     return _resp.substr(pos);
 }
 
@@ -82,10 +85,15 @@ void Method::deserialize()
 	stringstream res(head);
 	while (getline(res, line))
 	{
+        string value;
+        if (line == "")
+            continue;
 		tokens = Request::getVector(line);
 		string key = tokens[0];
-		string value = line.substr(key.length() + 1);
-        // cout << "value: " << value << endl;
+        if (key.length() == line.length())
+    		value = line.substr(key.length());
+        else 
+    		value = line.substr(key.length() + 1);
 		key.pop_back();
 		_headers.insert(make_pair(key, value));
 	}
