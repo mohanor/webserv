@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConfigParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 07:12:17 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:00:41 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ public:
     void checkSynaxDirective();
     void checkSyntaxMethod(size_t index);
     void checkSyntaxReturn(size_t index);
-    void checkSyntaxInclude(size_t i);
     void checkValidValue(size_t n);
+    void checkUploadStore(size_t index);
 
     void checkSyntaxDiplicated();
     void checkSyntaxDiplicatedLocation(size_t index,map<string, bool> &directive);
