@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 23:24:45 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 01:28:46 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     _url = join_path(_url, resource);
     
     insetErrorPage();
+    cout << __LINE__ << " " << __FILE__ << endl;
     
     _status = 404;
     _comment =  " Not Found";
@@ -32,6 +33,7 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
 
 void Method::insetErrorPage()
 {
+    cout << __LINE__ << " " << __FILE__ << endl;
     string statusCode = string(STATUSCODE);
 
     vector<string> status = Request::getVector(statusCode);
@@ -47,14 +49,10 @@ void Method::insetErrorPage()
             maps++;
          }
     
-        map<int, string>::iterator err = _server.getErrorPage().begin();
+        map<int, string> s = _server.getErrorPage();
 
-        for (;err != _server.getErrorPage().end(); err++)
-        {
-
-            if (_error_page.find(err->first) != _error_page.end())
-                this->_error_page[err->first] = err->second;
-        }
+        for (map<int, string>::iterator err = s.begin(); err != s.end(); err++)
+            this->_error_page[err->first] = err->second;
 }
 
 string Method::getRidOfHeaders()

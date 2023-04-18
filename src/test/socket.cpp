@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/18 00:39:37 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/18 01:15:41 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -464,11 +464,13 @@ void    SocketClass::closeConnection(int i)
 
 void    SocketClass::initResponse(int fd)
 {
+    cout << __LINE__ << " " << __FILE__ << endl;
     Worker worker;
-
+    cout << __LINE__ << " " << __FILE__ << endl;
     string host = _clients[fd]._request.getValueOf("Host");
+    cout << __LINE__ << " " << __FILE__ << endl;
     Method method = worker.getMethodObject(_clients[fd]._request, getServer2(host));
-
+    cout << __LINE__ << " " << __FILE__ << endl;
     _clients[fd].setFileContent(method.getResponse());
     _clients[fd].setStatus(READY_TO_SEND);
     _clients[fd].setContentLength(method.getResponse().size());
@@ -477,18 +479,30 @@ void    SocketClass::initResponse(int fd)
     _clients[fd].setComment(method.getComment());
     _clients[fd].setReturn(method.getRedirection());
     _clients[fd].setCgiHeader(method.getHeaders());
-
+    cout << __LINE__ << " " << __FILE__ << endl;
     
 }
 
 void SocketClass::sendErrorReply(int i)
 {
-    string error = "HTTP/1.1 " + _clients[_fds[i].fd].getRespStatus() + " " + getComment((int)atof(_clients[_fds[i].fd].getRespStatus().c_str())) + "\r\n\r\n";
-
-    Server server = getServer(_fds[i].fd);
-
+    cout << __LINE__ << " " << __FILE__ << endl;
+    string status = _clients[_fds[i].fd].getRespStatus();
+    string pageErrorUrl;
+    string page;
     
-    error += "<html><head><title> </title></head><body><h1>bjfbjkdjk Bad Request</h1></body></html>";
+    pageErrorUrl = getServer(_fds[i].fd).getErrorPageByIndex(atoi(status.c_str()));
+    if (pageErrorUrl == "")
+        pageErrorUrl = "./error_page/" + status + ".html";
+    
+    cout << "pageErrorUrl: " << pageErrorUrl << endl;
+    page = getFileContent(pageErrorUrl);
+    
+    string error = "HTTP/1.1 " + status + " " + getComment(atoi(status.c_str())) + "\r\n";
+    error += "Content-Type: text/html\r\n";
+    error += "Content-Length: " + to_string(page.size()) + "\r\n";
+    error += "\r\n";
+    
+    error += page;
     send(_fds[i].fd, error.c_str(), error.size(), 0);
 }
 
@@ -508,6 +522,7 @@ void SocketClass::run()
             cerr << "poll error" << endl;
             break;
         }
+        cout << __LINE__ << " " << __FILE__ << endl;
         for(size_t i = 0; i < _fds.size(); i++)
         {
             if (_fds[i].revents & POLLHUP)
@@ -516,8 +531,10 @@ void SocketClass::run()
             }
             else if (_fds[i].revents & POLLIN)
             {
+                cout << __LINE__ << " " << __FILE__ << endl;
                 if (isNewConnection(_fds[i].fd))
                 {
+                    cout << __LINE__ << " " << __FILE__ << endl;
                     newClient = accept(_s[i].sockfd, NULL, NULL);
                     cout << "new client: " << newClient << endl;
                     if (newClient < 0) { cerr << "fail to accept connection" << endl; continue; }
@@ -530,7 +547,7 @@ void SocketClass::run()
                 {
                     // _clients[_fds[i].fd].getRespStatus();
                     // _clients[_fds[i].fd].getComment();
-                    
+                    cout << __LINE__ << " " << __FILE__ << endl;
                     
                     sendErrorReply(i);
                     closeConnection(i);
@@ -539,9 +556,11 @@ void SocketClass::run()
             }
             else if (_fds[i].revents & POLLOUT)
             {
-               
+               cout << __LINE__ << " " << __FILE__ << endl;
                 if (_clients[_fds[i].fd].getStatus() == FILE_NOT_SET) initResponse(_fds[i].fd);
+                cout << __LINE__ << " " << __FILE__ << endl;
                 sendFileInPackets(_fds[i]);
+                cout << __LINE__ << " " << __FILE__ << endl;
                 if (_clients[_fds[i].fd].getStatus() == SENDED)
                 {
                     closeConnection(i);
