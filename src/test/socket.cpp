@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/19 06:18:48 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 07:07:02 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ int SocketClass::create()
 
     listener = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = default protocol of socket type
     if (listener < 0)
-    {
         cerr << "socket failed" << std::endl;
-        // exit(EXIT_FAILURE);
-    }
 
     return listener;
 }
@@ -95,12 +92,15 @@ int SocketClass::sendFileInPackets(struct pollfd &fds)
         response += ENDL;
         _clients[fds.fd].setStatus(SENDING);
         
-        send(fds.fd, response.c_str(), response.size(), 0);
+        int err = send(fds.fd, response.c_str(), response.size(), 0);
+        if (err <= 0 ) close(fds.fd);
+        
         return 0;
     }
 
     string packet = _clients[fds.fd].getPacket();
-    send(fds.fd, packet.c_str(), packet.size(), 0);
+    int err = send(fds.fd, packet.c_str(), packet.size(), 0);
+    if (err <= 0 ) close(fds.fd);
     return 0;
 }
 
@@ -129,20 +129,21 @@ bool SocketClass::recvError(int size, int fd)
 }
 
 //TODO change this function
-unsigned long SocketClass::hex2dec(string hex) 
+unsigned long SocketClass::hexToDec(string hex) 
 {
+
     unsigned long result = 0;
 
-    for (size_t i=0; i<hex.length(); i++) {
-        if (hex[i]>=48 && hex[i]<=57)
-        {
-            result += (hex[i]-48)*pow(16,hex.length()-i-1);
-        }
-        else if (hex[i]>=65 && hex[i]<=70) {
-            result += (hex[i]-55)*pow(16,hex.length( )-i-1);
-        } else if (hex[i]>=97 && hex[i]<=102) {
-            result += (hex[i]-87)*pow(16,hex.length()-i-1);
-        }
+    for (size_t i = 0; i < hex.length(); i++) 
+    {
+        if (hex[i] >= '0' && hex[i] <= '9')
+            result += (hex[i] - 48) * pow(16, hex.length() - (i + 1));
+
+        else if (hex[i] >= 'A' && hex[i] <= 'F')
+            result += (hex[i] - 55) * pow(16, hex.length( ) - (i + 1));
+
+        else if (hex[i] >= 'a' && hex[i] <= 'f')
+            result += (hex[i] - 87) * pow(16, hex.length() - (i + 1));
     }
     return result;
 }
@@ -171,22 +172,22 @@ string SocketClass::parseChunked(string body, int *c)
                 *c = 1;
                 return "";
             }
-            //TODO change this function
-            size = to_string(hex2dec(size));
+
+            size = to_string(hexToDec(size));
             body.erase(0, pos + 2);
             firstLine = false;
             if (size == "0") break;
             continue;
         }
         
-        temp = body.substr(0, hex2dec(size));
-        if (temp.size() != hex2dec(size))
+        temp = body.substr(0, hexToDec(size));
+        if (temp.size() != hexToDec(size))
         {
             *c = 1;
             return "";
         }
         prasedBody += temp;
-        body.erase(0, hex2dec(size) + 2);
+        body.erase(0, hexToDec(size) + 2);
         firstLine = true;
     }
 
