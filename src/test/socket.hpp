@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/18 20:47:17 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/18 23:50:30 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,13 @@ class SocketClass
 
         unsigned long hex2dec(string hex);
 
-        bool handlePostRequest(Client &client);
+        int handlePostRequest(Client &client);
         bool handleDeleteRequest(Client &client);
         // bool handleChunkedRequest(Client &client);
         void sendErrorReply(int i);
 
         
-        string parseChunked(string body);
+        string parseChunked(string body, int *c);
         Server getServer(int sockfd);
         Server getServer2(string host);
         Request                 httpRequest;
@@ -104,7 +104,6 @@ class SocketClass
         bool isSeverNameBelongToServer(Server server, string serverName);
 
         bool isAllPortDiffrents(Server s1, Server s2);
-        void isAllServersCanRunning();
     private:
         vector<Server>          servers;
         vector<SocketServer>    _s;
