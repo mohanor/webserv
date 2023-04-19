@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/19 01:17:14 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 01:43:54 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -731,7 +731,7 @@ void ConfigParser::checkSyntaxDiplicated()
             if (_tokens[index].second == DIRECTIVE && !cxt)
             {
               
-                if (m.find(_tokens[index].first) != m.end() && _tokens[index].first != "listen" && _tokens[index].first != "cgi_info" && _tokens[index].first != "error_page" )
+                if (m.find(_tokens[index].first) != m.end() &&( _tokens[index].first != "listen" || _tokens[index].first != "cgi_info" || _tokens[index].first != "error_page") )
                 {
                     m[_tokens[index].first] = true;
                     break;
@@ -742,7 +742,8 @@ void ConfigParser::checkSyntaxDiplicated()
                 cxt = false;
             index++;
         }
-        for (map<string, bool>::iterator it = m.begin(); it != m.end(); it++)
+        map<string, bool>::iterator it = m.begin();
+        for (; it != m.end(); it++)
         {
             if (it->second && it->first != "listen" && it->first != "cgi_info" && it->first != "error_page" )
                 errorLogs("Error : '" + it->first+ "' is diplicated");
