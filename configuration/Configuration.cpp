@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:03:04 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/19 01:18:55 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 02:05:29 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ Configuration::Configuration(string fileName)
 
     insertServer();
     checkLocation();
-
-    cout << "Configuration is done " << _server[0].getUploadPath("")<< endl;
     
     map<short int, bool> listen_port;
     for (size_t i = 0; i < _server.size(); i++)
