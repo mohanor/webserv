@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:00 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/14 01:54:57 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 04:47:56 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "method.hpp"
 # include "../server/Worker.hpp"
 
-extern MimeTypes _mime;
+
 
 class Get : public Method
 {

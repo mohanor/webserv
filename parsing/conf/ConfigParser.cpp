@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ConfigParser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
 /*   Updated: 2023/04/19 05:02:46 by yoelhaim         ###   ########.fr       */
@@ -500,10 +500,11 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
         if (_tokens[index + 1].first != "on" && _tokens[index + 1].first != "off")
             errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid autoindex");
     }
+
      if (_tokens[index].first == "upload_enable")
     {
         if (_tokens[index + 1].first != "on" && _tokens[index + 1].first != "off")
-            errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid autoindex");
+            errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid upload_enable");
     }
 }
 bool checkSyntaxValidHost(string host)

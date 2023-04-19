@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/19 00:51:56 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 06:18:48 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,8 @@ unsigned long SocketClass::hex2dec(string hex)
         if (hex[i]>=48 && hex[i]<=57)
         {
             result += (hex[i]-48)*pow(16,hex.length()-i-1);
-        } else if (hex[i]>=65 && hex[i]<=70) {
+        }
+        else if (hex[i]>=65 && hex[i]<=70) {
             result += (hex[i]-55)*pow(16,hex.length( )-i-1);
         } else if (hex[i]>=97 && hex[i]<=102) {
             result += (hex[i]-87)*pow(16,hex.length()-i-1);
@@ -145,8 +146,6 @@ unsigned long SocketClass::hex2dec(string hex)
     }
     return result;
 }
-
-
 
 string SocketClass::parseChunked(string body, int *c)
 {
@@ -167,13 +166,12 @@ string SocketClass::parseChunked(string body, int *c)
         {
             pos = body.find(ENDL);
             size = body.substr(0, pos);
-
             if (!sizeIsHex(size))
             {
                 *c = 1;
                 return "";
             }
-            
+            //TODO change this function
             size = to_string(hex2dec(size));
             body.erase(0, pos + 2);
             firstLine = false;
@@ -182,15 +180,12 @@ string SocketClass::parseChunked(string body, int *c)
         }
         
         temp = body.substr(0, hex2dec(size));
-
         if (temp.size() != hex2dec(size))
         {
             *c = 1;
             return "";
         }
-
         prasedBody += temp;
-
         body.erase(0, hex2dec(size) + 2);
         firstLine = true;
     }
@@ -198,8 +193,9 @@ string SocketClass::parseChunked(string body, int *c)
     return prasedBody;
 }
 
-bool SocketClass::handleDeleteRequest(Client &client)
+int SocketClass::handleDeleteRequest(Client &client)
 {
+    int c = 0;
     if (client._request.isHeaderHasKey("Content-Length"))
     {
         size_t contentLength = (size_t)atof( client._request.getValueOf("Content-Length").c_str() );
@@ -208,13 +204,29 @@ bool SocketClass::handleDeleteRequest(Client &client)
         {
             client._request.setBody(client.getBody());
             client._requestString.clear();
-            return true;
+            return 1;
         }
     }
-    //TODO handle chunked case
-    // chunked case
+    else if (client._request.isHeaderHasKey("Transfer-Encoding"))
+    {
+        if (client._request.getValueOf("Transfer-Encoding") == "chunked")
+        {
+            if (client._requestString.rfind(ENDL "0" ENDL ENDL) != string::npos)
+            {
+                string body = parseChunked(client._requestString, &c);
+                if (c)
+                {
+                    client._requestString.clear();
+                    return 2;
+                }
+                client._request.setBody(body);
+                client._requestString.clear();
+                return 1;
+            }
+        }
+    }
     
-    return false;
+    return 0;
 }
 
 int SocketClass::handlePostRequest(Client &client)
@@ -367,10 +379,18 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == DELETE)
         {
-            if (handleDeleteRequest(_clients[fds.fd]))
+            int handleReturn = handleDeleteRequest(_clients[fds.fd]);
+
+            if ( handleReturn == 1 )
             {
                 _clients[fds.fd].setStatus(FILE_NOT_SET);
                 fds.events = POLLOUT;
+            }
+            else if ( handleReturn == 2 )
+            {
+                _clients[fds.fd].setRespStatus("400");
+                _clients[fds.fd].setComment(getComment(400));
+                return (false);
             }
             return (true);
         }
@@ -382,8 +402,6 @@ int SocketClass::communicate(struct pollfd &fds)
 
 bool SocketClass::isNewConnection(int listener)
 {
-    // cout << "is new connection: " << _s.size() << endl;
-
     for (size_t i = 0; i < _s.size(); i++)
     {
         if (_s[i].sockfd == listener)
@@ -565,7 +583,6 @@ void SocketClass::run()
                 if (isNewConnection(_fds[i].fd))
                 {
                     newClient = accept(_s[i].sockfd, NULL, NULL);
-                    cout << "new client: " << newClient << endl;
                     if (newClient < 0) { cerr << "fail to accept connection" << endl; continue; }
                     opt = setsockopt(newClient, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
                     struct pollfd pfd = {newClient, POLLIN, 0};

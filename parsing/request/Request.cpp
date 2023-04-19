@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/19 00:26:02 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 05:09:31 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,7 @@ Request Request::deserialize(string request)
 	string head;
 	vector<string> 		tokens;
 	string line;
-	cout << request << endl;
-	// exit (0);
+	
     request.erase(std::remove(request.begin(), request.end(), '\r'), request.end());
 	
 	stringstream res(request);
@@ -82,7 +81,6 @@ Request Request::deserialize(string request)
 	
 	headerFirstLine = Request::getVector(line);
 
-	cout << headerFirstLine.size() << endl;
 
 	if (headerFirstLine.size() != 3)
 		goto error;
@@ -105,65 +103,6 @@ Request Request::deserialize(string request)
 		
 		cerr << request << "\n" << request.size() << " " << request.length() << '\n';
 		return Request("", "", "");
-	
-// 	string head;
-// 	string body;
-	
-// 	map<string, string> headers;
-// 	map<string, Header>::iterator it;
-	
-// 	vector<string> 		tokens;
-// 	vector<string> 		headerFirstLine;
-
-// 	string line;
-
-	
-// 	stringstream ss(request);
-// 	/*
-	
-	
-// 	hhhh: bvfjbfdj
-// 	\r\n
-
-// 	get / http/1.1\r
-// 	*/
-// 	while (getline(ss, line))
-// 	{
-// 		if (line == "\r")
-// 			break;
-// 		// if (line[line.size() - 1] == '\r')
-// 			line.pop_back();
-// 		head += line + "\n";
-// 	}
-
-// 	cout << head << endl;
-// 	exit (0);
-
-// 	stringstream req(head);
-	
-// 	getline(req, line);
-// 	headerFirstLine = Request::getVector(line);
-
-// 	if (headerFirstLine.size() != 3)
-// 		goto error;
-
-// 	while (getline(req, line))
-// 	{
-// 		tokens = getVector(line);
-
-// 		string key = tokens[0];
-// 		string value = line.substr(key.length() + 1);
-// 		key.pop_back();
-// 		headers.insert(make_pair(key, value));
-// 	}
-
-// 	headerFirstLine[2].pop_back();
-// 	for(map<string,string >::const_iterator it = headers.begin();
-//     it != headers.end(); ++it)
-// {
-//     std::cout << it->first << " " << it->first << " " << it->second << "\n";
-// }
-
 }
 
 bool Request::syntaxError()
@@ -263,7 +202,7 @@ int Request::isReqWellFormed()
 	resource();
 
 	// if ( syntaxError() ) 		return BAD_REQUEST;
-	cout << "method #" << getMethod() << "#" << endl;
+
 	if (isMethodAllowed()) return METHOD_NOT_ALLOWED;
 	
 	if ( transferEncoding() )
@@ -373,10 +312,7 @@ bool Request::uploadFile(string path)
             bodyHeadVector.erase(bodyHeadVector.begin());
 		
         if (!bodyHeadVector.size())
-		{
-			cout << "break" << endl;
             break ;
-		}
         
         string filename = bodyHeadVector[0].substr(bodyHeadVector[0].find("\"") + 1);
         filename.erase(filename.find("\""));

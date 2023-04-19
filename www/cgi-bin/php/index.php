@@ -1,41 +1,16 @@
-<?php
-session_start();
-    if(isset($_POST['name']))
-    {
-      $name = $_POST['name'];
-      if (empty($name))
-      {
-          echo "Please enter your name";
-      }
-      else
-      {
-        setcookie('name', $name, time()+3600);
-        $_SESSION['is_logged'] = true;
-        $_SESSION['name'] = $name;
-      }
-    }
-    if (isset($_POST['logout'])) {
-        session_destroy();
-       
-        header('Location: index.php');
-        
-    }
-    
-    ?>
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
     <title>PHP</title>
 </head>
 <body>
-
-
-
 <div>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
