@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/18 01:26:50 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/18 22:34:31 by yel-khad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,8 @@ string Method::getRidOfHeaders()
     size_t pos_r = _resp.find("\r\n\r\n");
     size_t pos_n = _resp.find("\n\n");
     size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;
-    cout << "pos:"+ to_string(pos_r) << endl;  
-    cout << "pos:"+ to_string(pos_n) << endl;  
-    cout << "pos:"+ to_string(pos) << endl;  
-    return _resp.substr(pos);
+ 
+    return (pos < 2) ? "" : _resp.substr(pos);
 }
 
 map<string, string> Method::getHeaders() const

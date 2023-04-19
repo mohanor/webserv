@@ -78,11 +78,6 @@ Post::Post(Request request, Server server) : Method(request, server)
         return ;
     }
     deserialize();
-//     for(map<string,string >::const_iterator it = _headers.begin();
-//     it != _headers.end(); ++it)
-// {
-//     std::cout << it->first << " " << it->first << " " << it->second << "\n";
-// }
     _resp = getRidOfHeaders();
     _status = 200;
     _comment = "OK";
