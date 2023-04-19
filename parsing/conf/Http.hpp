@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 00:23:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/17 23:22:15 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/18 21:12:47 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ struct directives
     vector<short int> listen ;
     string server_name ;
     string host ;
-    string include ;
     string root ;
     string index ;
     map<int, string > error_page;
@@ -41,7 +40,6 @@ struct directives
         server_name = "localhost";
         host  = "127.0.0.1";
         root = "./www/html";
-        include = "./conf/mime.types";
         autoindex = false;
         allow = "GET POST DELETE";
     }

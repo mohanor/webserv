@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:30:47 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/18 07:00:41 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 00:44:49 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ public:
     void checkSyntaxMethod(size_t index);
     void checkSyntaxReturn(size_t index);
     void checkValidValue(size_t n);
-    void checkUploadStore(size_t index);
 
     void checkSyntaxDiplicated();
     void checkSyntaxDiplicatedLocation(size_t index,map<string, bool> &directive);
