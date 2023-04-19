@@ -1,25 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 </head>
 <body>
-<h1>Welcome to nginx!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">WebServ</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/home/upload"> <i class="fa fa-upload"></i> upload</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/red"> <i class="fa fa-forward"></i>  redirect</a>
+              </li>
 
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
-Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/page/sub"><i class="fa fa-file"></i> auto index</a>
+              </li>
+              
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled">Disabled</a>
+              </li>
+            </ul>
+            
+          </div>
+        </div>
+      </nav>
 
-<p><em>Thank you for using nginx.</em></p>
+      <div class="container-sm h-100  align-items-center justify-content-center mt-5">
+
+        
+	<h1>webserv</h1>
+	<h2>Stages for server</h2>
+	<p>There are two common types for a socket:</p>
+	<ul>
+		<li>Streaming socket (SOCK_STREAM) TCP</li>
+		<li>Datagram socket (SOCK_DGRAM) UDP</li>
+	</ul>
+	<h3>1. Socket creation:</h3>
+	<pre>
+		int sockfd = socket(domain, type, protocol)
+	</pre>
+	<ul>
+		<li>sockfd: socket descriptor, an integer (like a file-handle)</li>
+		<li>domain: integer, specifies communication domain. We use AF_ LOCAL as defined in the POSIX standard for communication between processes on the same host. For communicating between processes on different hosts connected by IPV4, we use AF_INET and AF_I NET 6 for processes connected by IPV6.</li>
+		<li>type: communication type 
+			<ul>
+				<li>SOCK_STREAM: TCP(reliable, connection oriented)</li>
+				<li>SOCK_DGRAM: UDP(unreliable, connectionless)</li>
+			</ul>
+		</li>
+		<li>protocol: Protocol value for Internet Protocol(IP), which is 0. This is the same number which appears on protocol field in the IP header of a packet.(man protocols for more details)</li>
+	</ul>
+	<h3>2. Setsockopt:</h3>
+	<pre>
+		int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen);
+	</pre>
+	<p>This helps in manipulating options for the socket referred by the file descriptor sockfd. This is completely optional, but it helps in reuse of address and port. Prevents error such as: “address already in use”.</p>
+	<h3>3. Bind:</h3>
+	<pre>
+		int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+	</pre>
+	<p>After the creation of the socket, the bind function binds the socket to the address and port number specified in addr(custom data structure)</p>
+	<h3>4. Listen:</h3>
+	<pre>
+		int listen(int sockfd, int backlog);
+	</pre>
+	<p>It puts the server socket in a passive mode, where it waits for the client to approach the server to make a connection. The backlog, defines the maximum length to which the queue of pending connections for sockfd may grow. If a connection request arrives when the queue is full, the client may receive an error with an indication of ECONNREFUSED.</p>
+	<h3>5. Accept:</h3>
+	<pre>
+		int new_socket= accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+	</pre>
+	<p>It extracts the first connection request on the queue of pending connections for the listening socket, sockfd, creates a new connected socket, and returns a new file descriptor referring to that socket. At this point, the connection is established between client and server, and they are ready to transfer data.</p>
+	<h2>Stages for Client</h2>
+	<h3>1: Socket connection: Exactly same as that of server’s socket creation</h3>
+	<h3>2: Connect:</h3>
+	<pre>
+		int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+	</pre>
+	2: Connect: The connect() system call connects the socket referred to by the file descriptor sockfd to the address specified by addr. Server’s address and port is specified in addr.
+    <pre>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</pre>
+
+        <h1>Team :</h1>
+       <div class="d-flex text-center">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <img  src="https://cdn.intra.42.fr/users/bc1b13b75dd2b095a5c84bd68986bf1a/yel-khad.jpg" class="img-thumbnail  mx-auto d-block rounded-5" alt="lkhdar">
+              <h5 class="card-title">Youness El Khadar</h5>
+              <a href="https://www.linkedin.com/in/younesselkhadar/"  class="btn btn-primary"><i class="fab fa-linkedin"></i> Linkdin</a>
+            </div>
+          </div>
+       
+        <div class="card " style="width: 18rem;margin-left: 2rem;">
+            <div class="card-body">
+                <img  src="https://cdn.intra.42.fr/users/541a4e4f005b62d05a9e650241a090f2/matef.jpg" class="img-thumbnail  mx-auto d-block rounded-5" alt="lkhdar">
+              <h5 class="card-title">Mohamed Atef</h5>
+              <a href="https://www.linkedin.com/in/mohammed-atef-5b5039189/" class="btn btn-primary"><i class="fab fa-linkedin"></i> Linkdin</a>
+            </div>
+          </div>
+        <div class="card" style="width: 18rem;margin-left: 2rem;">
+            <div class="card-body">
+                <img  src="https://cdn.intra.42.fr/users/768bbbb5dc52735ce57730b6b9b2e492/yoelhaim.jpg" class="img-thumbnail  mx-auto d-block rounded-5" alt="lkhdar">
+              <h5 class="card-title">Youssef El Haimer</h5>
+              <a href="https://www.linkedin.com/in/youmer22/" class="btn btn-primary"><i class="fab fa-linkedin"></i> Linkdin</a>
+            </div>
+          </div>
+       </div>
+
+        </div>
+    
 </body>
 </html>
