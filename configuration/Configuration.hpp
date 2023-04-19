@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:02:15 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/18 06:44:22 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 00:43:12 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ enum directive
     ALLOWED_METHODS,
     AUTOINDEX,
     RETURN,
-    UPLOAD_STORE,
     UPLOAD_ENABLE,
      CGI_INFO_PHP,
     CGI_INFO_PYTHON,
