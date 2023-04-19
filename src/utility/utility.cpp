@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 21:42:58 by matef             #+#    #+#             */
-/*   Updated: 2023/04/17 22:23:41 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/18 23:06:30 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,15 @@ string getComment(int status)
         default:
             return "Bad Request";
     }
+}
+
+bool sizeIsHex(string size)
+{
+    for (size_t i = 0; i < size.size(); i++)
+    {
+        if (( size[i] >= '0' && size[i] <= '9' ) || ( size[i] >= 'a' && size[i] <= 'f' ) || ( size[i] >= 'A' && size[i] <= 'F' ))
+            continue;
+        return false;
+    }
+    return true;
 }
