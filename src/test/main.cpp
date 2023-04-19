@@ -20,64 +20,40 @@ using namespace std;
     
 
 
-//TODO for youssef => include MIMETYPES in config file
 MimeTypes _mime;
 
 void handleSigPipe()
 {
-    cout << "SIGPIPE" << endl;
     signal(SIGPIPE, SIG_IGN);
 }
 
 int main(int ac, char **av)
 {
 
-    (void)ac;
-    (void)av;
+    string config_file = "./conf/default.conf";
+
+    if (ac > 2)
+    {
+        cout << "Usage: ./webserv [config_file] (config_file is optional)" << endl;
+        return 1;
+    }
+
+    if (ac == 2)
+    {
+        config_file = av[1];
+        ifstream file(config_file);
+        if (!file.is_open())
+        {
+            cout << "Error: config file does not exist" << endl;
+            return 1;
+        }
+        file.close();
+    }
+
     handleSigPipe();
-    // SocketClass socket;
-    // Worker worker;
-    
-    // string req = "GET /home/ HTTP/1.1\r\n";
 
-
-    // req += "\r\n";
-
-    // req += "librait\r\n";
-    // Request r(Request::deserialize(req));
-
-    // cout << "#" << r.getMethod() << "\n\r123456789" << endl;
-    // int s = r.isReqWellFormed();
-    
-    // cout << s  << endl;
-    // cout << r.getQueryString()<< endl;
-    // r.setBody("12547");
-
-    
-
-    // Configuration config("./conf/default.conf");
-    // vector<Server> server = config.getServers();
-    // // runCode(server[0], r);
-
-
-    // Configuration config("./conf/default.conf");
-    // vector<Server> server = config.getServers();
-    // cout << server.size() << endl;
-    // Method m =  worker.getMethodObject(r, server[0]);
-
-    // cout << "status : " << m.getStatus() << endl;
-    // cout << "path   : " <<m.getResponse() << endl;
-    // cout << "comme  : "<<m.getComment() << endl;
-    // cout << "url  : "<<m.getURL() << endl;
-    // cout << "---------------------" << endl;
-    // worker.listenDirectory("/Users/yoelhaim/Desktop/webserv/www/html/") ;
-
-    
-
-// cout << getFileContent("./error_page/404.html") << endl ;
-
-    SocketClass s;
-
+    SocketClass s(config_file);
     s.run();
+
     return 0;
 }

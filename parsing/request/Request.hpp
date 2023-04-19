@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:24:46 by matef             #+#    #+#             */
-/*   Updated: 2023/04/08 20:46:06 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 00:22:01 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ class Request
 
         bool isUploadable();
         void setUploadable();
-        void uploadFile();
+        bool uploadFile(string path);
 
     private:
         string _method;

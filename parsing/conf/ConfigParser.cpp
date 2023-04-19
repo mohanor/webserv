@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/18 07:02:38 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 01:57:45 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ void ConfigParser::SetAllowedDirective(bool isInServer)
     else
     {
         _directive_allowed.push_back("return");
-        _directive_allowed.push_back("upload_store");
         _directive_allowed.push_back("upload_enable");
     }
     _directive_allowed.push_back("allow");
@@ -544,23 +543,6 @@ void ConfigParser::checkSyntaxReturn(size_t index)
     }
 }
 
-void ConfigParser::checkUploadStore(size_t index)
-{
-    if (_tokens[index].first == "upload_store")
-    {
-        ifstream file;
-        string fileName = ft_trim(_tokens[ index + 1].first, "'\"");
-        _tokens[index + 1].first = fileName;
-        cout << fileName << endl;
-        file.open(fileName);
-        if (!file.is_open())
-            errorLogs("Error :"+fileName+" file not found !");
-        file.close();
-    }
-    
-}
-
-
 void ConfigParser::checkSynaxDirective()
 {
     size_t i = 0;
@@ -573,7 +555,6 @@ void ConfigParser::checkSynaxDirective()
             if ((_tokens[i].first == "error_page" || _tokens[i].first == "return") && lengthDirective(i + 1) != 2)
                 errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
             checkSyntaxReturn(i);
-            checkUploadStore(i);
             if (_tokens[i].first == "listen")
             { 
                 int port =   atof(_tokens[i + 1].first.c_str());
@@ -594,7 +575,7 @@ void ConfigParser::checkSynaxDirective()
             else if (_tokens[i].first == "cgi_info_php" || _tokens[i].first == "cgi_info_py")
             {
                 if (lengthDirective(i + 1) != 2)
-                    errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
+                    errorLogs("Error : " + _tokens[i].first + " syntax does not valid!");
                 else
                 {
                     if (_tokens[i + 1].first != ".py" && _tokens[i + 1].first != ".php")
@@ -665,6 +646,7 @@ void ConfigParser::checkSyntaxAfterCemiColom()
 void ConfigParser::checkSyntaxDirective()
 {
     SetAllowedDirective(true);
+
     for (size_t i = 0; i < _tokens.size(); i++)
     {
         if (_tokens[i].second == CONTEXT && _tokens[i].first == "location")
@@ -679,8 +661,11 @@ void ConfigParser::checkSyntaxDirective()
             checkSyntaxDirectiveCondition(i);
             size_t j = 0;
             for (; j <  _directive_allowed.size(); j++)
+            {
                 if ( _directive_allowed[j] == _tokens[i].first)
                     break;
+            }
+                
 
             if (j ==  _directive_allowed.size())
                 errorLogs("Error : '" + _tokens[i].first+"' is not a directive in this context");
@@ -691,6 +676,7 @@ void ConfigParser::checkSyntaxDirective()
 
 void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool> &directiveLocation)
 {
+   
     bool check = false;
     SetAllowedDirective(false);
     while (index < _tokens.size() && _tokens[index].second != CLOSE_CURLY)
@@ -703,8 +689,11 @@ void ConfigParser::checkSyntaxDiplicatedLocation(size_t index, map<string, bool>
                 _tokens[index].first != "error_page" ? directiveLocation[_tokens[index].first] = check: check = true;
             size_t i = 0;
             for (; i < _directive_allowed.size(); i++)
+            {
                 if (_tokens[index].first == _directive_allowed[i])
                     break;
+                
+            }
             if (i == _directive_allowed.size())
                 errorLogs("Error : '" + _tokens[index].first+ "' is not a directive in this context");
         }
@@ -727,21 +716,22 @@ void ConfigParser::checkSyntaxDiplicated()
 
         while (index < _tokens.size())
         {
-            if (_tokens[index].first == "server")
+            if (_tokens[index].first == "server" )
             {
                 index++;
                 break;
             }
+            if (_tokens[index].second == NEWLINE )
+                index++;
             if ((_tokens[index].second == CONTEXT && _tokens[index + 1].second == WORD))
             {
-
                 checkSyntaxDiplicatedLocation(index + 1, directiveLocation);
                 cxt = true;
             }
             if (_tokens[index].second == DIRECTIVE && !cxt)
             {
               
-                if (m.find(_tokens[index].first) != m.end())
+                if (m.find(_tokens[index].first) != m.end() &&( _tokens[index].first != "listen" || _tokens[index].first != "cgi_info" || _tokens[index].first != "error_page") )
                 {
                     m[_tokens[index].first] = true;
                     break;
@@ -752,7 +742,8 @@ void ConfigParser::checkSyntaxDiplicated()
                 cxt = false;
             index++;
         }
-        for (map<string, bool>::iterator it = m.begin(); it != m.end(); it++)
+        map<string, bool>::iterator it = m.begin();
+        for (; it != m.end(); it++)
         {
             if (it->second && it->first != "listen" && it->first != "cgi_info" && it->first != "error_page" )
                 errorLogs("Error : '" + it->first+ "' is diplicated");

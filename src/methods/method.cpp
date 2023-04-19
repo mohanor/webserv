@@ -24,7 +24,6 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     _url = join_path(_url, resource);
     
     insetErrorPage();
-    cout << __LINE__ << " " << __FILE__ << endl;
     
     _status = 404;
     _comment =  " Not Found";
@@ -33,7 +32,6 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
 
 void Method::insetErrorPage()
 {
-    cout << __LINE__ << " " << __FILE__ << endl;
     string statusCode = string(STATUSCODE);
 
     vector<string> status = Request::getVector(statusCode);
@@ -60,8 +58,10 @@ string Method::getRidOfHeaders()
     size_t pos_r = _resp.find("\r\n\r\n");
     size_t pos_n = _resp.find("\n\n");
     size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;
+
  
     return (pos < 2) ? "" : _resp.substr(pos);
+
 }
 
 map<string, string> Method::getHeaders() const

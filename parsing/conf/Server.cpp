@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 21:13:42 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/18 06:56:09 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 00:44:05 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,8 @@ void Server::setPort(short int port)
 string Server::getUploadPath(string matchLocation) 
 {
     map<string, string> map = _locations[matchLocation]._directives;
-    if (map.find("upload_store") != map.end())
-        return map["upload_store"];
+    if (map.find("root") != map.end())
+        return map["root"];
       
-    return "./uploads";
+    return this->_root;
 }

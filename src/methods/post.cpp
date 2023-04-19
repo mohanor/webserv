@@ -11,7 +11,12 @@ Post::Post(Request request, Server server) : Method(request, server)
             _status = 201;
             _resp = getFileContent(_error_page[_status]);
             _comment = "Created";
-            request.uploadFile();
+            if (! request.uploadFile(server.getUploadPath(request.getRessource())))
+            {
+                _status = 400;
+                _resp = getFileContent(_error_page[_status]);
+                _comment = "Bad Request";
+            }
             return ;
         }
         _status = 403;
