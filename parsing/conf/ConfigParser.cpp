@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/19 01:43:54 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 01:57:45 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -575,7 +575,7 @@ void ConfigParser::checkSynaxDirective()
             else if (_tokens[i].first == "cgi_info_php" || _tokens[i].first == "cgi_info_py")
             {
                 if (lengthDirective(i + 1) != 2)
-                    errorLogs("Error : " + _tokens[i].first + " syntax does not valid");
+                    errorLogs("Error : " + _tokens[i].first + " syntax does not valid!");
                 else
                 {
                     if (_tokens[i + 1].first != ".py" && _tokens[i + 1].first != ".php")
