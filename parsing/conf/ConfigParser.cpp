@@ -6,7 +6,7 @@
 /*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 19:33:13 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/19 01:57:45 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 05:02:46 by yoelhaim         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -496,6 +496,11 @@ void ConfigParser::checkCorrectSyntaxDirective(size_t index)
     }
 
     if (_tokens[index].first == "autoindex")
+    {
+        if (_tokens[index + 1].first != "on" && _tokens[index + 1].first != "off")
+            errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid autoindex");
+    }
+     if (_tokens[index].first == "upload_enable")
     {
         if (_tokens[index + 1].first != "on" && _tokens[index + 1].first != "off")
             errorLogs("Error :  " + _tokens[index + 1].first +" is not a valid autoindex");
