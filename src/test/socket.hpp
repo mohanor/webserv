@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:37:17 by matef             #+#    #+#             */
-/*   Updated: 2023/04/19 06:18:16 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 06:46:52 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,15 +83,12 @@ class SocketClass
 
         bool recvError(int size, int fd);
 
-        unsigned long hex2dec(string hex);
+        unsigned long hexToDec(string hex);
 
         int handlePostRequest(Client &client);
         int handleDeleteRequest(Client &client);
-        // bool handleChunkedRequest(Client &client);
         void sendErrorReply(int i);
 
-        
-        
         string parseChunked(string body, int *c);
         Server getServer(int sockfd);
         Server getServer2(string host);
