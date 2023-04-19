@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-khad <yel-khad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/17 22:31:59 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/18 21:47:47 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     dup2(save1, STDOUT_FILENO);
     close(save0);
     close(save1);
+    delete[] _args;
     if (WIFSIGNALED(status) || status != 0)
         _resp = "error";
 }

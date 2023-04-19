@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 21:39:23 by matef             #+#    #+#             */
-/*   Updated: 2023/04/18 20:47:22 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 00:51:56 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,9 @@ unsigned long SocketClass::hex2dec(string hex)
     return result;
 }
 
-string SocketClass::parseChunked(string body)
+
+
+string SocketClass::parseChunked(string body, int *c)
 {
     size_t pos = 0;
     string chunked;
@@ -158,28 +160,40 @@ string SocketClass::parseChunked(string body)
     size_t p = body.find(ENDL ENDL);
     body.erase(0, p + 4);
 
+    string temp;
     while (body.size())
     {
         if (firstLine)
         {
             pos = body.find(ENDL);
             size = body.substr(0, pos);
+
+            if (!sizeIsHex(size))
+            {
+                *c = 1;
+                return "";
+            }
             
-            // cout << "size: " << size << endl;
+            size = to_string(hex2dec(size));
             body.erase(0, pos + 2);
             firstLine = false;
             if (size == "0") break;
             continue;
         }
         
-        prasedBody += body.substr(0, hex2dec(size));
+        temp = body.substr(0, hex2dec(size));
 
-        
+        if (temp.size() != hex2dec(size))
+        {
+            *c = 1;
+            return "";
+        }
+
+        prasedBody += temp;
+
         body.erase(0, hex2dec(size) + 2);
         firstLine = true;
     }
-
-    //cout << "prasedBody:\n" << prasedBody << endl;
 
     return prasedBody;
 }
@@ -197,14 +211,16 @@ bool SocketClass::handleDeleteRequest(Client &client)
             return true;
         }
     }
-
+    //TODO handle chunked case
     // chunked case
     
     return false;
 }
 
-bool SocketClass::handlePostRequest(Client &client)
+int SocketClass::handlePostRequest(Client &client)
 {
+    int c = 0;
+
     if (client._request.isHeaderHasKey("Content-Length"))
     {
         size_t contentLength = (size_t)atof( client._request.getValueOf("Content-Length").c_str() );
@@ -212,49 +228,38 @@ bool SocketClass::handlePostRequest(Client &client)
         if (contentLength == client.getReceivedLength() && client._request.isHeaderHasKey("Content-Type"))
         {
             vector <string> contentType = Request::getVector(client._request.getValueOf("Content-Type"));
-            if (contentType[0] == "multipart/form-data;")
+            if (contentType.size() && contentType[0] == "multipart/form-data;")
                 client._request.setUploadable();
-            
 
-            // else case is not should handled
-            cout << client._requestString;
-            exit (0);
             client._request.setBody(client.getBody());
             client._requestString.clear();
-            return true;
+            return 1;
         }
     }
     else if (client._request.isHeaderHasKey("Transfer-Encoding"))
     {
         if (client._request.getValueOf("Transfer-Encoding") == "chunked")
         {
-
-            
             if (client._requestString.rfind(ENDL "0" ENDL ENDL) != string::npos)
             {
                 vector <string> contentType = Request::getVector(client._request.getValueOf("Content-Type"));
-                if (contentType[0] == "multipart/form-data;")
+                if (contentType.size() && contentType[0] == "multipart/form-data;")
                     client._request.setUploadable();
-                // client._request.setBody(client.getBody());
-                // parseChunked(client._request.getBody());
-                
-                
-                // cout << "client\n\n" << client._request.getBody() << endl << endl;
-                
-                // parseChunked(client._requestString);
-                // exit (0);
 
-
-                client._request.setBody(parseChunked(client._requestString));
-                
-
+                string parsedBody = parseChunked(client._requestString, &c);
+                if (c)
+                {
+                    client._requestString.clear();
+                    return 2;
+                }
+                client._request.setBody(parsedBody);
                 client._requestString.clear();
-                return true;
+                return 1;
             }
         }
     }
 
-    return false;
+    return 0;
 }
 
 Server SocketClass::getServer(int sockfd)
@@ -303,6 +308,7 @@ int SocketClass::communicate(struct pollfd &fds)
     string			req;
     size_t			size;
     char			request[MAX_REQUEST_SIZE] = {0};
+
     size = recv(fds.fd, request, MAX_REQUEST_SIZE, 0);
     if ( !recvError(size, fds.fd) ) return 0;
 
@@ -335,13 +341,20 @@ int SocketClass::communicate(struct pollfd &fds)
 
         if (_clients[fds.fd].getRequest().getMethod() == POST)
         {
-            // cout << "POST method" << endl;
-            
-            if (handlePostRequest(_clients[fds.fd]))
+            int handleReturn = handlePostRequest(_clients[fds.fd]);
+
+            if ( handleReturn == 1 )
             {
                 _clients[fds.fd].setStatus(FILE_NOT_SET);
                 fds.events = POLLOUT;
             }
+            else if ( handleReturn == 2 )
+            {
+                _clients[fds.fd].setRespStatus("400");
+                _clients[fds.fd].setComment(getComment(400));
+                return (false);
+            }
+            
             return (true);
         }
 
@@ -434,24 +447,6 @@ bool SocketClass::isAllPortDiffrents(Server s1, Server s2)
     return true;
 }
 
-void SocketClass::isAllServersCanRunning()
-{
-    for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
-    {
-        for (vector<Server>::iterator it2 = it; it2 != servers.end(); it2++)
-        {
-            if (it != it2 && it->getServerName() == it2->getServerName())
-            {
-                if (!isAllPortDiffrents(*it, *it2))
-                {
-                    cerr << "Error: two servers have the same server name" << endl;
-                    exit(1);
-                }
-            }
-        }
-    }
-}
-
 void SocketClass::setFds()
 {
     int listener;
@@ -460,10 +455,9 @@ void SocketClass::setFds()
     vector<HostAndPort> hostsAndPorts;
     HostAndPort hostAndPort;
 
-    isAllServersCanRunning();
+
     for (vector<Server>::iterator it = servers.begin(); it != servers.end(); it++)
     {
-
         vector<short> ports = it->getPort();
 
         for (vector<short>::iterator pt = ports.begin(); pt != ports.end(); pt++)
@@ -496,7 +490,6 @@ void SocketClass::setFds()
 
     }
 
-    cout << "_fds: " << _fds.size() << endl;
     if (_fds.size() == 0)
     {
         cerr << "server (s) resource alreday in use" << endl;
@@ -539,7 +532,6 @@ void SocketClass::sendErrorReply(int i)
     if (pageErrorUrl == "")
         pageErrorUrl = "./error_page/" + status + ".html";
     
-    cout << "pageErrorUrl: " << pageErrorUrl << endl;
     page = getFileContent(pageErrorUrl);
     
     string error = "HTTP/1.1 " + status + " " + getComment(atoi(status.c_str())) + "\r\n";
@@ -578,7 +570,6 @@ void SocketClass::run()
                     opt = setsockopt(newClient, SOL_SOCKET, SO_NOSIGPIPE , &opt, sizeof(opt));
                     struct pollfd pfd = {newClient, POLLIN, 0};
                     _fds.push_back(pfd);
-                    
                 }
                 else if ( !communicate(_fds[i]) )
                 {

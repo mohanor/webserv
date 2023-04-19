@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:13:18 by yoelhaim          #+#    #+#             */
-/*   Updated: 2023/04/18 01:26:50 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/19 00:15:01 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
     _url = join_path(_url, resource);
     
     insetErrorPage();
-    cout << __LINE__ << " " << __FILE__ << endl;
     
     _status = 404;
     _comment =  " Not Found";
@@ -33,7 +32,6 @@ Method::Method(Request request, Server server) : _request(request) , _server(ser
 
 void Method::insetErrorPage()
 {
-    cout << __LINE__ << " " << __FILE__ << endl;
     string statusCode = string(STATUSCODE);
 
     vector<string> status = Request::getVector(statusCode);
@@ -60,6 +58,7 @@ string Method::getRidOfHeaders()
     size_t pos_r = _resp.find("\r\n\r\n");
     size_t pos_n = _resp.find("\n\n");
     size_t pos = (pos_r < pos_n) ? pos_r + 4 : pos_n + 2;
+    //TODO REMOVE THIS
     cout << "pos:"+ to_string(pos_r) << endl;  
     cout << "pos:"+ to_string(pos_n) << endl;  
     cout << "pos:"+ to_string(pos) << endl;  
