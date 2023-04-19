@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 02:26:41 by matef             #+#    #+#             */
-/*   Updated: 2023/04/18 07:22:39 by matef            ###   ########.fr       */
+/*   Updated: 2023/04/19 00:26:02 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,7 +337,7 @@ void Request::setUploadable()
 	_isUploadable = true;
 }
 
-void Request::uploadFile(string path)
+bool Request::uploadFile(string path)
 {
     size_t nextLine ;
     string boundary;
@@ -351,17 +351,13 @@ void Request::uploadFile(string path)
     size_t start = _body.find(boundary);
     size_t end = _body.find(endBoundary);
 
-    if (start == string::npos || end == string::npos) // return msg error : bad request
-    {
-        cerr << "bad request" << endl;
-        return;
-    }
+    if (start == string::npos || end == string::npos)
+        return false;
     
     string tmp;
     string bodyHead;
     vector <string> bodyHeadVector;
     
-
     while (start != string::npos && start < end)
     {
 		
@@ -369,10 +365,7 @@ void Request::uploadFile(string path)
         bodyHead = _body.substr(0, nextLine);
 
         while (bodyHead.find("\r\n") != string::npos)
-		{
-			
             bodyHead.replace(bodyHead.find("\r\n"), 2, " ");
-		}
 
         bodyHeadVector = Request::getVector(bodyHead);
 
@@ -381,11 +374,13 @@ void Request::uploadFile(string path)
 		
         if (!bodyHeadVector.size())
 		{
+			cout << "break" << endl;
             break ;
 		}
         
         string filename = bodyHeadVector[0].substr(bodyHeadVector[0].find("\"") + 1);
         filename.erase(filename.find("\""));
+
 
         _body.erase(0, nextLine);
         start = _body.find(boundary);
@@ -397,6 +392,7 @@ void Request::uploadFile(string path)
         file << tmp;
         tmp.clear();
     }
+	return true;
 }
 
 

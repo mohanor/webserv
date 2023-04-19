@@ -27,4 +27,6 @@ bool hasOnlyUppercase(const string &str);
 bool syntaxIsCorrect(vector<string> first_line);
 size_t getFileSize(std::string filename);
 string getComment(int status);
+bool sizeIsHex(string size);
+
 # endif
