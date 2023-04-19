@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yoelhaim <yoelhaim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 00:00:05 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/18 06:45:22 by yoelhaim         ###   ########.fr       */
+/*   Updated: 2023/04/19 02:34:48 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 Get::Get(Request request, Server server) : Method(request, server)
 {
-    cout << __LINE__ << " " << __FILE__ << endl;
     if (!getRequestedResource())
     {
         _status = 404;
@@ -22,7 +21,6 @@ Get::Get(Request request, Server server) : Method(request, server)
         _resp = getFileContent(_error_page[404]);
         return ;
     }
-  cout << __LINE__ << " " << __FILE__ << endl;
     if (isFile())
     {
         if (!hasCGI())
@@ -91,10 +89,10 @@ Get::Get(Request request, Server server) : Method(request, server)
     _url = getIndex();
     if (_url.empty())
     {
-        _status = 403;
-        _comment = "Forbidden";
-        _resp =getFileContent(_error_page[403]);
-        _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[403])));
+        _status = 404;
+        _comment = "Not Found";
+        _resp =getFileContent(_error_page[404]);
+        _contentType = _mime.getMimeType(_mime.getExtension(getFileContent(_error_page[404])));
         return ;
     }
     if (!hasCGI())

@@ -35,7 +35,7 @@ if username:
 else:
     print("<p>Please enter your name:</p>")
     print('<form method="post">')
-    print('<input type="text" value="123" name="username">')
+    print('<input type="text" name="username">')
     print('<input type="submit" value="Submit">')
     print("</form>")
 print("</body>")

@@ -6,7 +6,7 @@
 /*   By: matef <matef@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 06:37:45 by yel-khad          #+#    #+#             */
-/*   Updated: 2023/04/18 22:31:54 by yel-khad         ###   ########.fr       */
+/*   Updated: 2023/04/19 04:45:53 by matef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ CGI::CGI(Request request, Server server, string url, string method) : _request(r
     int save0 = dup(0);
     int save1 = dup(1);
 
-    cout << "#" << _request.getValueOf("Cookie") << "#" << endl;
     getScriptName();
     pipe(pipefd);
     pid_t pid;
