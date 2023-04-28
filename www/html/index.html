@@ -30,9 +30,6 @@
               </li>
               
               </li>
-              <li class="nav-item">
-                <a class="nav-link disabled">Disabled</a>
-              </li>
             </ul>
             
           </div>
@@ -40,59 +37,6 @@
       </nav>
 
       <div class="container-sm h-100  align-items-center justify-content-center mt-5">
-
-        
-	<h1>webserv</h1>
-	<h2>Stages for server</h2>
-	<p>There are two common types for a socket:</p>
-	<ul>
-		<li>Streaming socket (SOCK_STREAM) TCP</li>
-		<li>Datagram socket (SOCK_DGRAM) UDP</li>
-	</ul>
-	<h3>1. Socket creation:</h3>
-	<pre>
-		int sockfd = socket(domain, type, protocol)
-	</pre>
-	<ul>
-		<li>sockfd: socket descriptor, an integer (like a file-handle)</li>
-		<li>domain: integer, specifies communication domain. We use AF_ LOCAL as defined in the POSIX standard for communication between processes on the same host. For communicating between processes on different hosts connected by IPV4, we use AF_INET and AF_I NET 6 for processes connected by IPV6.</li>
-		<li>type: communication type 
-			<ul>
-				<li>SOCK_STREAM: TCP(reliable, connection oriented)</li>
-				<li>SOCK_DGRAM: UDP(unreliable, connectionless)</li>
-			</ul>
-		</li>
-		<li>protocol: Protocol value for Internet Protocol(IP), which is 0. This is the same number which appears on protocol field in the IP header of a packet.(man protocols for more details)</li>
-	</ul>
-	<h3>2. Setsockopt:</h3>
-	<pre>
-		int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen);
-	</pre>
-	<p>This helps in manipulating options for the socket referred by the file descriptor sockfd. This is completely optional, but it helps in reuse of address and port. Prevents error such as: “address already in use”.</p>
-	<h3>3. Bind:</h3>
-	<pre>
-		int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-	</pre>
-	<p>After the creation of the socket, the bind function binds the socket to the address and port number specified in addr(custom data structure)</p>
-	<h3>4. Listen:</h3>
-	<pre>
-		int listen(int sockfd, int backlog);
-	</pre>
-	<p>It puts the server socket in a passive mode, where it waits for the client to approach the server to make a connection. The backlog, defines the maximum length to which the queue of pending connections for sockfd may grow. If a connection request arrives when the queue is full, the client may receive an error with an indication of ECONNREFUSED.</p>
-	<h3>5. Accept:</h3>
-	<pre>
-		int new_socket= accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-	</pre>
-	<p>It extracts the first connection request on the queue of pending connections for the listening socket, sockfd, creates a new connected socket, and returns a new file descriptor referring to that socket. At this point, the connection is established between client and server, and they are ready to transfer data.</p>
-	<h2>Stages for Client</h2>
-	<h3>1: Socket connection: Exactly same as that of server’s socket creation</h3>
-	<h3>2: Connect:</h3>
-	<pre>
-		int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-	</pre>
-	2: Connect: The connect() system call connects the socket referred to by the file descriptor sockfd to the address specified by addr. Server’s address and port is specified in addr.
-    <pre>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</pre>
-
         <h1>Team :</h1>
        <div class="d-flex text-center">
         <div class="card" style="width: 18rem;">
